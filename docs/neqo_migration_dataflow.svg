@@ -1,0 +1,537 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 4800" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#e74c3c"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#27ae60"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2980b9"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#e67e22"/>
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="3" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2c3e50"/>
+      <stop offset="100%" style="stop-color:#3498db"/>
+    </linearGradient>
+    <linearGradient id="step1Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#27ae60"/>
+      <stop offset="100%" style="stop-color:#2ecc71"/>
+    </linearGradient>
+    <linearGradient id="step2Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2980b9"/>
+      <stop offset="100%" style="stop-color:#3498db"/>
+    </linearGradient>
+    <linearGradient id="step3Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e67e22"/>
+      <stop offset="100%" style="stop-color:#f39c12"/>
+    </linearGradient>
+    <linearGradient id="step4Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8e44ad"/>
+      <stop offset="100%" style="stop-color:#9b59b6"/>
+    </linearGradient>
+    <linearGradient id="step5Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c0392b"/>
+      <stop offset="100%" style="stop-color:#e74c3c"/>
+    </linearGradient>
+    <linearGradient id="step6Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#16a085"/>
+      <stop offset="100%" style="stop-color:#1abc9c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="4800" fill="#f8f9fa" rx="20"/>
+
+  <!-- ============================================ -->
+  <!-- TITLE -->
+  <!-- ============================================ -->
+  <rect x="50" y="30" width="1300" height="120" rx="15" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="700" y="80" text-anchor="middle" fill="white" font-size="36" font-weight="bold">QUIC Connection Migration in Neqo (Mozilla Firefox)</text>
+  <text x="700" y="120" text-anchor="middle" fill="#bdc3c7" font-size="20">How your phone stays connected when switching from WiFi to Cellular</text>
+
+  <!-- ============================================ -->
+  <!-- THE STORY - INTRO -->
+  <!-- ============================================ -->
+  <rect x="50" y="180" width="1300" height="160" rx="15" fill="white" stroke="#ddd" filter="url(#shadow)"/>
+  <text x="700" y="215" text-anchor="middle" fill="#2c3e50" font-size="22" font-weight="bold">Imagine This Story...</text>
+  <text x="80" y="250" fill="#555" font-size="17">You're watching YouTube on your phone using WiFi at home (IP: 192.168.1.50).</text>
+  <text x="80" y="278" fill="#555" font-size="17">You walk outside and your phone switches to Cellular data (new IP: 10.20.30.40).</text>
+  <text x="80" y="306" fill="#555" font-size="17">With old TCP: Video STOPS, rebuffers, reconnects. With QUIC: Video keeps playing seamlessly!</text>
+  <text x="80" y="334" fill="#27ae60" font-size="17" font-weight="bold">Here's exactly how Neqo (Firefox's code) makes this magic happen, step by step...</text>
+
+  <!-- ============================================ -->
+  <!-- STEP 0: BEFORE MIGRATION - Normal Connection -->
+  <!-- ============================================ -->
+  <rect x="50" y="370" width="1300" height="50" rx="10" fill="#95a5a6" filter="url(#shadow)"/>
+  <text x="700" y="402" text-anchor="middle" fill="white" font-size="22" font-weight="bold">STEP 0: Before Migration - Normal Connection (Everything is fine)</text>
+
+  <!-- Phone and Server -->
+  <rect x="80" y="450" width="280" height="200" rx="15" fill="white" stroke="#27ae60" stroke-width="3" filter="url(#shadow)"/>
+  <text x="220" y="485" text-anchor="middle" fill="#27ae60" font-size="20" font-weight="bold">Your Phone</text>
+  <text x="220" y="510" text-anchor="middle" fill="#555" font-size="14">Connected via WiFi</text>
+  <rect x="120" y="525" width="200" height="30" rx="5" fill="#eafaf1" stroke="#27ae60"/>
+  <text x="220" y="545" text-anchor="middle" fill="#27ae60" font-size="13" font-weight="bold">IP: 192.168.1.50:43210</text>
+  <rect x="120" y="565" width="200" height="30" rx="5" fill="#eafaf1" stroke="#27ae60"/>
+  <text x="220" y="585" text-anchor="middle" fill="#27ae60" font-size="13" font-weight="bold">Connection ID: ABC123</text>
+  <rect x="120" y="605" width="200" height="30" rx="5" fill="#eafaf1" stroke="#27ae60"/>
+  <text x="220" y="625" text-anchor="middle" fill="#27ae60" font-size="13" font-weight="bold">Status: Watching YouTube</text>
+
+  <rect x="1040" y="450" width="280" height="200" rx="15" fill="white" stroke="#2980b9" stroke-width="3" filter="url(#shadow)"/>
+  <text x="1180" y="485" text-anchor="middle" fill="#2980b9" font-size="20" font-weight="bold">YouTube Server</text>
+  <text x="1180" y="510" text-anchor="middle" fill="#555" font-size="14">Google's Data Center</text>
+  <rect x="1080" y="525" width="200" height="30" rx="5" fill="#ebf5fb" stroke="#2980b9"/>
+  <text x="1180" y="545" text-anchor="middle" fill="#2980b9" font-size="13" font-weight="bold">IP: 142.250.80.46:443</text>
+  <rect x="1080" y="565" width="200" height="30" rx="5" fill="#ebf5fb" stroke="#2980b9"/>
+  <text x="1180" y="585" text-anchor="middle" fill="#2980b9" font-size="13" font-weight="bold">Connection ID: XYZ789</text>
+  <rect x="1080" y="605" width="200" height="30" rx="5" fill="#ebf5fb" stroke="#2980b9"/>
+  <text x="1180" y="625" text-anchor="middle" fill="#2980b9" font-size="13" font-weight="bold">Status: Sending video</text>
+
+  <!-- Happy connection arrow -->
+  <line x1="360" y1="550" x2="1040" y2="550" stroke="#27ae60" stroke-width="4" marker-end="url(#arrow-green)" stroke-dasharray="12,6"/>
+  <text x="700" y="540" text-anchor="middle" fill="#27ae60" font-size="15" font-weight="bold">Video data flowing happily</text>
+  <text x="700" y="560" text-anchor="middle" fill="#888" font-size="12">Packets: Phone:43210 --> Server:443 | CID: ABC123</text>
+
+  <!-- Neqo code box -->
+  <rect x="420" y="580" width="560" height="80" rx="10" fill="#2c3e50" filter="url(#shadow)"/>
+  <text x="440" y="605" fill="#1abc9c" font-size="13" font-family="monospace">// Inside Neqo: connection/mod.rs</text>
+  <text x="440" y="625" fill="#ecf0f1" font-size="13" font-family="monospace">Connection.state = State::Connected</text>
+  <text x="440" y="645" fill="#ecf0f1" font-size="13" font-family="monospace">Paths.primary = Path(192.168.1.50 -> 142.250.80.46)</text>
+
+  <!-- ============================================ -->
+  <!-- STEP 1: THE TRIGGER -->
+  <!-- ============================================ -->
+  <rect x="50" y="690" width="1300" height="50" rx="10" fill="url(#step1Grad)" filter="url(#shadow)"/>
+  <text x="700" y="722" text-anchor="middle" fill="white" font-size="22" font-weight="bold">STEP 1: The Trigger - "Oh no, WiFi is gone!"</text>
+
+  <!-- Explanation box -->
+  <rect x="80" y="760" width="540" height="170" rx="15" fill="white" stroke="#27ae60" stroke-width="2" filter="url(#shadow)"/>
+  <text x="100" y="790" fill="#2c3e50" font-size="17" font-weight="bold">What happens in real life:</text>
+  <text x="100" y="818" fill="#555" font-size="15">1. You walk out of WiFi range</text>
+  <text x="100" y="843" fill="#555" font-size="15">2. Phone detects WiFi is weak/gone</text>
+  <text x="100" y="868" fill="#555" font-size="15">3. Phone switches to Cellular (4G/5G)</text>
+  <text x="100" y="893" fill="#e74c3c" font-size="15" font-weight="bold">4. Your IP address CHANGES!</text>
+  <text x="100" y="918" fill="#e74c3c" font-size="14">   Old: 192.168.1.50  -->  New: 10.20.30.40</text>
+
+  <!-- Code box -->
+  <rect x="660" y="760" width="660" height="170" rx="15" fill="#2c3e50" filter="url(#shadow)"/>
+  <text x="680" y="790" fill="#f39c12" font-size="15" font-weight="bold">What happens in Neqo code:</text>
+  <text x="680" y="820" fill="#1abc9c" font-size="13" font-family="monospace">// The app (Firefox) calls this:</text>
+  <text x="680" y="845" fill="#e74c3c" font-size="15" font-family="monospace" font-weight="bold">connection.migrate(</text>
+  <text x="680" y="868" fill="#ecf0f1" font-size="13" font-family="monospace">    local:  Some("10.20.30.40:55555"),  // new cellular IP</text>
+  <text x="680" y="891" fill="#ecf0f1" font-size="13" font-family="monospace">    remote: Some("142.250.80.46:443"),  // same YouTube server</text>
+  <text x="680" y="914" fill="#ecf0f1" font-size="13" font-family="monospace">    force:  false  // validate first, don't just trust it</text>
+  <text x="680" y="930" fill="#e74c3c" font-size="15" font-family="monospace" font-weight="bold">)</text>
+
+  <!-- File location -->
+  <rect x="660" y="935" width="660" height="30" rx="5" fill="#1a252f"/>
+  <text x="680" y="955" fill="#95a5a6" font-size="12" font-family="monospace">File: neqo-transport/src/connection/mod.rs  (Connection::migrate)</text>
+
+  <!-- ============================================ -->
+  <!-- STEP 2: PATHS - Finding/Creating New Path -->
+  <!-- ============================================ -->
+  <rect x="50" y="990" width="1300" height="50" rx="10" fill="url(#step2Grad)" filter="url(#shadow)"/>
+  <text x="700" y="1022" text-anchor="middle" fill="white" font-size="22" font-weight="bold">STEP 2: Create a New Path - "Let me try this new road"</text>
+
+  <!-- Analogy box -->
+  <rect x="80" y="1060" width="600" height="140" rx="15" fill="#ebf5fb" stroke="#2980b9" stroke-width="2" filter="url(#shadow)"/>
+  <text x="100" y="1090" fill="#2980b9" font-size="17" font-weight="bold">Think of it like roads:</text>
+  <text x="100" y="1118" fill="#555" font-size="15">Old Path = WiFi road (192.168.1.50 --> Server)</text>
+  <text x="100" y="1143" fill="#555" font-size="15">New Path = Cellular road (10.20.30.40 --> Server)</text>
+  <text x="100" y="1168" fill="#2980b9" font-size="15">Same destination, different road to get there!</text>
+  <text x="100" y="1193" fill="#2980b9" font-size="15" font-weight="bold">Neqo keeps BOTH roads until the new one is tested.</text>
+
+  <!-- Path diagram -->
+  <rect x="720" y="1060" width="600" height="300" rx="15" fill="white" stroke="#2980b9" stroke-width="2" filter="url(#shadow)"/>
+  <text x="1020" y="1090" text-anchor="middle" fill="#2c3e50" font-size="17" font-weight="bold">Paths Collection (path.rs)</text>
+
+  <!-- Old path box -->
+  <rect x="750" y="1110" width="250" height="100" rx="10" fill="#eafaf1" stroke="#27ae60" stroke-width="2"/>
+  <text x="875" y="1135" text-anchor="middle" fill="#27ae60" font-size="14" font-weight="bold">paths[0] = OLD PATH</text>
+  <text x="875" y="1158" text-anchor="middle" fill="#555" font-size="12">192.168.1.50:43210</text>
+  <text x="875" y="1176" text-anchor="middle" fill="#555" font-size="12">--> 142.250.80.46:443</text>
+  <text x="875" y="1200" text-anchor="middle" fill="#27ae60" font-size="13" font-weight="bold">primary = true, valid = true</text>
+
+  <!-- New path box -->
+  <rect x="1040" y="1110" width="250" height="100" rx="10" fill="#fef9e7" stroke="#f39c12" stroke-width="2"/>
+  <text x="1165" y="1135" text-anchor="middle" fill="#e67e22" font-size="14" font-weight="bold">paths[1] = NEW PATH</text>
+  <text x="1165" y="1158" text-anchor="middle" fill="#555" font-size="12">10.20.30.40:55555</text>
+  <text x="1165" y="1176" text-anchor="middle" fill="#555" font-size="12">--> 142.250.80.46:443</text>
+  <text x="1165" y="1200" text-anchor="middle" fill="#e74c3c" font-size="13" font-weight="bold">primary = false, valid = false</text>
+
+  <!-- migration_target arrow -->
+  <line x1="1020" y1="1250" x2="1100" y2="1250" stroke="#e67e22" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <text x="750" y="1255" fill="#e67e22" font-size="13" font-weight="bold">migration_target = </text>
+  <rect x="1110" y="1235" width="180" height="30" rx="5" fill="#fef9e7" stroke="#e67e22"/>
+  <text x="1200" y="1255" text-anchor="middle" fill="#e67e22" font-size="12">points to NEW PATH</text>
+
+  <!-- Code -->
+  <rect x="750" y="1290" width="540" height="55" rx="5" fill="#2c3e50"/>
+  <text x="770" y="1310" fill="#1abc9c" font-size="12" font-family="monospace">// path.rs: Paths::migrate()</text>
+  <text x="770" y="1330" fill="#ecf0f1" font-size="12" font-family="monospace">self.migration_target = Some(Rc::clone(path));</text>
+
+  <!-- Connection between steps -->
+  <rect x="80" y="1220" width="600" height="140" rx="15" fill="#2c3e50" filter="url(#shadow)"/>
+  <text x="100" y="1248" fill="#f39c12" font-size="15" font-weight="bold">What Neqo does in this step:</text>
+  <text x="100" y="1275" fill="#ecf0f1" font-size="13" font-family="monospace">1. Path::temporary(local, remote)  // create new path</text>
+  <text x="100" y="1298" fill="#ecf0f1" font-size="13" font-family="monospace">2. Paths::make_permanent(path)     // add to paths list</text>
+  <text x="100" y="1321" fill="#ecf0f1" font-size="13" font-family="monospace">3. Paths::migrate(path, force=false) // set as target</text>
+  <text x="100" y="1344" fill="#ecf0f1" font-size="13" font-family="monospace">4. path.probe(stats)               // start validation!</text>
+
+  <!-- ============================================ -->
+  <!-- STEP 3: PATH_CHALLENGE - "Are you real?" -->
+  <!-- ============================================ -->
+  <rect x="50" y="1390" width="1300" height="50" rx="10" fill="url(#step3Grad)" filter="url(#shadow)"/>
+  <text x="700" y="1422" text-anchor="middle" fill="white" font-size="22" font-weight="bold">STEP 3: PATH_CHALLENGE - "Hey server, can you hear me on this new road?"</text>
+
+  <!-- Big explanation -->
+  <rect x="80" y="1460" width="1240" height="100" rx="15" fill="#fef9e7" stroke="#e67e22" stroke-width="2" filter="url(#shadow)"/>
+  <text x="100" y="1490" fill="#e67e22" font-size="17" font-weight="bold">Why does Neqo need to check? (Security!)</text>
+  <text x="100" y="1515" fill="#555" font-size="15">A bad guy could pretend to have a different IP address and trick the server into sending data there.</text>
+  <text x="100" y="1540" fill="#555" font-size="15">So Neqo sends a SECRET RANDOM NUMBER (8 bytes) to the server and says: "Send this number back to prove you got it!"</text>
+
+  <!-- Phone sends challenge -->
+  <rect x="80" y="1580" width="320" height="200" rx="15" fill="white" stroke="#e67e22" stroke-width="3" filter="url(#shadow)"/>
+  <text x="240" y="1610" text-anchor="middle" fill="#e67e22" font-size="18" font-weight="bold">Phone (NEW IP)</text>
+  <text x="240" y="1635" text-anchor="middle" fill="#555" font-size="14">10.20.30.40:55555</text>
+  <rect x="110" y="1650" width="260" height="120" rx="8" fill="#2c3e50"/>
+  <text x="130" y="1675" fill="#1abc9c" font-size="12" font-family="monospace">// path.rs: Path::write_frames()</text>
+  <text x="130" y="1698" fill="#ecf0f1" font-size="12" font-family="monospace">ProbeState::ProbeNeeded</text>
+  <text x="130" y="1718" fill="#ecf0f1" font-size="12" font-family="monospace">  --> generate random 8 bytes</text>
+  <text x="130" y="1738" fill="#f39c12" font-size="12" font-family="monospace" font-weight="bold">  --> send PATH_CHALLENGE</text>
+  <text x="130" y="1758" fill="#ecf0f1" font-size="12" font-family="monospace">  --> state = Probing{data, sent}</text>
+
+  <!-- Server -->
+  <rect x="1000" y="1580" width="320" height="200" rx="15" fill="white" stroke="#2980b9" stroke-width="3" filter="url(#shadow)"/>
+  <text x="1160" y="1610" text-anchor="middle" fill="#2980b9" font-size="18" font-weight="bold">YouTube Server</text>
+  <text x="1160" y="1635" text-anchor="middle" fill="#555" font-size="14">142.250.80.46:443</text>
+  <rect x="1030" y="1650" width="260" height="120" rx="8" fill="#2c3e50"/>
+  <text x="1050" y="1675" fill="#1abc9c" font-size="12" font-family="monospace">// Server receives packet from</text>
+  <text x="1050" y="1695" fill="#1abc9c" font-size="12" font-family="monospace">// a NEW address but SAME CID!</text>
+  <text x="1050" y="1718" fill="#ecf0f1" font-size="12" font-family="monospace">Server thinks:</text>
+  <text x="1050" y="1738" fill="#f39c12" font-size="12" font-family="monospace">"CID ABC123 came from a new IP"</text>
+  <text x="1050" y="1758" fill="#f39c12" font-size="12" font-family="monospace">"Let me verify this is legit..."</text>
+
+  <!-- Challenge arrow -->
+  <line x1="400" y1="1660" x2="1000" y2="1660" stroke="#e67e22" stroke-width="4" marker-end="url(#arrow-orange)"/>
+  <rect x="500" y="1640" width="400" height="55" rx="8" fill="#e67e22" filter="url(#shadow)"/>
+  <text x="700" y="1660" text-anchor="middle" fill="white" font-size="14" font-weight="bold">PATH_CHALLENGE: [0x7a 0x3f 0x2e 0x91 0xc4 0xd6 0x08 0xbb]</text>
+  <text x="700" y="1682" text-anchor="middle" fill="#fef9e7" font-size="12">"Hey server! Send back this secret number to prove you hear me!"</text>
+
+  <!-- The packet structure -->
+  <rect x="80" y="1800" width="1240" height="160" rx="15" fill="white" stroke="#e67e22" stroke-width="2" filter="url(#shadow)"/>
+  <text x="700" y="1830" text-anchor="middle" fill="#2c3e50" font-size="17" font-weight="bold">What the actual packet looks like on the wire:</text>
+
+  <!-- Packet layers -->
+  <rect x="120" y="1850" width="160" height="45" rx="5" fill="#3498db"/>
+  <text x="200" y="1878" text-anchor="middle" fill="white" font-size="12" font-weight="bold">UDP Header</text>
+  <text x="200" y="1893" text-anchor="middle" fill="#d6eaf8" font-size="10">src:55555 dst:443</text>
+
+  <rect x="290" y="1850" width="200" height="45" rx="5" fill="#2ecc71"/>
+  <text x="390" y="1878" text-anchor="middle" fill="white" font-size="12" font-weight="bold">QUIC Short Header</text>
+  <text x="390" y="1893" text-anchor="middle" fill="#d5f5e3" font-size="10">CID: ABC123</text>
+
+  <rect x="500" y="1850" width="280" height="45" rx="5" fill="#e67e22"/>
+  <text x="640" y="1878" text-anchor="middle" fill="white" font-size="12" font-weight="bold">PATH_CHALLENGE Frame</text>
+  <text x="640" y="1893" text-anchor="middle" fill="#fef9e7" font-size="10">8 random bytes (the secret!)</text>
+
+  <rect x="790" y="1850" width="200" height="45" rx="5" fill="#e74c3c"/>
+  <text x="890" y="1878" text-anchor="middle" fill="white" font-size="12" font-weight="bold">ENCRYPTED</text>
+  <text x="890" y="1893" text-anchor="middle" fill="#fadbd8" font-size="10">Firewall can't read this!</text>
+
+  <rect x="1000" y="1850" width="280" height="45" rx="5" fill="#95a5a6"/>
+  <text x="1140" y="1878" text-anchor="middle" fill="white" font-size="12" font-weight="bold">PADDING (to 1200+ bytes)</text>
+  <text x="1140" y="1893" text-anchor="middle" fill="#ecf0f1" font-size="10">RFC 9000 requires min 1200 bytes</text>
+
+  <!-- Visible vs hidden labels -->
+  <text x="250" y="1940" text-anchor="middle" fill="#27ae60" font-size="13" font-weight="bold">Firewall CAN see</text>
+  <line x1="120" y1="1910" x2="480" y2="1910" stroke="#27ae60" stroke-width="2"/>
+  <text x="890" y="1940" text-anchor="middle" fill="#e74c3c" font-size="13" font-weight="bold">Firewall CANNOT see (encrypted!)</text>
+  <line x1="500" y1="1910" x2="1280" y2="1910" stroke="#e74c3c" stroke-width="2"/>
+
+  <!-- ============================================ -->
+  <!-- STEP 4: PATH_RESPONSE - "Yes I hear you!" -->
+  <!-- ============================================ -->
+  <rect x="50" y="1980" width="1300" height="50" rx="10" fill="url(#step4Grad)" filter="url(#shadow)"/>
+  <text x="700" y="2012" text-anchor="middle" fill="white" font-size="22" font-weight="bold">STEP 4: PATH_RESPONSE - "Yes! I can hear you! Here's your number back!"</text>
+
+  <!-- Server sends response back -->
+  <rect x="1000" y="2050" width="320" height="120" rx="15" fill="white" stroke="#8e44ad" stroke-width="3" filter="url(#shadow)"/>
+  <text x="1160" y="2080" text-anchor="middle" fill="#8e44ad" font-size="16" font-weight="bold">Server responds</text>
+  <rect x="1030" y="2095" width="260" height="60" rx="8" fill="#2c3e50"/>
+  <text x="1050" y="2115" fill="#ecf0f1" font-size="12" font-family="monospace">PATH_RESPONSE frame with</text>
+  <text x="1050" y="2135" fill="#f39c12" font-size="12" font-family="monospace">SAME 8 bytes the phone sent</text>
+  <text x="1050" y="2148" fill="#1abc9c" font-size="11" font-family="monospace">// Path::challenged() stores it</text>
+
+  <!-- Phone receives -->
+  <rect x="80" y="2050" width="320" height="120" rx="15" fill="white" stroke="#8e44ad" stroke-width="3" filter="url(#shadow)"/>
+  <text x="240" y="2080" text-anchor="middle" fill="#8e44ad" font-size="16" font-weight="bold">Phone receives proof!</text>
+  <rect x="110" y="2095" width="260" height="60" rx="8" fill="#2c3e50"/>
+  <text x="130" y="2115" fill="#1abc9c" font-size="12" font-family="monospace">// path.rs: Path::path_response()</text>
+  <text x="130" y="2135" fill="#ecf0f1" font-size="12" font-family="monospace">if response == data { // Match!</text>
+  <text x="130" y="2148" fill="#27ae60" font-size="12" font-family="monospace">   self.set_valid(now)  // YES!</text>
+
+  <!-- Response arrow (going back) -->
+  <line x1="1000" y1="2100" x2="400" y2="2100" stroke="#8e44ad" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="500" y="2080" width="400" height="50" rx="8" fill="#8e44ad" filter="url(#shadow)"/>
+  <text x="700" y="2100" text-anchor="middle" fill="white" font-size="14" font-weight="bold">PATH_RESPONSE: [0x7a 0x3f 0x2e 0x91 0xc4 0xd6 0x08 0xbb]</text>
+  <text x="700" y="2120" text-anchor="middle" fill="#d7bde2" font-size="12">"Here's your secret number back! I got your message!"</text>
+
+  <!-- Detailed code flow -->
+  <rect x="80" y="2190" width="1240" height="200" rx="15" fill="#2c3e50" filter="url(#shadow)"/>
+  <text x="100" y="2220" fill="#f39c12" font-size="17" font-weight="bold">Detailed code flow when PATH_RESPONSE arrives:</text>
+
+  <text x="100" y="2250" fill="#ecf0f1" font-size="14" font-family="monospace">1. connection/mod.rs: process_input(datagram)     // packet arrives</text>
+  <text x="100" y="2275" fill="#ecf0f1" font-size="14" font-family="monospace">2. frame.rs: decode PATH_RESPONSE frame            // extract the 8 bytes</text>
+  <text x="100" y="2300" fill="#ecf0f1" font-size="14" font-family="monospace">3. path.rs:  Path::path_response(response_bytes)   // compare with sent challenge</text>
+  <text x="100" y="2325" fill="#27ae60" font-size="14" font-family="monospace">4. path.rs:  Path::set_valid(now)                   // MATCH! Mark path as valid!</text>
+  <text x="100" y="2350" fill="#27ae60" font-size="14" font-family="monospace">5. path.rs:  Paths::path_response() --> returns true // migration_target matched!</text>
+  <text x="100" y="2375" fill="#f39c12" font-size="14" font-family="monospace">6. path.rs:  Paths::select_primary(new_path)        // SWITCH to new path!</text>
+
+  <!-- ============================================ -->
+  <!-- STEP 5: SWITCH PRIMARY PATH -->
+  <!-- ============================================ -->
+  <rect x="50" y="2420" width="1300" height="50" rx="10" fill="url(#step5Grad)" filter="url(#shadow)"/>
+  <text x="700" y="2452" text-anchor="middle" fill="white" font-size="22" font-weight="bold">STEP 5: Switch! - "New road works! Let's use it!"</text>
+
+  <!-- Before and After -->
+  <rect x="80" y="2490" width="580" height="250" rx="15" fill="white" stroke="#e74c3c" stroke-width="2" filter="url(#shadow)"/>
+  <text x="370" y="2520" text-anchor="middle" fill="#e74c3c" font-size="18" font-weight="bold">BEFORE (paths list)</text>
+
+  <rect x="110" y="2540" width="220" height="70" rx="8" fill="#27ae60"/>
+  <text x="220" y="2565" text-anchor="middle" fill="white" font-size="13" font-weight="bold">paths[0] - PRIMARY</text>
+  <text x="220" y="2585" text-anchor="middle" fill="#d5f5e3" font-size="11">WiFi: 192.168.1.50</text>
+  <text x="220" y="2600" text-anchor="middle" fill="#d5f5e3" font-size="11">primary=true, valid=true</text>
+
+  <rect x="350" y="2540" width="220" height="70" rx="8" fill="#f39c12"/>
+  <text x="460" y="2565" text-anchor="middle" fill="white" font-size="13" font-weight="bold">paths[1] - TARGET</text>
+  <text x="460" y="2585" text-anchor="middle" fill="#fef9e7" font-size="11">Cell: 10.20.30.40</text>
+  <text x="460" y="2600" text-anchor="middle" fill="#fef9e7" font-size="11">primary=false, valid=true</text>
+
+  <text x="370" y="2650" text-anchor="middle" fill="#555" font-size="13">migration_target = paths[1]</text>
+
+  <!-- Arrow -->
+  <text x="700" y="2620" text-anchor="middle" fill="#e74c3c" font-size="40" font-weight="bold">--></text>
+
+  <rect x="740" y="2490" width="580" height="250" rx="15" fill="white" stroke="#27ae60" stroke-width="2" filter="url(#shadow)"/>
+  <text x="1030" y="2520" text-anchor="middle" fill="#27ae60" font-size="18" font-weight="bold">AFTER (paths swapped!)</text>
+
+  <rect x="770" y="2540" width="220" height="70" rx="8" fill="#27ae60"/>
+  <text x="880" y="2565" text-anchor="middle" fill="white" font-size="13" font-weight="bold">paths[0] - PRIMARY</text>
+  <text x="880" y="2585" text-anchor="middle" fill="#d5f5e3" font-size="11">Cell: 10.20.30.40</text>
+  <text x="880" y="2600" text-anchor="middle" fill="#d5f5e3" font-size="11">primary=true, valid=true</text>
+
+  <rect x="1010" y="2540" width="220" height="70" rx="8" fill="#95a5a6"/>
+  <text x="1120" y="2565" text-anchor="middle" fill="white" font-size="13" font-weight="bold">paths[1] - OLD</text>
+  <text x="1120" y="2585" text-anchor="middle" fill="#ecf0f1" font-size="11">WiFi: 192.168.1.50</text>
+  <text x="1120" y="2600" text-anchor="middle" fill="#ecf0f1" font-size="11">primary=false (probed)</text>
+
+  <text x="1030" y="2650" text-anchor="middle" fill="#27ae60" font-size="13" font-weight="bold">migration_target = None (done!)</text>
+
+  <!-- Code for the swap -->
+  <rect x="80" y="2670" width="1240" height="100" rx="10" fill="#2c3e50" filter="url(#shadow)"/>
+  <text x="100" y="2695" fill="#1abc9c" font-size="13" font-family="monospace">// path.rs: Paths::select_primary()</text>
+  <text x="100" y="2718" fill="#ecf0f1" font-size="13" font-family="monospace">old_path.set_primary(false, now);   // old WiFi path is no longer primary</text>
+  <text x="100" y="2741" fill="#ecf0f1" font-size="13" font-family="monospace">self.paths.swap(0, idx);            // put new cellular path in slot 0 (protected)</text>
+  <text x="100" y="2764" fill="#27ae60" font-size="13" font-family="monospace">new_path.set_primary(true, now);    // cellular is now the boss!</text>
+
+  <!-- ============================================ -->
+  <!-- STEP 6: DONE! Video keeps playing -->
+  <!-- ============================================ -->
+  <rect x="50" y="2800" width="1300" height="50" rx="10" fill="url(#step6Grad)" filter="url(#shadow)"/>
+  <text x="700" y="2832" text-anchor="middle" fill="white" font-size="22" font-weight="bold">STEP 6: Done! Video keeps playing! You didn't notice anything!</text>
+
+  <!-- Happy connection again -->
+  <rect x="80" y="2870" width="280" height="150" rx="15" fill="white" stroke="#1abc9c" stroke-width="3" filter="url(#shadow)"/>
+  <text x="220" y="2900" text-anchor="middle" fill="#1abc9c" font-size="18" font-weight="bold">Your Phone</text>
+  <text x="220" y="2925" text-anchor="middle" fill="#555" font-size="14">Now on Cellular!</text>
+  <rect x="110" y="2940" width="220" height="25" rx="5" fill="#e8f8f5" stroke="#1abc9c"/>
+  <text x="220" y="2958" text-anchor="middle" fill="#1abc9c" font-size="12" font-weight="bold">IP: 10.20.30.40:55555</text>
+  <rect x="110" y="2975" width="220" height="25" rx="5" fill="#e8f8f5" stroke="#1abc9c"/>
+  <text x="220" y="2993" text-anchor="middle" fill="#1abc9c" font-size="12" font-weight="bold">CID: ABC123 (SAME!)</text>
+
+  <rect x="1040" y="2870" width="280" height="150" rx="15" fill="white" stroke="#1abc9c" stroke-width="3" filter="url(#shadow)"/>
+  <text x="1180" y="2900" text-anchor="middle" fill="#1abc9c" font-size="18" font-weight="bold">YouTube Server</text>
+  <text x="1180" y="2925" text-anchor="middle" fill="#555" font-size="14">Didn't even blink!</text>
+  <rect x="1070" y="2940" width="220" height="25" rx="5" fill="#e8f8f5" stroke="#1abc9c"/>
+  <text x="1180" y="2958" text-anchor="middle" fill="#1abc9c" font-size="12" font-weight="bold">IP: 142.250.80.46:443</text>
+  <rect x="1070" y="2975" width="220" height="25" rx="5" fill="#e8f8f5" stroke="#1abc9c"/>
+  <text x="1180" y="2993" text-anchor="middle" fill="#1abc9c" font-size="12" font-weight="bold">CID: XYZ789 (SAME!)</text>
+
+  <line x1="360" y1="2950" x2="1040" y2="2950" stroke="#1abc9c" stroke-width="4" marker-end="url(#arrow-green)" stroke-dasharray="12,6"/>
+  <text x="700" y="2940" text-anchor="middle" fill="#1abc9c" font-size="15" font-weight="bold">Video data flowing on NEW road!</text>
+  <text x="700" y="2960" text-anchor="middle" fill="#888" font-size="12">Same Connection ID, different IP - YouTube doesn't care!</text>
+
+  <!-- ============================================ -->
+  <!-- THE COMPLETE FLOW DIAGRAM -->
+  <!-- ============================================ -->
+  <rect x="50" y="3060" width="1300" height="50" rx="10" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="700" y="3092" text-anchor="middle" fill="white" font-size="22" font-weight="bold">THE COMPLETE CODE FLOW (All Neqo files involved)</text>
+
+  <rect x="80" y="3130" width="1240" height="820" rx="15" fill="white" stroke="#2c3e50" stroke-width="2" filter="url(#shadow)"/>
+
+  <!-- Layer 1: Application -->
+  <rect x="120" y="3150" width="1160" height="60" rx="10" fill="#3498db"/>
+  <text x="700" y="3175" text-anchor="middle" fill="white" font-size="16" font-weight="bold">LAYER 1: Application (Firefox browser)</text>
+  <text x="700" y="3198" text-anchor="middle" fill="#d6eaf8" font-size="13">"WiFi is gone, switch to cellular!" --> calls connection.migrate()</text>
+
+  <!-- Arrow down -->
+  <line x1="700" y1="3210" x2="700" y2="3240" stroke="#333" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Layer 2: Connection -->
+  <rect x="120" y="3240" width="1160" height="90" rx="10" fill="#2ecc71"/>
+  <text x="700" y="3265" text-anchor="middle" fill="white" font-size="16" font-weight="bold">LAYER 2: Connection (connection/mod.rs)</text>
+  <text x="140" y="3290" fill="white" font-size="13">Connection::migrate(local, remote, force)</text>
+  <text x="140" y="3310" fill="#d5f5e3" font-size="12">- Validates state (must be Connected)</text>
+  <text x="500" y="3310" fill="#d5f5e3" font-size="12">- Gets/creates path</text>
+  <text x="800" y="3310" fill="#d5f5e3" font-size="12">- Assigns Connection ID</text>
+  <text x="1050" y="3310" fill="#d5f5e3" font-size="12">- Calls paths.migrate()</text>
+
+  <!-- Arrow down -->
+  <line x1="700" y1="3330" x2="700" y2="3360" stroke="#333" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Layer 3: Paths -->
+  <rect x="120" y="3360" width="1160" height="90" rx="10" fill="#e67e22"/>
+  <text x="700" y="3385" text-anchor="middle" fill="white" font-size="16" font-weight="bold">LAYER 3: Path Manager (path.rs - Paths struct)</text>
+  <text x="140" y="3410" fill="white" font-size="13">Paths::migrate(path, force, now, stats)</text>
+  <text x="140" y="3430" fill="#fef9e7" font-size="12">- Sets migration_target</text>
+  <text x="400" y="3430" fill="#fef9e7" font-size="12">- Starts ECN</text>
+  <text x="600" y="3430" fill="#fef9e7" font-size="12">- Calls path.probe()</text>
+  <text x="850" y="3430" fill="#fef9e7" font-size="12">- If force: select_primary() immediately</text>
+
+  <!-- Arrow down -->
+  <line x1="700" y1="3450" x2="700" y2="3480" stroke="#333" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Layer 4: Individual Path -->
+  <rect x="120" y="3480" width="1160" height="90" rx="10" fill="#9b59b6"/>
+  <text x="700" y="3505" text-anchor="middle" fill="white" font-size="16" font-weight="bold">LAYER 4: Single Path (path.rs - Path struct)</text>
+  <text x="140" y="3530" fill="white" font-size="13">Path::probe() --> ProbeState::ProbeNeeded</text>
+  <text x="140" y="3550" fill="#d7bde2" font-size="12">- Sets state to ProbeNeeded</text>
+  <text x="500" y="3550" fill="#d7bde2" font-size="12">- write_frames() encodes PATH_CHALLENGE</text>
+  <text x="900" y="3550" fill="#d7bde2" font-size="12">- Tracks probe count (max 3)</text>
+
+  <!-- Arrow down -->
+  <line x1="700" y1="3570" x2="700" y2="3600" stroke="#333" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Layer 5: Frame -->
+  <rect x="120" y="3600" width="1160" height="70" rx="10" fill="#e74c3c"/>
+  <text x="700" y="3625" text-anchor="middle" fill="white" font-size="16" font-weight="bold">LAYER 5: Frame Encoding (frame.rs)</text>
+  <text x="140" y="3650" fill="#fadbd8" font-size="13">FrameType::PathChallenge (0x1a) | FrameType::PathResponse (0x1b) | 8 bytes random data</text>
+
+  <!-- Arrow down -->
+  <line x1="700" y1="3670" x2="700" y2="3700" stroke="#333" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Layer 6: Packet -->
+  <rect x="120" y="3700" width="1160" height="70" rx="10" fill="#1abc9c"/>
+  <text x="700" y="3725" text-anchor="middle" fill="white" font-size="16" font-weight="bold">LAYER 6: Packet Building (packet/mod.rs)</text>
+  <text x="140" y="3750" fill="#d1f2eb" font-size="13">Short Header packet | Connection ID: ABC123 | Encrypted payload | Padded to 1200+ bytes</text>
+
+  <!-- Arrow down -->
+  <line x1="700" y1="3770" x2="700" y2="3800" stroke="#333" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Layer 7: Crypto -->
+  <rect x="120" y="3800" width="1160" height="70" rx="10" fill="#34495e"/>
+  <text x="700" y="3825" text-anchor="middle" fill="white" font-size="16" font-weight="bold">LAYER 7: Encryption (crypto.rs + Mozilla NSS)</text>
+  <text x="140" y="3850" fill="#bdc3c7" font-size="13">AES-128-GCM / ChaCha20-Poly1305 | Everything after header is encrypted | Firewall can't read it!</text>
+
+  <!-- Arrow down -->
+  <line x1="700" y1="3870" x2="700" y2="3900" stroke="#333" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Layer 8: UDP -->
+  <rect x="120" y="3900" width="1160" height="50" rx="10" fill="#7f8c8d"/>
+  <text x="700" y="3932" text-anchor="middle" fill="white" font-size="16" font-weight="bold">LAYER 8: UDP Socket (neqo-udp/src/lib.rs) --> Sent to the internet!</text>
+
+  <!-- ============================================ -->
+  <!-- WHAT FIREWALL SEES -->
+  <!-- ============================================ -->
+  <rect x="50" y="3990" width="1300" height="50" rx="10" fill="#c0392b" filter="url(#shadow)"/>
+  <text x="700" y="4022" text-anchor="middle" fill="white" font-size="22" font-weight="bold">WHAT THE FIREWALL SEES (This is why the attack works!)</text>
+
+  <rect x="80" y="4060" width="600" height="280" rx="15" fill="white" stroke="#27ae60" stroke-width="3" filter="url(#shadow)"/>
+  <text x="380" y="4090" text-anchor="middle" fill="#27ae60" font-size="18" font-weight="bold">REAL Migration (Legit)</text>
+
+  <text x="100" y="4120" fill="#555" font-size="14">Packet #1: src=192.168.1.50:43210 dst=142.250.80.46:443</text>
+  <text x="100" y="4145" fill="#555" font-size="14">Packet #2: src=192.168.1.50:43210 dst=142.250.80.46:443</text>
+  <text x="100" y="4175" fill="#e67e22" font-size="14" font-weight="bold">Packet #3: src=10.20.30.40:55555 dst=142.250.80.46:443</text>
+  <text x="100" y="4195" fill="#888" font-size="12">    (source IP changed! This is the migration)</text>
+  <text x="100" y="4220" fill="#555" font-size="14">Packet #4: src=10.20.30.40:55555 dst=142.250.80.46:443</text>
+  <text x="100" y="4250" fill="#555" font-size="14">Size: 1200 bytes</text>
+  <text x="100" y="4275" fill="#555" font-size="14">Payload: 0x8a3f7b2e91c4d608... (encrypted)</text>
+  <text x="100" y="4305" fill="#27ae60" font-size="14" font-weight="bold">Firewall says: "Normal QUIC migration. ALLOW."</text>
+
+  <rect x="720" y="4060" width="600" height="280" rx="15" fill="white" stroke="#e74c3c" stroke-width="3" filter="url(#shadow)"/>
+  <text x="1020" y="4090" text-anchor="middle" fill="#e74c3c" font-size="18" font-weight="bold">FAKE Migration (Attack!)</text>
+
+  <text x="740" y="4120" fill="#555" font-size="14">Packet #1: src=192.168.1.50:43210 dst=142.250.80.46:443</text>
+  <text x="740" y="4145" fill="#555" font-size="14">Packet #2: src=192.168.1.50:43210 dst=142.250.80.46:443</text>
+  <text x="740" y="4175" fill="#e74c3c" font-size="14" font-weight="bold">Packet #3: src=10.20.30.40:55555 dst=EVIL_SERVER:443</text>
+  <text x="740" y="4195" fill="#888" font-size="12">    (destination changed! Stolen data inside!)</text>
+  <text x="740" y="4220" fill="#555" font-size="14">Packet #4: src=10.20.30.40:55555 dst=EVIL_SERVER:443</text>
+  <text x="740" y="4250" fill="#555" font-size="14">Size: 1200 bytes</text>
+  <text x="740" y="4275" fill="#555" font-size="14">Payload: 0x7f2a9e1b4c8d3a05... (encrypted)</text>
+  <text x="740" y="4305" fill="#e74c3c" font-size="14" font-weight="bold">Firewall says: "Normal QUIC migration. ALLOW."</text>
+
+  <!-- They look the same! -->
+  <rect x="300" y="4350" width="800" height="50" rx="10" fill="#e74c3c" filter="url(#shadow)"/>
+  <text x="700" y="4382" text-anchor="middle" fill="white" font-size="20" font-weight="bold">THEY LOOK IDENTICAL! The firewall CANNOT tell them apart!</text>
+
+  <!-- ============================================ -->
+  <!-- SUMMARY TIMELINE -->
+  <!-- ============================================ -->
+  <rect x="50" y="4430" width="1300" height="50" rx="10" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="700" y="4462" text-anchor="middle" fill="white" font-size="22" font-weight="bold">TIMELINE: How fast does this happen?</text>
+
+  <!-- Timeline -->
+  <rect x="80" y="4500" width="1240" height="260" rx="15" fill="white" stroke="#2c3e50" stroke-width="2" filter="url(#shadow)"/>
+
+  <!-- Timeline line -->
+  <line x1="150" y1="4570" x2="1250" y2="4570" stroke="#2c3e50" stroke-width="4"/>
+
+  <!-- Time markers -->
+  <circle cx="200" cy="4570" r="12" fill="#3498db"/>
+  <text x="200" y="4550" text-anchor="middle" fill="#2c3e50" font-size="13" font-weight="bold">0ms</text>
+  <text x="200" y="4600" text-anchor="middle" fill="#3498db" font-size="11" font-weight="bold">WiFi drops</text>
+  <text x="200" y="4615" text-anchor="middle" fill="#888" font-size="10">Phone notices</text>
+
+  <circle cx="400" cy="4570" r="12" fill="#27ae60"/>
+  <text x="400" y="4550" text-anchor="middle" fill="#2c3e50" font-size="13" font-weight="bold">~5ms</text>
+  <text x="400" y="4600" text-anchor="middle" fill="#27ae60" font-size="11" font-weight="bold">migrate() called</text>
+  <text x="400" y="4615" text-anchor="middle" fill="#888" font-size="10">New path created</text>
+
+  <circle cx="600" cy="4570" r="12" fill="#e67e22"/>
+  <text x="600" y="4550" text-anchor="middle" fill="#2c3e50" font-size="13" font-weight="bold">~10ms</text>
+  <text x="600" y="4600" text-anchor="middle" fill="#e67e22" font-size="11" font-weight="bold">PATH_CHALLENGE</text>
+  <text x="600" y="4615" text-anchor="middle" fill="#888" font-size="10">Sent to server</text>
+
+  <circle cx="850" cy="4570" r="12" fill="#8e44ad"/>
+  <text x="850" y="4550" text-anchor="middle" fill="#2c3e50" font-size="13" font-weight="bold">~60ms</text>
+  <text x="850" y="4600" text-anchor="middle" fill="#8e44ad" font-size="11" font-weight="bold">PATH_RESPONSE</text>
+  <text x="850" y="4615" text-anchor="middle" fill="#888" font-size="10">Server confirms</text>
+
+  <circle cx="1050" cy="4570" r="12" fill="#e74c3c"/>
+  <text x="1050" y="4550" text-anchor="middle" fill="#2c3e50" font-size="13" font-weight="bold">~65ms</text>
+  <text x="1050" y="4600" text-anchor="middle" fill="#e74c3c" font-size="11" font-weight="bold">select_primary()</text>
+  <text x="1050" y="4615" text-anchor="middle" fill="#888" font-size="10">Path switched!</text>
+
+  <circle cx="1200" cy="4570" r="12" fill="#1abc9c"/>
+  <text x="1200" y="4550" text-anchor="middle" fill="#2c3e50" font-size="13" font-weight="bold">~70ms</text>
+  <text x="1200" y="4600" text-anchor="middle" fill="#1abc9c" font-size="11" font-weight="bold">Video resumes</text>
+  <text x="1200" y="4615" text-anchor="middle" fill="#888" font-size="10">You see nothing!</text>
+
+  <!-- Total time -->
+  <rect x="350" y="4650" width="700" height="45" rx="10" fill="#1abc9c" filter="url(#shadow)"/>
+  <text x="700" y="4680" text-anchor="middle" fill="white" font-size="18" font-weight="bold">Total time: ~70ms (0.07 seconds!) - You blinked and missed it!</text>
+
+  <!-- Compare with TCP -->
+  <rect x="350" y="4705" width="700" height="45" rx="10" fill="#e74c3c" filter="url(#shadow)"/>
+  <text x="700" y="4735" text-anchor="middle" fill="white" font-size="18" font-weight="bold">Same thing with TCP: ~2000ms+ (2+ seconds of buffering!)</text>
+
+</svg>
