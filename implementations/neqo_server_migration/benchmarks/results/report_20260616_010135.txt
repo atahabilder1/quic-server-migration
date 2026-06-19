@@ -1,0 +1,28 @@
+=================================================================
+  QUIC Server-Side Migration: Combination Test Report
+  Generated: Tue Jun 16 01:06:06 AM EDT 2026
+=================================================================
+
+Test Setup:
+  Client:     141.217.168.127 (optiplex7010)
+  Primary:    141.217.168.152 (opti7040)
+  Preferred:  141.217.168.143 (homeserver2)
+  Redis:      141.217.168.200 (Proxmox VM)
+  Runs per combination: 2
+
+Results:
+
+  Mechanism      Timing       Result   Send Latency   Responses  Challenges  
+  ---------      ------       ------   ------------   ---------  ----------  
+  tcp            immediate    FAIL (0/2) 611.707µs     0          0           
+  tcp            lazy         PASS (2/2) 745.817µs     1          1           
+  http           immediate    FAIL (0/2) 20.625796ms    0          0           
+  http           lazy         PASS (2/2) 26.909567ms    1          1           
+  redis_kv       immediate    FAIL (0/2) 816.014µs     0          0           
+  redis_kv       lazy         PASS (2/2) 829.815µs     1          1           
+  redis_ps       immediate    FAIL (0/2) 1.196808ms     0          0           
+  redis_ps       lazy         PASS (2/2) 913.367µs     1          1           
+
+CSV: /home/anik/code/quic/implementations/neqo_server_migration/benchmarks/results/all_combinations_20260616_010135.csv
+Report: /home/anik/code/quic/implementations/neqo_server_migration/benchmarks/results/report_20260616_010135.txt
+Logs: /home/anik/code/quic/implementations/neqo_server_migration/benchmarks/results/log_*

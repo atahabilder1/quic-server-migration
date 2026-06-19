@@ -1,0 +1,570 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 4800" font-family="Comic Sans MS, Chalkboard, cursive, sans-serif">
+  <defs>
+    <!-- Gradient backgrounds -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#87CEEB"/>
+      <stop offset="100%" stop-color="#E0F0FF"/>
+    </linearGradient>
+    <linearGradient id="danger" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFE0E0"/>
+      <stop offset="100%" stop-color="#FFF0F0"/>
+    </linearGradient>
+    <linearGradient id="safe" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E0FFE0"/>
+      <stop offset="100%" stop-color="#F0FFF0"/>
+    </linearGradient>
+    <linearGradient id="dark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2C3E50"/>
+      <stop offset="100%" stop-color="#34495E"/>
+    </linearGradient>
+    <linearGradient id="sunset" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF9A9E"/>
+      <stop offset="100%" stop-color="#FECFEF"/>
+    </linearGradient>
+
+    <!-- Pulse animation -->
+    <style>
+      @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+      @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+      @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+      @keyframes dash { to { stroke-dashoffset: -20; } }
+      @keyframes slideRight { 0%{transform:translateX(-30px);opacity:0} 100%{transform:translateX(0);opacity:1} }
+      @keyframes wiggle { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(3deg)} 75%{transform:rotate(-3deg)} }
+      @keyframes packetMove1 { 0%{transform:translate(0,0);opacity:1} 100%{transform:translate(300px,0);opacity:0.3} }
+      @keyframes packetMove2 { 0%{transform:translate(0,0);opacity:1} 100%{transform:translate(-300px,0);opacity:0.3} }
+      @keyframes glow { 0%,100%{filter:drop-shadow(0 0 3px rgba(255,200,0,0.5))} 50%{filter:drop-shadow(0 0 12px rgba(255,200,0,0.9))} }
+      @keyframes sneak { 0%{opacity:0;transform:translateX(0)} 30%{opacity:1} 70%{opacity:1} 100%{opacity:0;transform:translateX(200px)} }
+      @keyframes heartbeat { 0%,100%{transform:scale(1)} 15%{transform:scale(1.15)} 30%{transform:scale(1)} }
+      .float { animation: float 3s ease-in-out infinite; }
+      .pulse { animation: pulse 2s ease-in-out infinite; }
+      .blink { animation: blink 1.5s ease-in-out infinite; }
+      .dash-anim { animation: dash 1s linear infinite; }
+      .wiggle { animation: wiggle 2s ease-in-out infinite; }
+      .glow { animation: glow 2s ease-in-out infinite; }
+      .heartbeat { animation: heartbeat 2s ease-in-out infinite; }
+    </style>
+
+    <!-- Cloud shape -->
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="3" dy="3" stdDeviation="4" flood-color="#00000030"/>
+    </filter>
+    <filter id="softShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#00000020"/>
+    </filter>
+  </defs>
+
+  <!-- ==================== TITLE SECTION ==================== -->
+  <rect width="1200" height="380" fill="url(#dark)" rx="0"/>
+
+  <!-- Stars -->
+  <circle cx="100" cy="50" r="2" fill="white" class="blink"/>
+  <circle cx="300" cy="80" r="1.5" fill="white" class="blink" style="animation-delay:0.5s"/>
+  <circle cx="500" cy="40" r="2" fill="white" class="blink" style="animation-delay:1s"/>
+  <circle cx="700" cy="70" r="1.5" fill="white" class="blink" style="animation-delay:0.3s"/>
+  <circle cx="900" cy="55" r="2" fill="white" class="blink" style="animation-delay:0.7s"/>
+  <circle cx="1100" cy="45" r="1.5" fill="white" class="blink" style="animation-delay:1.2s"/>
+  <circle cx="200" cy="100" r="1" fill="white" class="blink" style="animation-delay:0.9s"/>
+  <circle cx="800" cy="30" r="1" fill="white" class="blink" style="animation-delay:0.4s"/>
+  <circle cx="1050" cy="90" r="2" fill="white" class="blink" style="animation-delay:0.6s"/>
+
+  <!-- Title -->
+  <text x="600" y="160" text-anchor="middle" font-size="52" fill="#FFD700" font-weight="bold" class="glow">
+    🕵️ The Secret Data Thief
+  </text>
+  <text x="600" y="220" text-anchor="middle" font-size="28" fill="#E0E0E0">
+    How bad guys can hide stolen data inside normal internet traffic
+  </text>
+  <text x="600" y="270" text-anchor="middle" font-size="20" fill="#AAAAAA">
+    (The QUIC-Exfil Attack — explained simply!)
+  </text>
+
+  <!-- Cute detective icon -->
+  <g transform="translate(600, 330)" class="float">
+    <text text-anchor="middle" font-size="40">🔍</text>
+  </g>
+
+
+  <!-- ==================== SCENE 1: WHAT IS QUIC? ==================== -->
+  <rect y="380" width="1200" height="700" fill="url(#sky)"/>
+
+  <!-- Section header -->
+  <g transform="translate(0, 380)">
+    <rect x="50" y="30" width="1100" height="70" rx="20" fill="#4A90D9" filter="url(#softShadow)"/>
+    <text x="600" y="78" text-anchor="middle" font-size="32" fill="white" font-weight="bold">
+      Chapter 1: What is QUIC?
+    </text>
+
+    <!-- Two computers talking -->
+    <!-- Computer A (left) -->
+    <g transform="translate(200, 200)" class="float">
+      <rect x="-60" y="-50" width="120" height="85" rx="10" fill="#333" filter="url(#softShadow)"/>
+      <rect x="-50" y="-42" width="100" height="60" rx="5" fill="#4FC3F7"/>
+      <text x="0" y="-5" text-anchor="middle" font-size="22">😊</text>
+      <rect x="-25" y="40" width="50" height="8" rx="3" fill="#555"/>
+      <text x="0" y="75" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">Your Phone</text>
+    </g>
+
+    <!-- Computer B (right) -->
+    <g transform="translate(950, 200)" class="float" style="animation-delay:1s">
+      <rect x="-70" y="-60" width="140" height="100" rx="10" fill="#555" filter="url(#softShadow)"/>
+      <rect x="-60" y="-52" width="120" height="72" rx="5" fill="#81C784"/>
+      <text x="0" y="-8" text-anchor="middle" font-size="28">🌐</text>
+      <rect x="-30" y="45" width="60" height="8" rx="3" fill="#666"/>
+      <text x="0" y="80" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">YouTube Server</text>
+    </g>
+
+    <!-- Arrow with packets -->
+    <line x1="310" y1="195" x2="830" y2="195" stroke="#4A90D9" stroke-width="4" stroke-dasharray="10,5" class="dash-anim"/>
+
+    <!-- Packet envelope -->
+    <g transform="translate(570, 170)" class="wiggle">
+      <rect x="-35" y="-18" width="70" height="36" rx="5" fill="#FFD700" stroke="#E6A800" stroke-width="2" filter="url(#softShadow)"/>
+      <text x="0" y="6" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">QUIC 📦</text>
+    </g>
+
+    <!-- Explanation box -->
+    <rect x="100" y="330" width="1000" height="280" rx="20" fill="white" fill-opacity="0.9" filter="url(#softShadow)"/>
+
+    <text x="600" y="375" text-anchor="middle" font-size="22" fill="#333" font-weight="bold">
+      QUIC is how your phone talks to websites — FAST and SAFE!
+    </text>
+
+    <!-- Key features as cute cards -->
+    <g transform="translate(170, 410)">
+      <rect x="0" y="0" width="240" height="80" rx="15" fill="#E3F2FD" stroke="#90CAF9" stroke-width="2"/>
+      <text x="120" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#1565C0">🔒 Encrypted</text>
+      <text x="120" y="55" text-anchor="middle" font-size="13" fill="#555">Everything is scrambled</text>
+      <text x="120" y="72" text-anchor="middle" font-size="13" fill="#555">so nobody can read it</text>
+    </g>
+
+    <g transform="translate(470, 410)">
+      <rect x="0" y="0" width="240" height="80" rx="15" fill="#E8F5E9" stroke="#A5D6A7" stroke-width="2"/>
+      <text x="120" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#2E7D32">⚡ Super Fast</text>
+      <text x="120" y="55" text-anchor="middle" font-size="13" fill="#555">Gets connected in just</text>
+      <text x="120" y="72" text-anchor="middle" font-size="13" fill="#555">1 round trip!</text>
+    </g>
+
+    <g transform="translate(770, 410)">
+      <rect x="0" y="0" width="240" height="80" rx="15" fill="#FFF3E0" stroke="#FFCC80" stroke-width="2"/>
+      <text x="120" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#E65100">🏃 Can Move!</text>
+      <text x="120" y="55" text-anchor="middle" font-size="13" fill="#555">Switch WiFi to cellular</text>
+      <text x="120" y="72" text-anchor="middle" font-size="13" fill="#555">without disconnecting</text>
+    </g>
+
+    <text x="600" y="545" text-anchor="middle" font-size="18" fill="#666" font-style="italic">
+      Used by Google, YouTube, Facebook, and 30% of all web traffic!
+    </text>
+  </g>
+
+
+  <!-- ==================== SCENE 2: CONNECTION ID MAGIC ==================== -->
+  <rect y="1080" width="1200" height="750" fill="url(#safe)"/>
+
+  <g transform="translate(0, 1080)">
+    <rect x="50" y="30" width="1100" height="70" rx="20" fill="#27AE60" filter="url(#softShadow)"/>
+    <text x="600" y="78" text-anchor="middle" font-size="32" fill="white" font-weight="bold">
+      Chapter 2: The Magic Name Tag (Connection ID)
+    </text>
+
+    <!-- TCP vs QUIC comparison -->
+    <!-- TCP side -->
+    <g transform="translate(300, 200)">
+      <rect x="-200" y="-50" width="400" height="320" rx="20" fill="#FFEBEE" stroke="#EF5350" stroke-width="3" filter="url(#softShadow)"/>
+      <text x="0" y="-15" text-anchor="middle" font-size="24" font-weight="bold" fill="#C62828">❌ Old Way (TCP)</text>
+
+      <!-- TCP identification -->
+      <rect x="-170" y="15" width="340" height="50" rx="10" fill="white"/>
+      <text x="0" y="48" text-anchor="middle" font-size="14" fill="#333">"I know you by your address!"</text>
+
+      <!-- Address card -->
+      <g transform="translate(0, 100)">
+        <rect x="-130" y="0" width="260" height="70" rx="8" fill="#FFCDD2"/>
+        <text x="0" y="22" text-anchor="middle" font-size="12" fill="#333">From: 192.168.1.5 : 12345</text>
+        <text x="0" y="42" text-anchor="middle" font-size="12" fill="#333">To: 142.250.80.46 : 443</text>
+        <text x="0" y="62" text-anchor="middle" font-size="11" fill="#C62828" font-weight="bold">If ANY of these change = LOST! 😭</text>
+      </g>
+
+      <!-- Broken connection icon -->
+      <text x="0" y="220" text-anchor="middle" font-size="40">💔</text>
+      <text x="0" y="255" text-anchor="middle" font-size="13" fill="#C62828">Change WiFi? Start over!</text>
+    </g>
+
+    <!-- QUIC side -->
+    <g transform="translate(850, 200)">
+      <rect x="-200" y="-50" width="400" height="320" rx="20" fill="#E8F5E9" stroke="#66BB6A" stroke-width="3" filter="url(#softShadow)"/>
+      <text x="0" y="-15" text-anchor="middle" font-size="24" font-weight="bold" fill="#2E7D32">✅ New Way (QUIC)</text>
+
+      <rect x="-170" y="15" width="340" height="50" rx="10" fill="white"/>
+      <text x="0" y="48" text-anchor="middle" font-size="14" fill="#333">"I know you by your NAME TAG!"</text>
+
+      <!-- Name tag -->
+      <g transform="translate(0, 100)" class="pulse">
+        <rect x="-130" y="0" width="260" height="70" rx="8" fill="#C8E6C9"/>
+        <text x="0" y="22" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">🏷️ Connection ID: ABC-123</text>
+        <text x="0" y="45" text-anchor="middle" font-size="12" fill="#333">IP can change, port can change...</text>
+        <text x="0" y="62" text-anchor="middle" font-size="12" fill="#2E7D32" font-weight="bold">I still know it's YOU! 😄</text>
+      </g>
+
+      <!-- Happy connection icon -->
+      <text x="0" y="220" text-anchor="middle" font-size="40">💚</text>
+      <text x="0" y="255" text-anchor="middle" font-size="13" fill="#2E7D32">Switch WiFi? No problem!</text>
+    </g>
+
+    <!-- Bottom analogy -->
+    <rect x="100" y="530" width="1000" height="120" rx="20" fill="white" fill-opacity="0.85" filter="url(#softShadow)"/>
+    <text x="600" y="570" text-anchor="middle" font-size="20" fill="#333" font-weight="bold">
+      🎒 Think of it like school:
+    </text>
+    <text x="600" y="600" text-anchor="middle" font-size="16" fill="#555">
+      TCP = "The kid in seat 3, row 2" — if they move seats, teacher is confused!
+    </text>
+    <text x="600" y="628" text-anchor="middle" font-size="16" fill="#555">
+      QUIC = "The kid named Alex" — doesn't matter where they sit!
+    </text>
+  </g>
+
+
+  <!-- ==================== SCENE 3: CONNECTION MIGRATION ==================== -->
+  <rect y="1830" width="1200" height="800" fill="url(#sky)"/>
+
+  <g transform="translate(0, 1830)">
+    <rect x="50" y="30" width="1100" height="70" rx="20" fill="#F39C12" filter="url(#softShadow)"/>
+    <text x="600" y="78" text-anchor="middle" font-size="32" fill="white" font-weight="bold">
+      Chapter 3: Moving Without Losing Connection
+    </text>
+
+    <!-- Phone on WiFi -->
+    <g transform="translate(200, 250)">
+      <text x="0" y="-60" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">Step 1: At Home on WiFi</text>
+      <!-- WiFi router -->
+      <rect x="-40" y="-35" width="80" height="50" rx="8" fill="#7E57C2" filter="url(#softShadow)"/>
+      <text x="0" y="-2" text-anchor="middle" font-size="24">📶</text>
+      <!-- Phone -->
+      <g transform="translate(0, 60)">
+        <rect x="-25" y="-20" width="50" height="70" rx="8" fill="#333" filter="url(#softShadow)"/>
+        <rect x="-20" y="-15" width="40" height="50" rx="3" fill="#64B5F6"/>
+        <text x="0" y="15" text-anchor="middle" font-size="18">📱</text>
+      </g>
+      <text x="0" y="135" text-anchor="middle" font-size="13" fill="#555">IP: 192.168.1.100</text>
+      <text x="0" y="155" text-anchor="middle" font-size="13" fill="#7E57C2" font-weight="bold">Tag: ABC-123</text>
+    </g>
+
+    <!-- Arrow 1 -->
+    <g transform="translate(380, 250)">
+      <text x="0" y="0" text-anchor="middle" font-size="40">➡️</text>
+      <text x="0" y="30" text-anchor="middle" font-size="13" fill="#888">You walk outside...</text>
+    </g>
+
+    <!-- Phone switching -->
+    <g transform="translate(560, 250)">
+      <text x="0" y="-60" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">Step 2: WiFi Gone!</text>
+      <!-- Cell tower -->
+      <rect x="-15" y="-35" width="30" height="50" rx="3" fill="#EF5350" filter="url(#softShadow)"/>
+      <text x="0" y="-2" text-anchor="middle" font-size="20">📡</text>
+      <!-- Phone switching -->
+      <g transform="translate(0, 60)" class="wiggle">
+        <rect x="-25" y="-20" width="50" height="70" rx="8" fill="#333" filter="url(#softShadow)"/>
+        <rect x="-20" y="-15" width="40" height="50" rx="3" fill="#FFB74D"/>
+        <text x="0" y="15" text-anchor="middle" font-size="18">📱</text>
+      </g>
+      <text x="0" y="135" text-anchor="middle" font-size="13" fill="#EF5350">IP: 10.20.30.40 (NEW!)</text>
+      <text x="0" y="155" text-anchor="middle" font-size="13" fill="#7E57C2" font-weight="bold">Tag: ABC-123 (SAME!)</text>
+    </g>
+
+    <!-- Arrow 2 -->
+    <g transform="translate(740, 250)">
+      <text x="0" y="0" text-anchor="middle" font-size="40">➡️</text>
+      <text x="0" y="30" text-anchor="middle" font-size="13" fill="#888">Server checks...</text>
+    </g>
+
+    <!-- Server recognizes -->
+    <g transform="translate(950, 250)">
+      <text x="0" y="-60" text-anchor="middle" font-size="18" fill="#333" font-weight="bold">Step 3: Still Connected!</text>
+      <g class="pulse">
+        <rect x="-50" y="-35" width="100" height="70" rx="10" fill="#66BB6A" filter="url(#softShadow)"/>
+        <text x="0" y="5" text-anchor="middle" font-size="28">🖥️</text>
+      </g>
+      <g transform="translate(0, 70)">
+        <rect x="-80" y="0" width="160" height="50" rx="10" fill="#C8E6C9"/>
+        <text x="0" y="22" text-anchor="middle" font-size="12" fill="#333">"Oh! ABC-123!</text>
+        <text x="0" y="40" text-anchor="middle" font-size="12" fill="#2E7D32" font-weight="bold">I know you! Welcome back!"</text>
+      </g>
+    </g>
+
+    <!-- Path Validation explanation -->
+    <rect x="100" y="450" width="1000" height="250" rx="20" fill="white" fill-opacity="0.9" filter="url(#softShadow)"/>
+
+    <text x="600" y="490" text-anchor="middle" font-size="22" fill="#333" font-weight="bold">
+      🤝 But first — a secret handshake! (Path Validation)
+    </text>
+
+    <!-- Challenge/Response -->
+    <g transform="translate(250, 530)">
+      <rect x="0" y="0" width="300" height="55" rx="12" fill="#E3F2FD" stroke="#90CAF9" stroke-width="2"/>
+      <text x="150" y="22" text-anchor="middle" font-size="14" fill="#333">Server: "Prove it's you!"</text>
+      <text x="150" y="42" text-anchor="middle" font-size="13" fill="#1565C0" font-weight="bold">📨 PATH_CHALLENGE → phone</text>
+    </g>
+    <g transform="translate(650, 530)">
+      <rect x="0" y="0" width="300" height="55" rx="12" fill="#E8F5E9" stroke="#A5D6A7" stroke-width="2"/>
+      <text x="150" y="22" text-anchor="middle" font-size="14" fill="#333">Phone: "Here's proof!"</text>
+      <text x="150" y="42" text-anchor="middle" font-size="13" fill="#2E7D32" font-weight="bold">📨 PATH_RESPONSE → server</text>
+    </g>
+
+    <text x="600" y="625" text-anchor="middle" font-size="16" fill="#888" font-style="italic">
+      This prevents strangers from pretending to be you!
+    </text>
+
+    <text x="600" y="660" text-anchor="middle" font-size="20" fill="#F39C12" font-weight="bold">
+      ✨ Your YouTube video keeps playing — no buffering! ✨
+    </text>
+  </g>
+
+
+  <!-- ==================== SCENE 4: SERVER PREFERRED ADDRESS ==================== -->
+  <rect y="2630" width="1200" height="650" fill="url(#safe)"/>
+
+  <g transform="translate(0, 2630)">
+    <rect x="50" y="30" width="1100" height="70" rx="20" fill="#8E24AA" filter="url(#softShadow)"/>
+    <text x="600" y="78" text-anchor="middle" font-size="32" fill="white" font-weight="bold">
+      Chapter 4: The Server Can Move Too!
+    </text>
+
+    <text x="600" y="140" text-anchor="middle" font-size="18" fill="#555">
+      Servers can say: "Hey, talk to me at this BETTER address instead!"
+    </text>
+
+    <!-- Server migration diagram -->
+    <!-- Phone -->
+    <g transform="translate(200, 320)">
+      <rect x="-30" y="-25" width="60" height="80" rx="10" fill="#333" filter="url(#softShadow)"/>
+      <rect x="-24" y="-19" width="48" height="55" rx="4" fill="#64B5F6"/>
+      <text x="0" y="12" text-anchor="middle" font-size="22">📱</text>
+      <text x="0" y="80" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">Your Phone</text>
+    </g>
+
+    <!-- Original server -->
+    <g transform="translate(650, 230)">
+      <rect x="-60" y="-35" width="120" height="60" rx="10" fill="#BDBDBD" filter="url(#softShadow)"/>
+      <text x="0" y="-2" text-anchor="middle" font-size="20">🖥️</text>
+      <text x="0" y="45" text-anchor="middle" font-size="12" fill="#888">Server A (busy!)</text>
+      <text x="0" y="62" text-anchor="middle" font-size="11" fill="#888">IP: 1.2.3.4</text>
+    </g>
+
+    <!-- Preferred server -->
+    <g transform="translate(650, 410)" class="pulse">
+      <rect x="-60" y="-35" width="120" height="60" rx="10" fill="#66BB6A" filter="url(#softShadow)"/>
+      <text x="0" y="-2" text-anchor="middle" font-size="20">🖥️</text>
+      <text x="0" y="45" text-anchor="middle" font-size="12" fill="#2E7D32" font-weight="bold">Server B (faster!)</text>
+      <text x="0" y="62" text-anchor="middle" font-size="11" fill="#2E7D32">IP: 5.6.7.8</text>
+    </g>
+
+    <!-- Arrows -->
+    <line x1="270" y1="310" x2="580" y2="230" stroke="#BDBDBD" stroke-width="3" stroke-dasharray="8,4"/>
+    <line x1="270" y1="330" x2="580" y2="400" stroke="#66BB6A" stroke-width="4"/>
+    <polygon points="575,395 585,405 575,405" fill="#66BB6A"/>
+
+    <!-- Speech bubble from server A -->
+    <g transform="translate(900, 250)">
+      <rect x="-140" y="-35" width="280" height="65" rx="15" fill="white" stroke="#BDBDBD" stroke-width="2" filter="url(#softShadow)"/>
+      <text x="0" y="-8" text-anchor="middle" font-size="14" fill="#333">"I'm busy! Talk to Server B"</text>
+      <text x="0" y="14" text-anchor="middle" font-size="13" fill="#8E24AA" font-weight="bold">preferred_address: 5.6.7.8</text>
+    </g>
+
+    <!-- Important note -->
+    <rect x="100" y="490" width="1000" height="100" rx="20" fill="#F3E5F5" stroke="#CE93D8" stroke-width="2" filter="url(#softShadow)"/>
+    <text x="600" y="525" text-anchor="middle" font-size="18" fill="#6A1B9A" font-weight="bold">
+      🔑 Key point: This "preferred address" is sent ENCRYPTED
+    </text>
+    <text x="600" y="555" text-anchor="middle" font-size="16" fill="#555">
+      Firewalls and middleboxes CANNOT see it — only the phone knows the new address!
+    </text>
+  </g>
+
+
+  <!-- ==================== SCENE 5: THE ATTACK ==================== -->
+  <rect y="3280" width="1200" height="1000" fill="url(#danger)"/>
+
+  <g transform="translate(0, 3280)">
+    <rect x="50" y="30" width="1100" height="70" rx="20" fill="#E53935" filter="url(#softShadow)"/>
+    <text x="600" y="78" text-anchor="middle" font-size="32" fill="white" font-weight="bold">
+      Chapter 5: 😈 The Sneaky Attack!
+    </text>
+
+    <text x="600" y="130" text-anchor="middle" font-size="18" fill="#C62828">
+      A bad guy puts spy software on your computer. Here's what it does...
+    </text>
+
+    <!-- PHASE 1: SNIFFING -->
+    <rect x="80" y="155" width="1040" height="210" rx="15" fill="white" fill-opacity="0.9" filter="url(#softShadow)"/>
+    <rect x="80" y="155" width="1040" height="40" rx="15" fill="#FF8A65"/>
+    <rect x="80" y="175" width="1040" height="20" fill="#FF8A65"/>
+    <text x="600" y="183" text-anchor="middle" font-size="18" fill="white" font-weight="bold">
+      Phase 1: 👀 Watching (Sniffing)
+    </text>
+
+    <!-- Spy watching packets -->
+    <g transform="translate(200, 270)">
+      <text x="0" y="0" text-anchor="middle" font-size="50" class="wiggle">🕵️</text>
+      <text x="0" y="40" text-anchor="middle" font-size="12" fill="#555">Spy software</text>
+    </g>
+
+    <!-- Watched packets -->
+    <g transform="translate(450, 240)">
+      <rect x="0" y="0" width="500" height="90" rx="10" fill="#FFF3E0" stroke="#FFB74D" stroke-width="1"/>
+      <text x="250" y="22" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">📝 "Hmm, I see your normal packets look like this..."</text>
+      <text x="250" y="44" text-anchor="middle" font-size="12" fill="#555">• Packet sizes: 120, 340, 89, 256 bytes</text>
+      <text x="250" y="62" text-anchor="middle" font-size="12" fill="#555">• Time between packets: 50ms, 120ms, 30ms</text>
+      <text x="250" y="80" text-anchor="middle" font-size="12" fill="#555">• Connection IDs: ABC-123, DEF-456...</text>
+    </g>
+
+    <!-- PHASE 2: FAKE MIGRATION -->
+    <rect x="80" y="385" width="1040" height="240" rx="15" fill="white" fill-opacity="0.9" filter="url(#softShadow)"/>
+    <rect x="80" y="385" width="1040" height="40" rx="15" fill="#EF5350"/>
+    <rect x="80" y="405" width="1040" height="20" fill="#EF5350"/>
+    <text x="600" y="413" text-anchor="middle" font-size="18" fill="white" font-weight="bold">
+      Phase 2: 🎭 Fake Migration
+    </text>
+
+    <!-- Diagram of fake migration -->
+    <g transform="translate(170, 490)">
+      <rect x="-40" y="-25" width="80" height="50" rx="8" fill="#333" filter="url(#softShadow)"/>
+      <text x="0" y="5" text-anchor="middle" font-size="18">💻</text>
+      <text x="0" y="45" text-anchor="middle" font-size="11" fill="#333">Your PC</text>
+    </g>
+
+    <!-- Firewall -->
+    <g transform="translate(450, 490)">
+      <rect x="-50" y="-40" width="100" height="70" rx="5" fill="#FF9800" filter="url(#softShadow)"/>
+      <text x="0" y="-8" text-anchor="middle" font-size="22">🧱</text>
+      <text x="0" y="12" text-anchor="middle" font-size="11" fill="white" font-weight="bold">Firewall</text>
+      <text x="0" y="50" text-anchor="middle" font-size="11" fill="#E65100">"Looks normal to me!"</text>
+    </g>
+
+    <!-- Evil server -->
+    <g transform="translate(800, 490)">
+      <rect x="-50" y="-35" width="100" height="60" rx="10" fill="#B71C1C" filter="url(#softShadow)"/>
+      <text x="0" y="2" text-anchor="middle" font-size="22">😈</text>
+      <text x="0" y="45" text-anchor="middle" font-size="11" fill="#C62828" font-weight="bold">Evil Server</text>
+    </g>
+
+    <!-- Fake packet arrow -->
+    <line x1="230" y1="490" x2="390" y2="490" stroke="#EF5350" stroke-width="3"/>
+    <line x1="510" y1="490" x2="740" y2="490" stroke="#EF5350" stroke-width="3" stroke-dasharray="6,3" class="dash-anim"/>
+    <polygon points="740,485 750,490 740,495" fill="#EF5350"/>
+
+    <!-- Fake packet label -->
+    <g transform="translate(620, 455)">
+      <rect x="-100" y="-15" width="200" height="30" rx="8" fill="#FFCDD2"/>
+      <text x="0" y="5" text-anchor="middle" font-size="12" fill="#C62828" font-weight="bold">🎭 "server migration" + 🔐 stolen data</text>
+    </g>
+
+    <text x="600" y="580" text-anchor="middle" font-size="14" fill="#C62828" font-style="italic">
+      The spy pretends your PC is doing a normal server migration — but sends YOUR data to the bad guy!
+    </text>
+
+    <!-- PHASE 3: CONTINUED STEALING -->
+    <rect x="80" y="645" width="1040" height="200" rx="15" fill="white" fill-opacity="0.9" filter="url(#softShadow)"/>
+    <rect x="80" y="645" width="1040" height="40" rx="15" fill="#C62828"/>
+    <rect x="80" y="665" width="1040" height="20" fill="#C62828"/>
+    <text x="600" y="673" text-anchor="middle" font-size="18" fill="white" font-weight="bold">
+      Phase 3: 📤 Keep Stealing!
+    </text>
+
+    <!-- Stream of stolen data -->
+    <g transform="translate(200, 750)">
+      <rect x="-30" y="-20" width="60" height="40" rx="5" fill="#333"/>
+      <text x="0" y="5" text-anchor="middle" font-size="16">💻</text>
+    </g>
+
+    <!-- Multiple packets flowing out -->
+    <g transform="translate(350, 740)">
+      <rect x="0" y="0" width="60" height="22" rx="5" fill="#EF9A9A" class="blink"/>
+      <text x="30" y="15" text-anchor="middle" font-size="9" fill="#333">secret</text>
+    </g>
+    <g transform="translate(430, 740)">
+      <rect x="0" y="0" width="60" height="22" rx="5" fill="#EF9A9A" class="blink" style="animation-delay:0.3s"/>
+      <text x="30" y="15" text-anchor="middle" font-size="9" fill="#333">passwords</text>
+    </g>
+    <g transform="translate(510, 740)">
+      <rect x="0" y="0" width="60" height="22" rx="5" fill="#EF9A9A" class="blink" style="animation-delay:0.6s"/>
+      <text x="30" y="15" text-anchor="middle" font-size="9" fill="#333">files</text>
+    </g>
+    <g transform="translate(590, 740)">
+      <rect x="0" y="0" width="60" height="22" rx="5" fill="#EF9A9A" class="blink" style="animation-delay:0.9s"/>
+      <text x="30" y="15" text-anchor="middle" font-size="9" fill="#333">photos</text>
+    </g>
+
+    <g transform="translate(750, 750)">
+      <text x="0" y="0" text-anchor="middle" font-size="30">😈📦</text>
+    </g>
+
+    <!-- Why it works -->
+    <rect x="130" y="790" width="940" height="40" rx="10" fill="#FFEBEE"/>
+    <text x="600" y="816" text-anchor="middle" font-size="15" fill="#C62828" font-weight="bold">
+      It copies the SIZE, TIMING, and STYLE of real packets — so it looks 100% normal! 🎭
+    </text>
+
+    <!-- Big scary stat -->
+    <rect x="100" y="870" width="1000" height="85" rx="20" fill="#B71C1C" filter="url(#softShadow)">
+      <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+    </rect>
+    <text x="600" y="905" text-anchor="middle" font-size="22" fill="#FFD700" font-weight="bold">
+      ⚠️ 5 AI detectors tried to catch it — ALL FAILED!
+    </text>
+    <text x="600" y="935" text-anchor="middle" font-size="16" fill="#FFCDD2">
+      Best detection score: only 0.35 out of 1.0 (F1-Score)
+    </text>
+  </g>
+
+
+  <!-- ==================== SCENE 6: WHY FIREWALLS CAN'T HELP ==================== -->
+  <rect y="4280" width="1200" height="520" fill="#F5F5F5"/>
+
+  <g transform="translate(0, 4280)">
+    <rect x="50" y="30" width="1100" height="70" rx="20" fill="#455A64" filter="url(#softShadow)"/>
+    <text x="600" y="78" text-anchor="middle" font-size="32" fill="white" font-weight="bold">
+      Chapter 6: Why Can't We Stop It? 🤔
+    </text>
+
+    <!-- Three reason cards -->
+    <g transform="translate(130, 150)">
+      <rect x="0" y="0" width="280" height="180" rx="15" fill="white" stroke="#90A4AE" stroke-width="2" filter="url(#softShadow)"/>
+      <text x="140" y="40" text-anchor="middle" font-size="36">🔒</text>
+      <text x="140" y="75" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">Everything is Encrypted</text>
+      <text x="140" y="100" text-anchor="middle" font-size="13" fill="#666">Firewalls can't read QUIC</text>
+      <text x="140" y="120" text-anchor="middle" font-size="13" fill="#666">packets after the handshake.</text>
+      <text x="140" y="140" text-anchor="middle" font-size="13" fill="#666">The stolen data is hidden</text>
+      <text x="140" y="160" text-anchor="middle" font-size="13" fill="#666">inside encrypted content!</text>
+    </g>
+
+    <g transform="translate(460, 150)">
+      <rect x="0" y="0" width="280" height="180" rx="15" fill="white" stroke="#90A4AE" stroke-width="2" filter="url(#softShadow)"/>
+      <text x="140" y="40" text-anchor="middle" font-size="36">🎭</text>
+      <text x="140" y="75" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">Perfect Disguise</text>
+      <text x="140" y="100" text-anchor="middle" font-size="13" fill="#666">Fake packets look EXACTLY</text>
+      <text x="140" y="120" text-anchor="middle" font-size="13" fill="#666">like real migration packets.</text>
+      <text x="140" y="140" text-anchor="middle" font-size="13" fill="#666">Same size, same timing,</text>
+      <text x="140" y="160" text-anchor="middle" font-size="13" fill="#666">same everything!</text>
+    </g>
+
+    <g transform="translate(790, 150)">
+      <rect x="0" y="0" width="280" height="180" rx="15" fill="white" stroke="#90A4AE" stroke-width="2" filter="url(#softShadow)"/>
+      <text x="140" y="40" text-anchor="middle" font-size="36">🔀</text>
+      <text x="140" y="75" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">Migrations Are Normal</text>
+      <text x="140" y="100" text-anchor="middle" font-size="13" fill="#666">QUIC is SUPPOSED to</text>
+      <text x="140" y="120" text-anchor="middle" font-size="13" fill="#666">change addresses! So a</text>
+      <text x="140" y="140" text-anchor="middle" font-size="13" fill="#666">firewall can't just block</text>
+      <text x="140" y="160" text-anchor="middle" font-size="13" fill="#666">all migrations.</text>
+    </g>
+
+    <!-- Possible fixes -->
+    <rect x="100" y="370" width="1000" height="120" rx="20" fill="#E8F5E9" stroke="#66BB6A" stroke-width="2" filter="url(#softShadow)"/>
+    <text x="600" y="405" text-anchor="middle" font-size="20" fill="#2E7D32" font-weight="bold">
+      💡 Some ideas to fix this:
+    </text>
+    <text x="400" y="435" text-anchor="middle" font-size="14" fill="#555">1. Turn off server migration entirely</text>
+    <text x="400" y="460" text-anchor="middle" font-size="14" fill="#555">2. Make the "preferred address" visible to firewalls</text>
+    <text x="850" y="435" text-anchor="middle" font-size="14" fill="#555">3. Decrypt all QUIC traffic (breaks privacy!)</text>
+    <text x="850" y="460" text-anchor="middle" font-size="14" fill="#555">4. Check destination IPs against known servers</text>
+  </g>
+</svg>

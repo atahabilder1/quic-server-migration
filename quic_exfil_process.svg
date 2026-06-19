@@ -1,0 +1,928 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 6800" font-family="Comic Sans MS, Chalkboard, cursive, sans-serif">
+  <defs>
+    <linearGradient id="skyBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8F4FD"/>
+      <stop offset="100%" stop-color="#F0F8FF"/>
+    </linearGradient>
+    <linearGradient id="dangerBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF0F0"/>
+      <stop offset="100%" stop-color="#FFF8F8"/>
+    </linearGradient>
+    <linearGradient id="darkBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#16213e"/>
+    </linearGradient>
+    <linearGradient id="greenBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8F5E9"/>
+      <stop offset="100%" stop-color="#F1F8E9"/>
+    </linearGradient>
+    <linearGradient id="purpleBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F3E5F5"/>
+      <stop offset="100%" stop-color="#F8F0FA"/>
+    </linearGradient>
+    <linearGradient id="wire" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4FC3F7"/>
+      <stop offset="50%" stop-color="#29B6F6"/>
+      <stop offset="100%" stop-color="#4FC3F7"/>
+    </linearGradient>
+    <linearGradient id="evilWire" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#EF5350"/>
+      <stop offset="50%" stop-color="#F44336"/>
+      <stop offset="100%" stop-color="#EF5350"/>
+    </linearGradient>
+
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#00000020"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <style>
+      @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+      @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+      @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+      @keyframes dash { to{stroke-dashoffset:-20} }
+      @keyframes slideR { 0%{opacity:0;transform:translateX(-20px)} 100%{opacity:1;transform:translateX(0)} }
+      @keyframes packetGo { 0%{transform:translateX(0)} 100%{transform:translateX(420px)} }
+      @keyframes packetBack { 0%{transform:translateX(0)} 100%{transform:translateX(-420px)} }
+      @keyframes shake { 0%,100%{transform:rotate(0)} 25%{transform:rotate(2deg)} 75%{transform:rotate(-2deg)} }
+      @keyframes steal { 0%{opacity:0} 15%{opacity:1} 85%{opacity:1} 100%{opacity:0;transform:translateX(100px)} }
+      @keyframes eyeMove { 0%,100%{transform:translateX(0)} 30%{transform:translateX(3px)} 70%{transform:translateX(-3px)} }
+      .pulse{animation:pulse 2s ease-in-out infinite}
+      .float{animation:float 3s ease-in-out infinite}
+      .blink{animation:blink 1.5s ease-in-out infinite}
+      .dash{animation:dash 0.8s linear infinite}
+      .shake{animation:shake 2s ease-in-out infinite}
+    </style>
+
+    <!-- Packet shape -->
+    <symbol id="packet" viewBox="0 0 60 30">
+      <rect width="60" height="30" rx="5" fill="#FFD54F" stroke="#FFA000" stroke-width="1.5"/>
+      <line x1="15" y1="0" x2="15" y2="30" stroke="#FFA000" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="37" y="19" text-anchor="middle" font-size="9" fill="#333">DATA</text>
+    </symbol>
+    <symbol id="evilPacket" viewBox="0 0 60 30">
+      <rect width="60" height="30" rx="5" fill="#EF9A9A" stroke="#C62828" stroke-width="1.5"/>
+      <line x1="15" y1="0" x2="15" y2="30" stroke="#C62828" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="37" y="19" text-anchor="middle" font-size="9" fill="#B71C1C">STEAL</text>
+    </symbol>
+    <symbol id="lock" viewBox="0 0 24 30">
+      <path d="M4,14 L4,10 C4,5 8,2 12,2 C16,2 20,5 20,10 L20,14" fill="none" stroke="#FFA000" stroke-width="2.5" stroke-linecap="round"/>
+      <rect x="1" y="14" width="22" height="15" rx="3" fill="#FFD54F" stroke="#FFA000" stroke-width="1.5"/>
+      <circle cx="12" cy="21" r="2" fill="#FFA000"/>
+    </symbol>
+  </defs>
+
+  <!-- ==================== TITLE ==================== -->
+  <rect width="1200" height="350" fill="url(#darkBg)"/>
+  <!-- stars -->
+  <circle cx="80" cy="40" r="2" fill="#fff" class="blink"/>
+  <circle cx="250" cy="70" r="1.5" fill="#fff" class="blink" style="animation-delay:.4s"/>
+  <circle cx="450" cy="30" r="2" fill="#fff" class="blink" style="animation-delay:.8s"/>
+  <circle cx="650" cy="55" r="1.5" fill="#fff" class="blink" style="animation-delay:.2s"/>
+  <circle cx="850" cy="35" r="2" fill="#fff" class="blink" style="animation-delay:.6s"/>
+  <circle cx="1050" cy="60" r="1.5" fill="#fff" class="blink" style="animation-delay:1s"/>
+  <circle cx="180" cy="90" r="1" fill="#fff" class="blink" style="animation-delay:.9s"/>
+  <circle cx="950" cy="85" r="1" fill="#fff" class="blink" style="animation-delay:.3s"/>
+
+  <text x="600" y="130" text-anchor="middle" font-size="48" fill="#FFD54F" font-weight="bold">
+    The Complete QUIC Journey
+  </text>
+  <text x="600" y="180" text-anchor="middle" font-size="24" fill="#E0E0E0">
+    From handshake to data theft — every step on the wire
+  </text>
+
+  <!-- Timeline preview -->
+  <g transform="translate(150, 230)">
+    <line x1="0" y1="30" x2="900" y2="30" stroke="#555" stroke-width="2"/>
+    <circle cx="0" cy="30" r="12" fill="#4FC3F7"/><text x="0" y="35" text-anchor="middle" font-size="11" fill="#fff">1</text>
+    <text x="0" y="60" text-anchor="middle" font-size="10" fill="#aaa">Handshake</text>
+    <circle cx="150" cy="30" r="12" fill="#66BB6A"/><text x="150" y="35" text-anchor="middle" font-size="11" fill="#fff">2</text>
+    <text x="150" y="60" text-anchor="middle" font-size="10" fill="#aaa">Data</text>
+    <circle cx="300" cy="30" r="12" fill="#AB47BC"/><text x="300" y="35" text-anchor="middle" font-size="11" fill="#fff">3</text>
+    <text x="300" y="60" text-anchor="middle" font-size="10" fill="#aaa">CID Rotate</text>
+    <circle cx="450" cy="30" r="12" fill="#FF9800"/><text x="450" y="35" text-anchor="middle" font-size="11" fill="#fff">4</text>
+    <text x="450" y="60" text-anchor="middle" font-size="10" fill="#aaa">Migration</text>
+    <circle cx="600" cy="30" r="12" fill="#F44336"/><text x="600" y="35" text-anchor="middle" font-size="11" fill="#fff">5</text>
+    <text x="600" y="60" text-anchor="middle" font-size="10" fill="#aaa">Sniffing</text>
+    <circle cx="750" cy="30" r="12" fill="#B71C1C"/><text x="750" y="35" text-anchor="middle" font-size="11" fill="#fff">6</text>
+    <text x="750" y="60" text-anchor="middle" font-size="10" fill="#aaa">Attack!</text>
+    <circle cx="900" cy="30" r="12" fill="#D32F2F"/><text x="900" y="35" text-anchor="middle" font-size="11" fill="#fff">7</text>
+    <text x="900" y="60" text-anchor="middle" font-size="10" fill="#aaa">Undetected</text>
+  </g>
+
+
+  <!-- ==================== STEP 1: HANDSHAKE ==================== -->
+  <rect y="350" width="1200" height="880" fill="url(#skyBg)"/>
+  <g transform="translate(0,350)">
+    <rect x="40" y="20" width="1120" height="55" rx="15" fill="#0288D1" filter="url(#shadow)"/>
+    <text x="600" y="57" text-anchor="middle" font-size="26" fill="#fff" font-weight="bold">Step 1: The Handshake — "Hello, let's talk securely!"</text>
+
+    <!-- Phone -->
+    <g transform="translate(180, 250)" class="float">
+      <rect x="-45" y="-60" width="90" height="130" rx="12" fill="#333" filter="url(#shadow)"/>
+      <rect x="-38" y="-52" width="76" height="100" rx="6" fill="#64B5F6"/>
+      <text x="0" y="5" text-anchor="middle" font-size="30">😊</text>
+      <text x="0" y="95" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">Your Device</text>
+    </g>
+
+    <!-- Server -->
+    <g transform="translate(980, 250)" class="float" style="animation-delay:1s">
+      <rect x="-55" y="-50" width="110" height="90" rx="10" fill="#455A64" filter="url(#shadow)"/>
+      <rect x="-45" y="-42" width="90" height="60" rx="5" fill="#81C784"/>
+      <text x="0" y="-5" text-anchor="middle" font-size="26">🌐</text>
+      <text x="0" y="65" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">YouTube Server</text>
+    </g>
+
+    <!-- Firewall in the middle -->
+    <g transform="translate(580, 180)">
+      <rect x="-50" y="-30" width="100" height="200" rx="8" fill="#FF9800" fill-opacity="0.15" stroke="#FF9800" stroke-width="2" stroke-dasharray="5,3"/>
+      <text x="0" y="-40" text-anchor="middle" font-size="14" fill="#E65100" font-weight="bold">FIREWALL</text>
+      <text x="0" y="0" text-anchor="middle" font-size="28">🧱</text>
+    </g>
+
+    <!-- Packet 1: ClientHello -->
+    <g transform="translate(280, 170)">
+      <line x1="0" y1="0" x2="240" y2="0" stroke="#4FC3F7" stroke-width="3" marker-end="url(#arrowBlue)"/>
+      <polygon points="240,-5 250,0 240,5" fill="#4FC3F7"/>
+      <rect x="70" y="-28" width="100" height="24" rx="8" fill="#E1F5FE" stroke="#4FC3F7" stroke-width="1.5"/>
+      <text x="120" y="-11" text-anchor="middle" font-size="11" fill="#0277BD" font-weight="bold">ClientHello</text>
+    </g>
+
+    <!-- Packet 2: ServerHello -->
+    <g transform="translate(680, 210)">
+      <line x1="240" y1="0" x2="0" y2="0" stroke="#81C784" stroke-width="3"/>
+      <polygon points="0,-5 -10,0 0,5" fill="#81C784"/>
+      <rect x="70" y="-28" width="100" height="24" rx="8" fill="#E8F5E9" stroke="#81C784" stroke-width="1.5"/>
+      <text x="120" y="-11" text-anchor="middle" font-size="11" fill="#2E7D32" font-weight="bold">ServerHello</text>
+    </g>
+
+    <!-- Packet 3: Finished -->
+    <g transform="translate(280, 260)">
+      <line x1="0" y1="0" x2="240" y2="0" stroke="#4FC3F7" stroke-width="3"/>
+      <polygon points="240,-5 250,0 240,5" fill="#4FC3F7"/>
+      <rect x="70" y="-28" width="100" height="24" rx="8" fill="#E1F5FE" stroke="#4FC3F7" stroke-width="1.5"/>
+      <text x="120" y="-11" text-anchor="middle" font-size="11" fill="#0277BD" font-weight="bold">Finished!</text>
+    </g>
+
+    <!-- What firewall sees -->
+    <rect x="80" y="370" width="500" height="220" rx="15" fill="#FFF3E0" stroke="#FFB74D" stroke-width="2" filter="url(#shadow)"/>
+    <text x="330" y="405" text-anchor="middle" font-size="18" fill="#E65100" font-weight="bold">What the Firewall CAN See:</text>
+    <text x="100" y="435" font-size="14" fill="#555">  Your IP address: 192.168.1.50</text>
+    <text x="100" y="460" font-size="14" fill="#555">  Server IP: 142.250.80.46 (Google/YouTube)</text>
+    <text x="100" y="485" font-size="14" fill="#555">  Port: 443 (HTTPS/QUIC)</text>
+    <text x="100" y="510" font-size="14" fill="#555">  Protocol: QUIC (Initial packet)</text>
+    <text x="100" y="535" font-size="14" fill="#555">  SNI: youtube.com</text>
+    <text x="100" y="565" font-size="14" fill="#E65100" font-weight="bold">  This is the LAST time firewall sees details!</text>
+
+    <!-- What's hidden -->
+    <rect x="620" y="370" width="500" height="220" rx="15" fill="#FFEBEE" stroke="#EF9A9A" stroke-width="2" filter="url(#shadow)"/>
+    <text x="870" y="405" text-anchor="middle" font-size="18" fill="#C62828" font-weight="bold">What's HIDDEN After This:</text>
+    <g transform="translate(640, 420)">
+      <use href="#lock" width="18" height="22"/>
+      <text x="28" y="16" font-size="14" fill="#555">All data content</text>
+    </g>
+    <g transform="translate(640, 450)">
+      <use href="#lock" width="18" height="22"/>
+      <text x="28" y="16" font-size="14" fill="#555">Stream IDs and frames</text>
+    </g>
+    <g transform="translate(640, 480)">
+      <use href="#lock" width="18" height="22"/>
+      <text x="28" y="16" font-size="14" fill="#555">Connection ID changes</text>
+    </g>
+    <g transform="translate(640, 510)">
+      <use href="#lock" width="18" height="22"/>
+      <text x="28" y="16" font-size="14" fill="#555">Key rotations</text>
+    </g>
+    <g transform="translate(640, 540)">
+      <use href="#lock" width="18" height="22"/>
+      <text x="28" y="16" font-size="14" fill="#C62828" font-weight="bold">preferred_address parameter!</text>
+    </g>
+
+    <!-- Connection established label -->
+    <rect x="350" y="620" width="500" height="50" rx="25" fill="#4CAF50" filter="url(#shadow)">
+      <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+    </rect>
+    <text x="600" y="652" text-anchor="middle" font-size="18" fill="#fff" font-weight="bold">Connection Established! CID: a1b2c3d4</text>
+
+    <!-- Big lock icon -->
+    <g transform="translate(580, 730)" class="pulse">
+      <text x="0" y="0" text-anchor="middle" font-size="50">🔒</text>
+      <text x="0" y="40" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">Everything encrypted from here on</text>
+    </g>
+
+    <!-- Cute arrow down -->
+    <text x="600" y="830" text-anchor="middle" font-size="40" fill="#0288D1">⬇</text>
+  </g>
+
+
+  <!-- ==================== STEP 2: NORMAL DATA ==================== -->
+  <rect y="1230" width="1200" height="650" fill="url(#greenBg)"/>
+  <g transform="translate(0,1230)">
+    <rect x="40" y="20" width="1120" height="55" rx="15" fill="#2E7D32" filter="url(#shadow)"/>
+    <text x="600" y="57" text-anchor="middle" font-size="26" fill="#fff" font-weight="bold">Step 2: Normal Data Exchange — "Watching YouTube"</text>
+
+    <!-- Device -->
+    <g transform="translate(150, 230)">
+      <rect x="-35" y="-25" width="70" height="80" rx="10" fill="#333" filter="url(#shadow)"/>
+      <rect x="-28" y="-18" width="56" height="55" rx="4" fill="#64B5F6"/>
+      <text x="0" y="17" text-anchor="middle" font-size="20">📱</text>
+      <text x="0" y="75" text-anchor="middle" font-size="12" fill="#333">Your Device</text>
+    </g>
+
+    <!-- Server -->
+    <g transform="translate(1050, 230)">
+      <rect x="-40" y="-30" width="80" height="55" rx="8" fill="#455A64" filter="url(#shadow)"/>
+      <text x="0" y="2" text-anchor="middle" font-size="20">🌐</text>
+      <text x="0" y="45" text-anchor="middle" font-size="12" fill="#333">YouTube</text>
+    </g>
+
+    <!-- Firewall -->
+    <g transform="translate(580, 200)">
+      <rect x="-40" y="-20" width="80" height="110" rx="6" fill="#FF9800" fill-opacity="0.1" stroke="#FF9800" stroke-width="2" stroke-dasharray="4,3"/>
+      <text x="0" y="10" text-anchor="middle" font-size="24">🧱</text>
+    </g>
+
+    <!-- Packets flowing -->
+    <g transform="translate(230, 200)">
+      <line x1="0" y1="0" x2="290" y2="0" stroke="url(#wire)" stroke-width="3" stroke-dasharray="8,4" class="dash"/>
+      <rect x="80" y="-14" width="55" height="24" rx="6" fill="#FFD54F" stroke="#FFA000" stroke-width="1.5" class="pulse"/>
+      <text x="107" y="2" text-anchor="middle" font-size="9" fill="#333">64 bytes</text>
+    </g>
+    <g transform="translate(670, 210)">
+      <line x1="0" y1="0" x2="330" y2="0" stroke="url(#wire)" stroke-width="3" stroke-dasharray="8,4" class="dash"/>
+      <rect x="100" y="-14" width="55" height="24" rx="6" fill="#FFD54F" stroke="#FFA000" stroke-width="1.5" class="pulse" style="animation-delay:.5s"/>
+      <text x="127" y="2" text-anchor="middle" font-size="9" fill="#333">1200 b</text>
+    </g>
+
+    <g transform="translate(230, 250)">
+      <line x1="290" y1="0" x2="0" y2="0" stroke="url(#wire)" stroke-width="3" stroke-dasharray="8,4" class="dash"/>
+      <rect x="120" y="-14" width="55" height="24" rx="6" fill="#A5D6A7" stroke="#66BB6A" stroke-width="1.5" class="pulse" style="animation-delay:.3s"/>
+      <text x="147" y="2" text-anchor="middle" font-size="9" fill="#333">video</text>
+    </g>
+    <g transform="translate(670, 260)">
+      <line x1="330" y1="0" x2="0" y2="0" stroke="url(#wire)" stroke-width="3" stroke-dasharray="8,4" class="dash"/>
+      <rect x="140" y="-14" width="55" height="24" rx="6" fill="#A5D6A7" stroke="#66BB6A" stroke-width="1.5" class="pulse" style="animation-delay:.7s"/>
+      <text x="167" y="2" text-anchor="middle" font-size="9" fill="#333">video</text>
+    </g>
+
+    <!-- What firewall sees table -->
+    <rect x="100" y="320" width="1000" height="260" rx="15" fill="#fff" fill-opacity="0.9" filter="url(#shadow)"/>
+    <text x="600" y="360" text-anchor="middle" font-size="20" fill="#333" font-weight="bold">What the firewall sees (and ONLY this):</text>
+
+    <!-- Table header -->
+    <rect x="130" y="380" width="940" height="30" rx="5" fill="#E8F5E9"/>
+    <text x="220" y="400" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">Source</text>
+    <text x="380" y="400" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">Destination</text>
+    <text x="510" y="400" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">Size</text>
+    <text x="630" y="400" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">Protocol</text>
+    <text x="820" y="400" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">Content</text>
+    <text x="1010" y="400" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">Verdict</text>
+
+    <!-- Row 1 -->
+    <text x="220" y="430" text-anchor="middle" font-size="11" fill="#555">192.168.1.50:43210</text>
+    <text x="380" y="430" text-anchor="middle" font-size="11" fill="#555">142.250.80.46:443</text>
+    <text x="510" y="430" text-anchor="middle" font-size="11" fill="#555">64 bytes</text>
+    <text x="630" y="430" text-anchor="middle" font-size="11" fill="#555">UDP/QUIC</text>
+    <text x="820" y="430" text-anchor="middle" font-size="11" fill="#C62828">??? ENCRYPTED</text>
+    <text x="1010" y="430" text-anchor="middle" font-size="11" fill="#2E7D32">ALLOW</text>
+
+    <!-- Row 2 -->
+    <text x="220" y="455" text-anchor="middle" font-size="11" fill="#555">142.250.80.46:443</text>
+    <text x="380" y="455" text-anchor="middle" font-size="11" fill="#555">192.168.1.50:43210</text>
+    <text x="510" y="455" text-anchor="middle" font-size="11" fill="#555">1200 bytes</text>
+    <text x="630" y="455" text-anchor="middle" font-size="11" fill="#555">UDP/QUIC</text>
+    <text x="820" y="455" text-anchor="middle" font-size="11" fill="#C62828">??? ENCRYPTED</text>
+    <text x="1010" y="455" text-anchor="middle" font-size="11" fill="#2E7D32">ALLOW</text>
+
+    <!-- Row 3 -->
+    <text x="220" y="480" text-anchor="middle" font-size="11" fill="#555">192.168.1.50:43210</text>
+    <text x="380" y="480" text-anchor="middle" font-size="11" fill="#555">142.250.80.46:443</text>
+    <text x="510" y="480" text-anchor="middle" font-size="11" fill="#555">78 bytes</text>
+    <text x="630" y="480" text-anchor="middle" font-size="11" fill="#555">UDP/QUIC</text>
+    <text x="820" y="480" text-anchor="middle" font-size="11" fill="#C62828">??? ENCRYPTED</text>
+    <text x="1010" y="480" text-anchor="middle" font-size="11" fill="#2E7D32">ALLOW</text>
+
+    <!-- Row 4 -->
+    <text x="220" y="505" text-anchor="middle" font-size="11" fill="#555">142.250.80.46:443</text>
+    <text x="380" y="505" text-anchor="middle" font-size="11" fill="#555">192.168.1.50:43210</text>
+    <text x="510" y="505" text-anchor="middle" font-size="11" fill="#555">1200 bytes</text>
+    <text x="630" y="505" text-anchor="middle" font-size="11" fill="#555">UDP/QUIC</text>
+    <text x="820" y="505" text-anchor="middle" font-size="11" fill="#C62828">??? ENCRYPTED</text>
+    <text x="1010" y="505" text-anchor="middle" font-size="11" fill="#2E7D32">ALLOW</text>
+
+    <text x="600" y="550" text-anchor="middle" font-size="14" fill="#E65100" font-weight="bold">
+      Firewall can ONLY see: IP addresses, ports, and packet sizes. Nothing else!
+    </text>
+
+    <text x="600" y="610" text-anchor="middle" font-size="40" fill="#2E7D32">⬇</text>
+  </g>
+
+
+  <!-- ==================== STEP 3: CID ROTATION ==================== -->
+  <rect y="1880" width="1200" height="650" fill="url(#purpleBg)"/>
+  <g transform="translate(0,1880)">
+    <rect x="40" y="20" width="1120" height="55" rx="15" fill="#7B1FA2" filter="url(#shadow)"/>
+    <text x="600" y="57" text-anchor="middle" font-size="26" fill="#fff" font-weight="bold">Step 3: Connection ID Rotation — "Changing my name tag"</text>
+
+    <text x="600" y="110" text-anchor="middle" font-size="16" fill="#555">
+      QUIC changes Connection IDs regularly for privacy (so nobody can track you)
+    </text>
+
+    <!-- Before and After -->
+    <g transform="translate(300, 250)">
+      <rect x="-170" y="-80" width="340" height="200" rx="15" fill="#fff" stroke="#CE93D8" stroke-width="2" filter="url(#shadow)"/>
+      <text x="0" y="-50" text-anchor="middle" font-size="16" fill="#7B1FA2" font-weight="bold">BEFORE</text>
+
+      <!-- Packet with old CID -->
+      <rect x="-130" y="-30" width="260" height="45" rx="8" fill="#E1BEE7"/>
+      <text x="-120" y="-8" font-size="11" fill="#333">CID:</text>
+      <text x="-60" y="-8" font-size="13" fill="#7B1FA2" font-weight="bold">a1b2c3d4</text>
+      <text x="80" y="-8" font-size="11" fill="#555">stream data...</text>
+
+      <rect x="-130" y="25" width="260" height="45" rx="8" fill="#E1BEE7"/>
+      <text x="-120" y="47" font-size="11" fill="#333">CID:</text>
+      <text x="-60" y="47" font-size="13" fill="#7B1FA2" font-weight="bold">a1b2c3d4</text>
+      <text x="80" y="47" font-size="11" fill="#555">ACK frame...</text>
+
+      <text x="0" y="105" text-anchor="middle" font-size="12" fill="#888">Same CID = firewall can track</text>
+    </g>
+
+    <!-- Arrow -->
+    <g transform="translate(560, 250)">
+      <text x="40" y="-20" text-anchor="middle" font-size="14" fill="#7B1FA2" font-weight="bold">CID change!</text>
+      <text x="40" y="10" text-anchor="middle" font-size="36">➡</text>
+      <text x="40" y="40" text-anchor="middle" font-size="12" fill="#888">(encrypted)</text>
+    </g>
+
+    <!-- After -->
+    <g transform="translate(870, 250)">
+      <rect x="-170" y="-80" width="340" height="200" rx="15" fill="#fff" stroke="#66BB6A" stroke-width="2" filter="url(#shadow)"/>
+      <text x="0" y="-50" text-anchor="middle" font-size="16" fill="#2E7D32" font-weight="bold">AFTER</text>
+
+      <rect x="-130" y="-30" width="260" height="45" rx="8" fill="#C8E6C9"/>
+      <text x="-120" y="-8" font-size="11" fill="#333">CID:</text>
+      <text x="-60" y="-8" font-size="13" fill="#2E7D32" font-weight="bold">e5f6a7b8</text>
+      <text x="80" y="-8" font-size="11" fill="#555">stream data...</text>
+
+      <rect x="-130" y="25" width="260" height="45" rx="8" fill="#C8E6C9"/>
+      <text x="-120" y="47" font-size="11" fill="#333">CID:</text>
+      <text x="-60" y="47" font-size="13" fill="#2E7D32" font-weight="bold">e5f6a7b8</text>
+      <text x="80" y="47" font-size="11" fill="#555">ACK frame...</text>
+
+      <text x="0" y="105" text-anchor="middle" font-size="12" fill="#2E7D32">New CID = can't link to old!</text>
+    </g>
+
+    <!-- Firewall reaction -->
+    <rect x="150" y="440" width="900" height="130" rx="15" fill="#FFF3E0" stroke="#FFB74D" stroke-width="2" filter="url(#shadow)"/>
+    <g transform="translate(200, 480)">
+      <text x="0" y="0" font-size="28">🧱</text>
+      <text x="40" y="0" font-size="16" fill="#E65100" font-weight="bold">Firewall:</text>
+      <text x="40" y="25" font-size="14" fill="#555">"I see packets with CID a1b2c3d4 stopped..."</text>
+      <text x="40" y="50" font-size="14" fill="#555">"Now I see packets with CID e5f6a7b8..."</text>
+      <text x="40" y="75" font-size="14" fill="#C62828" font-weight="bold">"Are they the same connection? I DON'T KNOW! The change was encrypted!"</text>
+    </g>
+
+    <text x="600" y="610" text-anchor="middle" font-size="40" fill="#7B1FA2">⬇</text>
+  </g>
+
+
+  <!-- ==================== STEP 4: SERVER PREFERRED ADDRESS ==================== -->
+  <rect y="2530" width="1200" height="750" fill="url(#skyBg)"/>
+  <g transform="translate(0,2530)">
+    <rect x="40" y="20" width="1120" height="55" rx="15" fill="#F57C00" filter="url(#shadow)"/>
+    <text x="600" y="57" text-anchor="middle" font-size="26" fill="#fff" font-weight="bold">Step 4: Server Migration — "Talk to me HERE instead"</text>
+
+    <text x="600" y="110" text-anchor="middle" font-size="16" fill="#555">
+      The server tells the client (secretly, encrypted!) to migrate to a better address
+    </text>
+
+    <!-- Device -->
+    <g transform="translate(150, 320)">
+      <rect x="-35" y="-25" width="70" height="80" rx="10" fill="#333" filter="url(#shadow)"/>
+      <rect x="-28" y="-18" width="56" height="55" rx="4" fill="#64B5F6"/>
+      <text x="0" y="17" text-anchor="middle" font-size="20">📱</text>
+      <text x="0" y="80" text-anchor="middle" font-size="12" fill="#333">Your Device</text>
+    </g>
+
+    <!-- Original Server -->
+    <g transform="translate(650, 200)">
+      <rect x="-50" y="-30" width="100" height="55" rx="8" fill="#BDBDBD" filter="url(#shadow)"/>
+      <text x="0" y="2" text-anchor="middle" font-size="18">🖥</text>
+      <text x="0" y="45" text-anchor="middle" font-size="11" fill="#888">Server A: 1.2.3.4</text>
+      <text x="0" y="62" text-anchor="middle" font-size="10" fill="#888">(busy/overloaded)</text>
+    </g>
+
+    <!-- Preferred Server -->
+    <g transform="translate(650, 430)" class="pulse">
+      <rect x="-50" y="-30" width="100" height="55" rx="8" fill="#66BB6A" filter="url(#shadow)"/>
+      <text x="0" y="2" text-anchor="middle" font-size="18">🖥</text>
+      <text x="0" y="45" text-anchor="middle" font-size="11" fill="#2E7D32" font-weight="bold">Server B: 5.6.7.8</text>
+      <text x="0" y="62" text-anchor="middle" font-size="10" fill="#2E7D32">(faster!)</text>
+    </g>
+
+    <!-- Old path (crossed out) -->
+    <line x1="225" y1="310" x2="590" y2="210" stroke="#BDBDBD" stroke-width="3" stroke-dasharray="6,4"/>
+    <line x1="300" y1="280" x2="500" y2="230" stroke="#E53935" stroke-width="3"/>
+    <line x1="300" y1="230" x2="500" y2="280" stroke="#E53935" stroke-width="3"/>
+
+    <!-- New path -->
+    <line x1="225" y1="330" x2="590" y2="420" stroke="#66BB6A" stroke-width="4"/>
+    <polygon points="585,416 595,424 583,424" fill="#66BB6A"/>
+
+    <!-- PATH_CHALLENGE / PATH_RESPONSE -->
+    <g transform="translate(380, 360)">
+      <rect x="-80" y="-12" width="160" height="24" rx="8" fill="#E3F2FD" stroke="#42A5F5" stroke-width="1.5"/>
+      <text x="0" y="5" text-anchor="middle" font-size="10" fill="#1565C0" font-weight="bold">PATH_CHALLENGE ➡</text>
+    </g>
+    <g transform="translate(380, 400)">
+      <rect x="-80" y="-12" width="160" height="24" rx="8" fill="#E8F5E9" stroke="#66BB6A" stroke-width="1.5"/>
+      <text x="0" y="5" text-anchor="middle" font-size="10" fill="#2E7D32" font-weight="bold">⬅ PATH_RESPONSE</text>
+    </g>
+
+    <!-- Speech bubble -->
+    <g transform="translate(850, 250)">
+      <rect x="-150" y="-40" width="300" height="75" rx="12" fill="#fff" stroke="#FF9800" stroke-width="2" filter="url(#shadow)"/>
+      <text x="0" y="-12" text-anchor="middle" font-size="13" fill="#333">During handshake (ENCRYPTED!):</text>
+      <text x="0" y="10" text-anchor="middle" font-size="12" fill="#E65100" font-weight="bold">preferred_address: 5.6.7.8:443</text>
+      <text x="0" y="28" text-anchor="middle" font-size="11" fill="#888">Firewall CANNOT see this!</text>
+    </g>
+
+    <!-- Key insight box -->
+    <rect x="100" y="510" width="1000" height="150" rx="15" fill="#fff" fill-opacity="0.95" filter="url(#shadow)"/>
+    <text x="600" y="545" text-anchor="middle" font-size="18" fill="#E65100" font-weight="bold">This is the KEY to the attack:</text>
+
+    <g transform="translate(150, 565)">
+      <circle cx="10" cy="8" r="8" fill="#FF9800"/>
+      <text x="10" y="12" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">1</text>
+      <text x="30" y="12" font-size="13" fill="#555">The preferred_address is ENCRYPTED — firewall never sees it</text>
+    </g>
+    <g transform="translate(150, 595)">
+      <circle cx="10" cy="8" r="8" fill="#FF9800"/>
+      <text x="10" y="12" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">2</text>
+      <text x="30" y="12" font-size="13" fill="#555">Client migrating to a new IP is NORMAL in QUIC</text>
+    </g>
+    <g transform="translate(150, 625)">
+      <circle cx="10" cy="8" r="8" fill="#FF9800"/>
+      <text x="10" y="12" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">3</text>
+      <text x="30" y="12" font-size="13" fill="#C62828" font-weight="bold">So malware can send data to ANY IP and claim it's a "preferred address"!</text>
+    </g>
+
+    <text x="600" y="710" text-anchor="middle" font-size="40" fill="#F57C00">⬇</text>
+  </g>
+
+
+  <!-- ==================== STEP 5: SNIFFING PHASE ==================== -->
+  <rect y="3280" width="1200" height="700" fill="url(#dangerBg)"/>
+  <g transform="translate(0,3280)">
+    <rect x="40" y="20" width="1120" height="55" rx="15" fill="#E53935" filter="url(#shadow)"/>
+    <text x="600" y="57" text-anchor="middle" font-size="26" fill="#fff" font-weight="bold">Step 5: The Spy Watches — "Learning your patterns"</text>
+
+    <text x="600" y="110" text-anchor="middle" font-size="16" fill="#C62828">
+      Malware on your PC silently records all outgoing QUIC traffic
+    </text>
+
+    <!-- Your PC with spy -->
+    <g transform="translate(200, 300)">
+      <rect x="-70" y="-60" width="140" height="100" rx="12" fill="#333" filter="url(#shadow)"/>
+      <rect x="-60" y="-52" width="120" height="72" rx="6" fill="#64B5F6"/>
+      <text x="0" y="-10" text-anchor="middle" font-size="24">😊</text>
+      <text x="0" y="60" text-anchor="middle" font-size="12" fill="#333">Your PC (infected!)</text>
+
+      <!-- Evil eye watching -->
+      <g transform="translate(50, -70)" class="shake">
+        <circle cx="0" cy="0" r="18" fill="#FFCDD2" stroke="#C62828" stroke-width="2"/>
+        <text x="0" y="6" text-anchor="middle" font-size="18">🕵</text>
+      </g>
+    </g>
+
+    <!-- What spy records -->
+    <g transform="translate(500, 170)">
+      <rect x="0" y="0" width="600" height="320" rx="12" fill="#fff" stroke="#EF9A9A" stroke-width="2" filter="url(#shadow)"/>
+      <rect x="0" y="0" width="600" height="35" rx="12" fill="#EF5350"/>
+      <rect x="0" y="20" width="600" height="15" fill="#EF5350"/>
+      <text x="300" y="25" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">Spy's Notebook</text>
+
+      <!-- Recorded data -->
+      <text x="20" y="60" font-size="13" fill="#333" font-weight="bold">Packet Sizes Observed:</text>
+      <g transform="translate(20, 70)">
+        <rect x="0" y="0" width="45" height="20" rx="4" fill="#FFECB3"/><text x="22" y="14" text-anchor="middle" font-size="10">64 B</text>
+        <rect x="55" y="0" width="45" height="20" rx="4" fill="#FFECB3"/><text x="77" y="14" text-anchor="middle" font-size="10">1200 B</text>
+        <rect x="110" y="0" width="45" height="20" rx="4" fill="#FFECB3"/><text x="132" y="14" text-anchor="middle" font-size="10">78 B</text>
+        <rect x="165" y="0" width="45" height="20" rx="4" fill="#FFECB3"/><text x="187" y="14" text-anchor="middle" font-size="10">256 B</text>
+        <rect x="220" y="0" width="45" height="20" rx="4" fill="#FFECB3"/><text x="242" y="14" text-anchor="middle" font-size="10">45 B</text>
+        <rect x="275" y="0" width="45" height="20" rx="4" fill="#FFECB3"/><text x="297" y="14" text-anchor="middle" font-size="10">120 B</text>
+      </g>
+
+      <text x="20" y="120" font-size="13" fill="#333" font-weight="bold">Time Between Packets:</text>
+      <text x="20" y="140" font-size="12" fill="#555">50ms, 120ms, 30ms, 200ms, 80ms, 150ms...</text>
+
+      <text x="20" y="175" font-size="13" fill="#333" font-weight="bold">Connection IDs Seen:</text>
+      <text x="20" y="195" font-size="12" fill="#7B1FA2">a1b2c3d4 (retired) → e5f6a7b8 (active) → ...</text>
+
+      <text x="20" y="230" font-size="13" fill="#333" font-weight="bold">Servers Talked To:</text>
+      <text x="20" y="250" font-size="12" fill="#555">142.250.80.46 (YouTube), 31.13.72.36 (Facebook)</text>
+      <text x="20" y="270" font-size="12" fill="#555">151.101.1.69 (Reddit), 104.16.85.20 (Cloudflare)</text>
+
+      <text x="300" y="305" text-anchor="middle" font-size="12" fill="#C62828" font-weight="bold">
+        "Now I know exactly how to make FAKE packets look REAL!"
+      </text>
+    </g>
+
+    <!-- Arrow from PC to notebook -->
+    <path d="M 300,290 Q 400,250 490,250" fill="none" stroke="#EF5350" stroke-width="2" stroke-dasharray="5,3" class="dash"/>
+
+    <!-- Bottom note -->
+    <rect x="150" y="530" width="900" height="80" rx="12" fill="#FFEBEE" stroke="#EF9A9A" stroke-width="1.5"/>
+    <text x="600" y="560" text-anchor="middle" font-size="15" fill="#C62828" font-weight="bold">
+      The spy waits for a Connection ID to be RETIRED (this happens normally)
+    </text>
+    <text x="600" y="585" text-anchor="middle" font-size="14" fill="#555">
+      Then it hijacks the retired CID to start sending fake migration packets!
+    </text>
+
+    <text x="600" y="660" text-anchor="middle" font-size="40" fill="#E53935">⬇</text>
+  </g>
+
+
+  <!-- ==================== STEP 6: THE ATTACK ==================== -->
+  <rect y="3980" width="1200" height="1050" fill="#FBE9E7"/>
+  <g transform="translate(0,3980)">
+    <rect x="40" y="20" width="1120" height="55" rx="15" fill="#B71C1C" filter="url(#shadow)"/>
+    <text x="600" y="57" text-anchor="middle" font-size="26" fill="#fff" font-weight="bold">Step 6: THE ATTACK — "Stealing data disguised as migration"</text>
+
+    <!-- Left: Your PC -->
+    <g transform="translate(150, 250)">
+      <rect x="-55" y="-45" width="110" height="80" rx="10" fill="#333" filter="url(#shadow)"/>
+      <rect x="-45" y="-37" width="90" height="55" rx="5" fill="#64B5F6"/>
+      <text x="0" y="-5" text-anchor="middle" font-size="22">💻</text>
+
+      <!-- Evil icon on PC -->
+      <g transform="translate(40, -55)">
+        <circle cx="0" cy="0" r="15" fill="#F44336"/>
+        <text x="0" y="5" text-anchor="middle" font-size="14">😈</text>
+      </g>
+      <text x="0" y="55" text-anchor="middle" font-size="12" fill="#333">Infected PC</text>
+    </g>
+
+    <!-- Middle: Firewall -->
+    <g transform="translate(480, 250)">
+      <rect x="-55" y="-55" width="110" height="115" rx="8" fill="#FF9800" fill-opacity="0.2" stroke="#FF9800" stroke-width="2.5"/>
+      <text x="0" y="-15" text-anchor="middle" font-size="32">🧱</text>
+      <text x="0" y="15" text-anchor="middle" font-size="12" fill="#E65100" font-weight="bold">Firewall</text>
+    </g>
+
+    <!-- Right top: Real YouTube server (not involved) -->
+    <g transform="translate(800, 160)">
+      <rect x="-50" y="-30" width="100" height="55" rx="8" fill="#BDBDBD" filter="url(#shadow)"/>
+      <text x="0" y="2" text-anchor="middle" font-size="18">🌐</text>
+      <text x="0" y="42" text-anchor="middle" font-size="10" fill="#888">YouTube (not involved)</text>
+    </g>
+
+    <!-- Right bottom: EVIL server -->
+    <g transform="translate(800, 350)" class="pulse">
+      <rect x="-55" y="-35" width="110" height="65" rx="10" fill="#B71C1C" filter="url(#shadow)"/>
+      <text x="0" y="2" text-anchor="middle" font-size="24">😈</text>
+      <text x="0" y="50" text-anchor="middle" font-size="11" fill="#C62828" font-weight="bold">Evil Server</text>
+      <text x="0" y="66" text-anchor="middle" font-size="10" fill="#C62828">10.10.10.10</text>
+    </g>
+
+    <!-- Fake migration packet path -->
+    <line x1="220" y1="265" x2="420" y2="265" stroke="#EF5350" stroke-width="3" class="dash"/>
+    <line x1="540" y1="265" x2="620" y2="310" stroke="#EF5350" stroke-width="3" stroke-dasharray="8,4" class="dash"/>
+    <line x1="620" y1="310" x2="735" y2="345" stroke="#EF5350" stroke-width="3" stroke-dasharray="8,4" class="dash"/>
+    <polygon points="735,340 745,348 733,348" fill="#EF5350"/>
+
+    <!-- Fake packet label -->
+    <g transform="translate(350, 300)">
+      <rect x="-120" y="-15" width="240" height="30" rx="8" fill="#FFCDD2" stroke="#EF5350" stroke-width="1.5" class="blink"/>
+      <text x="0" y="5" text-anchor="middle" font-size="11" fill="#C62828" font-weight="bold">Fake "migration" + stolen passwords</text>
+    </g>
+
+    <!-- Firewall thought bubble -->
+    <g transform="translate(480, 140)">
+      <rect x="-150" y="-30" width="300" height="55" rx="12" fill="#fff" stroke="#FF9800" stroke-width="2" filter="url(#shadow)"/>
+      <text x="0" y="-5" text-anchor="middle" font-size="13" fill="#E65100">"QUIC migration to new server IP?"</text>
+      <text x="0" y="15" text-anchor="middle" font-size="14" fill="#2E7D32" font-weight="bold">Looks normal. ALLOW!</text>
+    </g>
+
+    <!-- Detailed fake packet anatomy -->
+    <rect x="80" y="420" width="1040" height="310" rx="15" fill="#fff" fill-opacity="0.95" filter="url(#shadow)"/>
+    <text x="600" y="455" text-anchor="middle" font-size="18" fill="#C62828" font-weight="bold">What the FAKE packet looks like inside:</text>
+
+    <!-- Packet diagram -->
+    <g transform="translate(100, 480)">
+      <!-- UDP header -->
+      <rect x="0" y="0" width="1000" height="40" rx="0" fill="#E3F2FD" stroke="#90CAF9" stroke-width="1.5"/>
+      <text x="500" y="15" text-anchor="middle" font-size="11" fill="#1565C0" font-weight="bold">UDP HEADER (visible to firewall)</text>
+      <text x="150" y="33" text-anchor="middle" font-size="10" fill="#555">Src: 192.168.1.50:43210</text>
+      <text x="450" y="33" text-anchor="middle" font-size="10" fill="#C62828">Dst: 10.10.10.10:443 (EVIL!)</text>
+      <text x="750" y="33" text-anchor="middle" font-size="10" fill="#555">Length: 1200 bytes</text>
+
+      <!-- QUIC short header -->
+      <rect x="0" y="45" width="250" height="40" rx="0" fill="#FFF3E0" stroke="#FFB74D" stroke-width="1.5"/>
+      <text x="125" y="60" text-anchor="middle" font-size="10" fill="#E65100" font-weight="bold">QUIC Short Header</text>
+      <text x="125" y="77" text-anchor="middle" font-size="10" fill="#555">DCID: a1b2c3d4 (retired CID!)</text>
+
+      <!-- Encrypted payload -->
+      <rect x="255" y="45" width="745" height="40" rx="0" fill="#FFEBEE" stroke="#EF9A9A" stroke-width="1.5"/>
+      <text x="627" y="60" text-anchor="middle" font-size="10" fill="#C62828" font-weight="bold">ENCRYPTED PAYLOAD (firewall CANNOT read this!)</text>
+      <text x="627" y="77" text-anchor="middle" font-size="10" fill="#C62828">Contains: PATH_CHALLENGE + YOUR STOLEN DATA (passwords, files, keys...)</text>
+
+      <!-- Labels -->
+      <g transform="translate(0, 100)">
+        <rect x="0" y="0" width="250" height="25" rx="5" fill="#E8F5E9"/>
+        <text x="125" y="17" text-anchor="middle" font-size="10" fill="#2E7D32">Firewall CAN see this part</text>
+      </g>
+      <g transform="translate(255, 100)">
+        <rect x="0" y="0" width="745" height="25" rx="5" fill="#FFCDD2"/>
+        <text x="372" y="17" text-anchor="middle" font-size="10" fill="#C62828">Firewall CANNOT see this part — all encrypted!</text>
+      </g>
+
+      <!-- Size mimicking -->
+      <g transform="translate(0, 145)">
+        <text x="0" y="0" font-size="13" fill="#333" font-weight="bold">Stealth tricks used by the malware:</text>
+        <text x="20" y="22" font-size="12" fill="#555">Packet size = 1200 bytes (same as real PATH_CHALLENGE packets)</text>
+        <text x="20" y="42" font-size="12" fill="#555">Timing = copied from real traffic (50ms, 120ms, 30ms gaps)</text>
+        <text x="20" y="62" font-size="12" fill="#555">DCID = reuses a retired CID (looks like a legitimate old connection)</text>
+        <text x="20" y="82" font-size="12" fill="#555">Payload entropy = AES-256 encrypted (looks like normal QUIC encryption)</text>
+      </g>
+    </g>
+
+    <text x="600" y="780" text-anchor="middle" font-size="16" fill="#C62828" font-weight="bold">
+      The stolen data keeps flowing out, packet after packet, completely undetected...
+    </text>
+
+    <!-- Data flowing out animation -->
+    <g transform="translate(130, 810)">
+      <rect x="0" y="0" width="70" height="22" rx="6" fill="#EF9A9A" class="blink"><title>passwords</title></rect>
+      <text x="35" y="15" text-anchor="middle" font-size="9" fill="#B71C1C">passwords</text>
+
+      <rect x="90" y="0" width="70" height="22" rx="6" fill="#EF9A9A" class="blink" style="animation-delay:.2s"/>
+      <text x="125" y="15" text-anchor="middle" font-size="9" fill="#B71C1C">ssh keys</text>
+
+      <rect x="180" y="0" width="70" height="22" rx="6" fill="#EF9A9A" class="blink" style="animation-delay:.4s"/>
+      <text x="215" y="15" text-anchor="middle" font-size="9" fill="#B71C1C">cookies</text>
+
+      <rect x="270" y="0" width="70" height="22" rx="6" fill="#EF9A9A" class="blink" style="animation-delay:.6s"/>
+      <text x="305" y="15" text-anchor="middle" font-size="9" fill="#B71C1C">.env files</text>
+
+      <rect x="360" y="0" width="70" height="22" rx="6" fill="#EF9A9A" class="blink" style="animation-delay:.8s"/>
+      <text x="395" y="15" text-anchor="middle" font-size="9" fill="#B71C1C">photos</text>
+
+      <rect x="450" y="0" width="70" height="22" rx="6" fill="#EF9A9A" class="blink" style="animation-delay:1s"/>
+      <text x="485" y="15" text-anchor="middle" font-size="9" fill="#B71C1C">DB dumps</text>
+
+      <rect x="540" y="0" width="70" height="22" rx="6" fill="#EF9A9A" class="blink" style="animation-delay:1.2s"/>
+      <text x="575" y="15" text-anchor="middle" font-size="9" fill="#B71C1C">API keys</text>
+
+      <text x="680" y="15" font-size="20">➡ 😈</text>
+    </g>
+
+    <!-- Arrow down -->
+    <text x="600" y="900" text-anchor="middle" font-size="14" fill="#C62828" font-weight="bold">All while the firewall says:</text>
+    <text x="600" y="930" text-anchor="middle" font-size="24" fill="#2E7D32">"Everything looks normal!"</text>
+
+    <text x="600" y="1010" text-anchor="middle" font-size="40" fill="#B71C1C">⬇</text>
+  </g>
+
+
+  <!-- ==================== STEP 7: COMPARISON ==================== -->
+  <rect y="5030" width="1200" height="830" fill="#ECEFF1"/>
+  <g transform="translate(0,5030)">
+    <rect x="40" y="20" width="1120" height="55" rx="15" fill="#37474F" filter="url(#shadow)"/>
+    <text x="600" y="57" text-anchor="middle" font-size="26" fill="#fff" font-weight="bold">Step 7: Can YOU tell the difference?</text>
+
+    <text x="600" y="110" text-anchor="middle" font-size="16" fill="#555">
+      Side by side: Real migration vs. Data theft. Spot the fake one!
+    </text>
+
+    <!-- REAL packet -->
+    <g transform="translate(100, 150)">
+      <rect x="0" y="0" width="480" height="300" rx="15" fill="#fff" stroke="#66BB6A" stroke-width="3" filter="url(#shadow)"/>
+      <rect x="0" y="0" width="480" height="40" rx="15" fill="#66BB6A"/>
+      <rect x="0" y="25" width="480" height="15" fill="#66BB6A"/>
+      <text x="240" y="28" text-anchor="middle" font-size="16" fill="#fff" font-weight="bold">REAL Server Migration</text>
+
+      <text x="20" y="70" font-size="13" fill="#333" font-weight="bold">UDP Header:</text>
+      <text x="30" y="92" font-size="12" fill="#555">Src: 192.168.1.50:43210</text>
+      <text x="30" y="112" font-size="12" fill="#555">Dst: 142.250.80.46:443</text>
+      <text x="30" y="132" font-size="12" fill="#555">Size: 1200 bytes</text>
+
+      <text x="20" y="162" font-size="13" fill="#333" font-weight="bold">QUIC Header:</text>
+      <text x="30" y="182" font-size="12" fill="#555">Type: Short Header</text>
+      <text x="30" y="202" font-size="12" fill="#555">DCID: a1b2c3d4</text>
+
+      <text x="20" y="232" font-size="13" fill="#333" font-weight="bold">Payload:</text>
+      <text x="30" y="252" font-size="12" fill="#888">0x8a3f7b2e91c4d608a2...</text>
+      <text x="30" y="272" font-size="12" fill="#888">(encrypted — can't read)</text>
+    </g>
+
+    <!-- FAKE packet -->
+    <g transform="translate(620, 150)">
+      <rect x="0" y="0" width="480" height="300" rx="15" fill="#fff" stroke="#EF5350" stroke-width="3" filter="url(#shadow)"/>
+      <rect x="0" y="0" width="480" height="40" rx="15" fill="#EF5350"/>
+      <rect x="0" y="25" width="480" height="15" fill="#EF5350"/>
+      <text x="240" y="28" text-anchor="middle" font-size="16" fill="#fff" font-weight="bold">FAKE Exfiltration Packet</text>
+
+      <text x="20" y="70" font-size="13" fill="#333" font-weight="bold">UDP Header:</text>
+      <text x="30" y="92" font-size="12" fill="#555">Src: 192.168.1.50:43210</text>
+      <text x="30" y="112" font-size="12" fill="#555">Dst: 34.102.136.208:443</text>
+      <text x="30" y="132" font-size="12" fill="#555">Size: 1200 bytes</text>
+
+      <text x="20" y="162" font-size="13" fill="#333" font-weight="bold">QUIC Header:</text>
+      <text x="30" y="182" font-size="12" fill="#555">Type: Short Header</text>
+      <text x="30" y="202" font-size="12" fill="#555">DCID: a1b2c3d4</text>
+
+      <text x="20" y="232" font-size="13" fill="#333" font-weight="bold">Payload:</text>
+      <text x="30" y="252" font-size="12" fill="#888">0x7f2a9e1b4c8d3a05b7...</text>
+      <text x="30" y="272" font-size="12" fill="#888">(encrypted — can't read)</text>
+    </g>
+
+    <!-- IDENTICAL callout -->
+    <g transform="translate(600, 480)">
+      <rect x="-250" y="-25" width="500" height="50" rx="25" fill="#FF9800" filter="url(#shadow)" class="pulse"/>
+      <text x="0" y="7" text-anchor="middle" font-size="20" fill="#fff" font-weight="bold">They look IDENTICAL to the firewall!</text>
+    </g>
+
+    <!-- Differences only visible in hindsight -->
+    <rect x="100" y="540" width="1000" height="200" rx="15" fill="#fff" stroke="#90A4AE" stroke-width="2" filter="url(#shadow)"/>
+    <text x="600" y="575" text-anchor="middle" font-size="16" fill="#333" font-weight="bold">The ONLY difference (invisible to firewall):</text>
+
+    <g transform="translate(150, 595)">
+      <rect x="0" y="0" width="400" height="30" rx="8" fill="#E8F5E9"/>
+      <text x="200" y="20" text-anchor="middle" font-size="12" fill="#2E7D32">Real: dst is Google (142.250.x.x)</text>
+    </g>
+    <g transform="translate(650, 595)">
+      <rect x="0" y="0" width="400" height="30" rx="8" fill="#FFEBEE"/>
+      <text x="200" y="20" text-anchor="middle" font-size="12" fill="#C62828">Fake: dst is attacker on Google Cloud (34.102.x.x)</text>
+    </g>
+
+    <text x="600" y="660" text-anchor="middle" font-size="14" fill="#555">But both are Google IP ranges! WHOIS says "Google LLC" for both!</text>
+    <text x="600" y="685" text-anchor="middle" font-size="14" fill="#C62828" font-weight="bold">Firewall has NO WAY to know one is evil!</text>
+
+    <!-- ML detection scores -->
+    <text x="600" y="720" text-anchor="middle" font-size="14" fill="#333" font-weight="bold">5 AI/ML detectors tried to tell them apart:</text>
+    <g transform="translate(200, 730)">
+      <rect x="0" y="0" width="120" height="20" rx="4" fill="#FFCDD2"/>
+      <rect x="0" y="0" width="42" height="20" rx="4" fill="#EF5350"/>
+      <text x="60" y="14" text-anchor="middle" font-size="9" fill="#333">RF: 0.35</text>
+
+      <rect x="140" y="0" width="120" height="20" rx="4" fill="#FFCDD2"/>
+      <rect x="140" y="0" width="12" height="20" rx="4" fill="#EF5350"/>
+      <text x="200" y="14" text-anchor="middle" font-size="9" fill="#333">MLP: 0.10</text>
+
+      <rect x="280" y="0" width="120" height="20" rx="4" fill="#FFCDD2"/>
+      <rect x="280" y="0" width="6" height="20" rx="4" fill="#EF5350"/>
+      <text x="340" y="14" text-anchor="middle" font-size="9" fill="#333">SVM: 0.05</text>
+
+      <rect x="420" y="0" width="120" height="20" rx="4" fill="#FFCDD2"/>
+      <rect x="420" y="0" width="2" height="20" rx="4" fill="#EF5350"/>
+      <text x="480" y="14" text-anchor="middle" font-size="9" fill="#333">AE: 0.01</text>
+
+      <rect x="560" y="0" width="120" height="20" rx="4" fill="#FFCDD2"/>
+      <rect x="560" y="0" width="6" height="20" rx="4" fill="#EF5350"/>
+      <text x="620" y="14" text-anchor="middle" font-size="9" fill="#333">IF: 0.05</text>
+    </g>
+  </g>
+
+
+  <!-- ==================== FINAL SUMMARY ==================== -->
+  <rect y="5860" width="1200" height="940" fill="url(#darkBg)"/>
+  <g transform="translate(0,5860)">
+    <!-- Stars -->
+    <circle cx="100" cy="30" r="2" fill="#fff" class="blink"/>
+    <circle cx="300" cy="50" r="1.5" fill="#fff" class="blink" style="animation-delay:.3s"/>
+    <circle cx="700" cy="25" r="2" fill="#fff" class="blink" style="animation-delay:.7s"/>
+    <circle cx="1000" cy="45" r="1.5" fill="#fff" class="blink" style="animation-delay:.5s"/>
+
+    <text x="600" y="70" text-anchor="middle" font-size="36" fill="#FFD54F" font-weight="bold">The Complete Picture</text>
+
+    <!-- Full timeline -->
+    <g transform="translate(100, 120)">
+      <!-- Timeline line -->
+      <line x1="50" y1="30" x2="950" y2="30" stroke="#555" stroke-width="3"/>
+
+      <!-- Step dots with labels -->
+      <g transform="translate(50, 30)">
+        <circle cx="0" cy="0" r="18" fill="#4FC3F7" filter="url(#glow)"/>
+        <text x="0" y="5" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">1</text>
+        <text x="0" y="40" text-anchor="middle" font-size="10" fill="#aaa">Handshake</text>
+        <text x="0" y="55" text-anchor="middle" font-size="9" fill="#4FC3F7">visible</text>
+      </g>
+
+      <g transform="translate(200, 30)">
+        <circle cx="0" cy="0" r="18" fill="#66BB6A" filter="url(#glow)"/>
+        <text x="0" y="5" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">2</text>
+        <text x="0" y="40" text-anchor="middle" font-size="10" fill="#aaa">Data Flow</text>
+        <text x="0" y="55" text-anchor="middle" font-size="9" fill="#66BB6A">encrypted</text>
+      </g>
+
+      <g transform="translate(350, 30)">
+        <circle cx="0" cy="0" r="18" fill="#AB47BC" filter="url(#glow)"/>
+        <text x="0" y="5" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">3</text>
+        <text x="0" y="40" text-anchor="middle" font-size="10" fill="#aaa">CID Rotate</text>
+        <text x="0" y="55" text-anchor="middle" font-size="9" fill="#AB47BC">invisible</text>
+      </g>
+
+      <g transform="translate(500, 30)">
+        <circle cx="0" cy="0" r="18" fill="#FF9800" filter="url(#glow)"/>
+        <text x="0" y="5" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">4</text>
+        <text x="0" y="40" text-anchor="middle" font-size="10" fill="#aaa">Migration</text>
+        <text x="0" y="55" text-anchor="middle" font-size="9" fill="#FF9800">normal</text>
+      </g>
+
+      <g transform="translate(650, 30)">
+        <circle cx="0" cy="0" r="18" fill="#F44336" filter="url(#glow)"/>
+        <text x="0" y="5" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">5</text>
+        <text x="0" y="40" text-anchor="middle" font-size="10" fill="#aaa">Spy Watches</text>
+        <text x="0" y="55" text-anchor="middle" font-size="9" fill="#F44336">silent</text>
+      </g>
+
+      <g transform="translate(800, 30)">
+        <circle cx="0" cy="0" r="18" fill="#B71C1C" filter="url(#glow)"/>
+        <text x="0" y="5" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">6</text>
+        <text x="0" y="40" text-anchor="middle" font-size="10" fill="#aaa">Data Stolen</text>
+        <text x="0" y="55" text-anchor="middle" font-size="9" fill="#EF5350">undetected!</text>
+      </g>
+
+      <g transform="translate(950, 30)">
+        <circle cx="0" cy="0" r="18" fill="#D32F2F" filter="url(#glow)" class="pulse"/>
+        <text x="0" y="5" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">7</text>
+        <text x="0" y="40" text-anchor="middle" font-size="10" fill="#aaa">Identical!</text>
+        <text x="0" y="55" text-anchor="middle" font-size="9" fill="#EF5350">game over</text>
+      </g>
+    </g>
+
+    <!-- Key takeaways -->
+    <g transform="translate(100, 300)">
+      <rect x="0" y="0" width="1000" height="280" rx="15" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+
+      <text x="500" y="35" text-anchor="middle" font-size="20" fill="#FFD54F" font-weight="bold">Why This Attack Works:</text>
+
+      <g transform="translate(40, 60)">
+        <circle cx="15" cy="10" r="12" fill="#4FC3F7"/>
+        <text x="15" y="14" text-anchor="middle" font-size="10" fill="#fff">1</text>
+        <text x="40" y="15" font-size="14" fill="#E0E0E0">QUIC encrypts EVERYTHING after the handshake</text>
+        <text x="40" y="35" font-size="12" fill="#888">Firewall is blind to content, CID changes, key rotations, preferred_address</text>
+      </g>
+
+      <g transform="translate(40, 110)">
+        <circle cx="15" cy="10" r="12" fill="#FF9800"/>
+        <text x="15" y="14" text-anchor="middle" font-size="10" fill="#fff">2</text>
+        <text x="40" y="15" font-size="14" fill="#E0E0E0">IP address changes are NORMAL in QUIC (that's the whole feature!)</text>
+        <text x="40" y="35" font-size="12" fill="#888">Firewall can't block migrations without breaking legitimate QUIC traffic</text>
+      </g>
+
+      <g transform="translate(40, 160)">
+        <circle cx="15" cy="10" r="12" fill="#F44336"/>
+        <text x="15" y="14" text-anchor="middle" font-size="10" fill="#fff">3</text>
+        <text x="40" y="15" font-size="14" fill="#E0E0E0">Malware copies EXACT packet sizes, timing, and entropy from real traffic</text>
+        <text x="40" y="35" font-size="12" fill="#888">Even AI/ML classifiers can't tell fake packets from real ones (best F1: 0.35)</text>
+      </g>
+
+      <g transform="translate(40, 210)">
+        <circle cx="15" cy="10" r="12" fill="#B71C1C"/>
+        <text x="15" y="14" text-anchor="middle" font-size="10" fill="#fff">4</text>
+        <text x="40" y="15" font-size="14" fill="#E0E0E0">Evil server can be on Google Cloud / AWS (same WHOIS as real servers!)</text>
+        <text x="40" y="35" font-size="12" fill="#888">IP reputation checks don't help — attacker uses same cloud as YouTube/Google</text>
+      </g>
+    </g>
+
+    <!-- Possible fixes -->
+    <g transform="translate(100, 610)">
+      <rect x="0" y="0" width="1000" height="180" rx="15" fill="#1e293b" stroke="#4CAF50" stroke-width="2"/>
+      <text x="500" y="35" text-anchor="middle" font-size="20" fill="#81C784" font-weight="bold">Possible Defenses:</text>
+
+      <g transform="translate(50, 55)">
+        <text x="0" y="0" font-size="14" fill="#A5D6A7">1. Disable server migration</text>
+        <text x="300" y="0" font-size="12" fill="#888">→ set disable_active_migration flag (0x0c)</text>
+      </g>
+      <g transform="translate(50, 85)">
+        <text x="0" y="0" font-size="14" fill="#A5D6A7">2. Make preferred_address visible</text>
+        <text x="300" y="0" font-size="12" fill="#888">→ move it outside encrypted handshake</text>
+      </g>
+      <g transform="translate(50, 115)">
+        <text x="0" y="0" font-size="14" fill="#A5D6A7">3. Full QUIC decryption at firewall</text>
+        <text x="300" y="0" font-size="12" fill="#888">→ breaks privacy (defeats the point of QUIC!)</text>
+      </g>
+      <g transform="translate(50, 145)">
+        <text x="0" y="0" font-size="14" fill="#A5D6A7">4. Check IPs against cloud provider ranges</text>
+        <text x="300" y="0" font-size="12" fill="#888">→ attacker can use same cloud as real servers</text>
+      </g>
+    </g>
+
+    <!-- Footer -->
+    <text x="600" y="840" text-anchor="middle" font-size="14" fill="#888">
+      Based on: "QUIC-Exfil: Exploiting QUIC's Server Preferred Address Feature" — ASIA CCS 2025
+    </text>
+    <text x="600" y="870" text-anchor="middle" font-size="12" fill="#666">
+      University of Zurich — Grübl, Niu, von der Assen, Stiller
+    </text>
+    <text x="600" y="905" text-anchor="middle" font-size="24" fill="#FFD54F" class="pulse">
+      🔒 → 🕵 → 😈 → 📤 → 🧱✅ → 💀
+    </text>
+  </g>
+</svg>

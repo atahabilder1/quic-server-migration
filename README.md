@@ -1,345 +1,268 @@
-# QUIC Protocol Connection Migration Simulator
+# Cross-Machine QUIC Server-Side Migration
 
-A comprehensive simulation environment for understanding QUIC connection migration. This project demonstrates how QUIC maintains connections even when network paths change (IP addresses, ports, or interfaces).
+A research implementation of cross-machine QUIC server-side migration using Mozilla's Neqo. Demonstrates and benchmarks how TLS cryptographic state can be transferred between physically separate servers to silently migrate a client's QUIC connection -- proving the feasibility of the QUIC-Exfil attack.
 
-## What is QUIC Connection Migration?
+## What This Project Does
 
-Unlike TCP which identifies connections by the 4-tuple (source IP, source port, destination IP, destination port), QUIC uses **Connection IDs**. This allows connections to survive network changes such as:
+A client (Firefox or neqo-client) connects to a **primary server** via HTTP/3. During the TLS handshake, the primary server advertises a **preferred address** on a different physical machine. After the handshake, the primary server exports the TLS secrets and connection state (~445 bytes) and transfers it to the **preferred server**. The preferred server imports the keys, decrypts the client's PATH_CHALLENGE, and sends a PATH_RESPONSE. The client's connection silently migrates to the preferred server without any browser indication.
 
-- WiFi to cellular handoffs
-- NAT rebinding (port changes)
-- IP address changes
-- Network interface switches
+This is the QUIC-Exfil attack described in RFC 9000 Section 9.6 -- a firewall cannot detect this migration because everything is encrypted inside QUIC.
 
-## Do You Need Docker?
+## Key Results
 
-**Short answer: No, Docker is not required.**
+- Cross-machine migration working across 3 physical machines
+- 4 state transfer mechanisms implemented and benchmarked (TCP Push, HTTP Pull, Redis KV, Redis Pub/Sub)
+- 2 timing strategies (Immediate and Lazy)
+- All 8 combinations tested end-to-end with 100% success rate
+- Best overall: Redis KV (32/40 across 8 evaluation metrics)
+- Tested with real Firefox browser (HTTP/3)
 
-You can run this simulation directly on your local machine. However, Docker can be useful if you want to:
+## Architecture
 
-1. **Simulate network conditions** (latency, packet loss)
-2. **Test with network namespaces** (true IP isolation)
-3. **Avoid dependency conflicts** with your system Python
-
-### Running Locally (Recommended for Learning)
-
-This is the simplest approach and perfect for understanding QUIC migration:
-
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Generate certificates
-python generate_certs.py
-
-# Terminal 1: Start server
-python quic_server.py
-
-# Terminal 2: Run client
-python quic_client.py
-
-# Or explore interactively
-python migration_demo.py
+```
+Client (Firefox)         Primary Server          Preferred Server
+141.217.168.127          141.217.168.152          141.217.168.143
+                         (opti7040)               (homeserver2)
+     |                        |                        |
+     |--- QUIC Handshake ---->|                        |
+     |    (preferred_address   |                        |
+     |     = 141.217.168.143) |                        |
+     |                        |--- State Transfer ---->|
+     |                        |    (TCP/HTTP/Redis)    |
+     |                        |    445 bytes:          |
+     |                        |    TLS secrets + CIDs  |
+     |                        |                        |
+     |--- PATH_CHALLENGE ---------------------------->|
+     |<-- PATH_RESPONSE ------------------------------|
+     |                                                |
+     |    Connection silently migrated                |
 ```
 
-### Running with Docker (Optional)
+## State Transfer Backends
 
-If you want network isolation or advanced testing:
+Selected via `STATE_TRANSFER` environment variable:
+
+| Backend | Command | Pattern | Latency |
+|---------|---------|---------|---------|
+| TCP Push | `STATE_TRANSFER=tcp` | Direct push | ~700us |
+| HTTP Pull | `STATE_TRANSFER=http` | On-demand pull | ~25ms |
+| Redis KV | `STATE_TRANSFER=redis_kv` | Shared storage | ~1.3ms |
+| Redis Pub/Sub | `STATE_TRANSFER=redis_ps` | Event-driven | ~1.5ms |
+
+## Timing Strategies
+
+Selected via `TRANSFER_TIMING` environment variable:
+
+| Timing | Command | Description |
+|--------|---------|-------------|
+| Immediate | `TRANSFER_TIMING=immediate` | Transfer state right after handshake (default) |
+| Lazy | `TRANSFER_TIMING=lazy` | Start receiver in background, import crypto on first packet |
+
+## Test Setup: Four Physical Machines
+
+All experiments run across four separate physical machines on the same LAN:
+
+```
+Machine          Role               IP                Software
+----------------------------------------------------------------------
+optiplex7010     Client             141.217.168.127   neqo-client, Firefox
+opti7040         Primary Server     141.217.168.152   primary-server, bootstrap-server
+homeserver2      Preferred Server   141.217.168.143   preferred-server
+redis-server     Redis (Proxmox VM) 141.217.168.200   Redis 6379
+```
+
+The client is unmodified -- standard Firefox or neqo-client. It has no idea two servers are involved. The primary server handles the TLS handshake and exports crypto state. The preferred server imports the state and takes over the connection.
+
+## What We Test
+
+Two independent research dimensions, tested in every combination:
+
+**WHEN to transfer (timing):**
+- **Immediate** -- transfer state right after handshake, before client migrates
+- **Lazy** -- start receiver in background, import crypto only when first packet arrives
+
+**HOW to transfer (mechanism):**
+- **TCP Push** -- primary pushes directly to preferred over TCP socket
+- **HTTP Pull** -- primary exposes HTTP endpoint, preferred pulls when needed
+- **Redis KV** -- primary writes to Redis (SET), preferred reads (GET), CID-based keys
+- **Redis Pub/Sub** -- primary publishes to channel, preferred subscribes
+
+## Results: All 8 Combinations Pass
+
+```
+                TCP Push       HTTP Pull      Redis KV       Redis Pub/Sub
+             +-------------+-------------+-------------+---------------+
+ Immediate   |  PASS        |  PASS        |  PASS        |  PASS         |
+             |  send: 734us |  send: 35ms  |  send: 1.2ms |  send: 1.5ms  |
+             +-------------+-------------+-------------+---------------+
+ Lazy        |  PASS        |  PASS        |  PASS        |  PASS         |
+             |  send: 479us |  send: 25ms  |  send: 1.5ms |  send: 1.5ms  |
+             |  import: 7us |  import: 24ms|  import: 4ms |  import: 425us|
+             +-------------+-------------+-------------+---------------+
+```
+
+## Evaluation: 8 Metrics x 8 Combinations
+
+```
++-----------------+-----+-----+-----+-----+-----+-----+-----+-----+-------+
+| Combination     | Lat | Sec | Scl | Rel | Cpl | Sim | Dep | Per | TOTAL |
++-----------------+-----+-----+-----+-----+-----+-----+-----+-----+-------+
+| Imm + TCP Push  |  5  |  1  |  1  |  2  |  1  |  5  |  5  |  1  |  21   |
+| Imm + HTTP Pull |  2  |  3  |  3  |  3  |  3  |  3  |  5  |  2  |  24   |
+| Imm + Redis KV  |  4  |  3  |  5  |  5  |  5  |  3  |  2  |  5  |  32   |
+| Imm + Redis PS  |  4  |  1  |  4  |  2  |  5  |  3  |  2  |  1  |  22   |
+| Lazy + TCP Push |  5  |  2  |  1  |  3  |  1  |  3  |  5  |  1  |  21   |
+| Lazy + HTTP Pull|  2  |  5  |  3  |  3  |  3  |  3  |  5  |  3  |  27   |
+| Lazy + Redis KV |  4  |  3  |  5  |  5  |  5  |  3  |  2  |  5  |  32   |
+| Lazy + Redis PS |  4  |  1  |  4  |  3  |  5  |  3  |  2  |  1  |  23   |
++-----------------+-----+-----+-----+-----+-----+-----+-----+-----+-------+
+
+Lat=Latency  Sec=Security  Scl=Scalability  Rel=Reliability
+Cpl=Coupling(loose=5)  Sim=Simplicity  Dep=No Dependencies  Per=Persistence
+```
+
+**Best overall (32/40):** Redis KV -- works with both timings, highest in scalability, reliability, persistence
+
+**Best for security (27/40):** Lazy + HTTP Pull -- secrets stay in primary memory until pulled
+
+**Best for demos (21/40):** Immediate + TCP Push -- fastest, simplest, no dependencies
+
+## Reproducing the Setup
+
+### Prerequisites
+
+- Rust toolchain (on all 3 machines)
+- 3 machines on the same network (or adjust IPs)
+- Redis server (for redis_kv/redis_ps backends, can be a VM)
+
+### 1. Clone the repo on all 3 machines
 
 ```bash
-# Build image
-docker build -t quic-migration .
+git clone git@github.com:atahabilder1/quic-server-migration.git
+cd quic-server-migration
+```
 
-# Run server
-docker run -p 4433:4433/udp quic-migration python quic_server.py
+### 2. Run the setup script for each machine's role
 
-# Run client (in another terminal)
-docker run --network host quic-migration python quic_client.py
+```bash
+# On client machine (this PC):
+./scripts/setup-client.sh
+
+# On primary server (opti7040):
+./scripts/setup-primary.sh
+
+# On preferred server (homeserver2):
+./scripts/setup-preferred.sh
+```
+
+Each script builds the correct binary, sets env vars, and installs bash aliases.
+To use custom IPs: `./scripts/setup-primary.sh <PREFERRED_IP> <REDIS_IP>` (see script headers for args).
+
+### 3. Run the demo
+
+```bash
+# On preferred server:
+preferred-up
+
+# On primary server (two terminals):
+bootstrap-up   # Terminal 1: TCP HTTPS for Firefox
+primary-up     # Terminal 2: QUIC server
+
+# On client:
+quic-client                                    # neqo-client
+# Or Firefox: navigate to https://<PRIMARY_IP>:4433/
+```
+
+### Switch backends
+
+```bash
+# Primary
+primary-up-redis      # Redis KV
+primary-up-redis-ps   # Redis Pub/Sub
+primary-up-http       # HTTP Pull
+
+# Preferred
+preferred-up-redis         # Redis KV, Immediate
+preferred-up-redis-lazy    # Redis KV, Lazy
+preferred-up-http          # HTTP Pull, Immediate
+preferred-up-http-lazy     # HTTP Pull, Lazy
+```
+
+### Run benchmarks
+
+```bash
+# Single-pair latency (20 runs per backend)
+./benchmarks/run_benchmark.sh 20
+
+# Multi-server (3 primary, 3 preferred)
+./benchmarks/run_multiserver.sh
+
+# Concurrent clients
+./benchmarks/run_concurrent.sh 5
 ```
 
 ## Project Structure
 
 ```
-quic/
-├── requirements.txt           # Python dependencies
-├── generate_certs.py         # Generate self-signed certificates
-├── quic_server.py            # QUIC server with migration tracking
-├── quic_client.py            # QUIC client with migration simulation
-├── migration_demo.py         # Interactive learning tool
-├── README.md                 # This file
-└── Dockerfile               # Optional Docker setup
+quic-server-migration/
+  implementations/
+    neqo_server_migration/          # Modified Mozilla Neqo
+      migration-test/src/
+        primary_server.rs           # HTTP/3 primary server
+        preferred_server.rs         # Preferred server (immediate + lazy)
+        transfer/                   # Pluggable state transfer backends
+          mod.rs                    # Trait definitions + selector
+          tcp_push.rs               # Backend 1: Direct TCP
+          http_pull.rs              # Backend 2: HTTP REST API
+          redis_kv.rs               # Backend 3: Redis SET/GET
+          redis_pubsub.rs           # Backend 4: Redis Pub/Sub
+      neqo-transport/src/
+        migration_state.rs          # State serialization (new)
+        crypto.rs                   # TLS secret export/import (modified)
+        connection/mod.rs           # Migration state export (modified)
+      COMPREHENSIVE_GUIDE.pdf       # Full documentation (21 pages)
+      COMPARISON_RESULTS.pdf        # Short comparison (3 pages)
+    paper_attack_impl/              # QUIC-Exfil attack implementation
+  benchmarks/
+    run_benchmark.sh                # Experiment 1: Single-pair latency
+    run_multiserver.sh              # Experiment 2: N:M routing
+    run_concurrent.sh               # Experiment 3: Stress test
+    results/                        # CSV benchmark data
+  scripts/
+    setup-client.sh                 # Client machine setup
+    setup-primary.sh                # Primary server setup
+    setup-preferred.sh              # Preferred server setup
+  alt_svc_server.py                 # TCP HTTPS bootstrap for Firefox
+  quic_server.py                    # Python QUIC server (aioquic)
+  quic_client.py                    # Python QUIC client (aioquic)
+  *.svg                             # Architecture diagrams
 ```
 
-## Quick Start
+## Documentation
 
-### 1. Install Dependencies
+- **COMPREHENSIVE_GUIDE.pdf** -- Full 21-page guide covering architecture, code changes, timing strategies, transfer mechanisms, benchmark results, security analysis, and scoring
+- **COMPARISON_RESULTS.pdf** -- 3-page focused comparison of all 8 When x How combinations
+- **PAPER_SUMMARY.md** -- Analysis of the QUIC-Exfil attack paper
 
-```bash
-pip install -r requirements.txt
-```
+## Code Changes to Neqo
 
-The main dependency is `aioquic`, a Python implementation of QUIC.
+We modified 4 files and added 1 new file in Mozilla's neqo-transport crate:
 
-### 2. Generate Certificates
+1. **crypto.rs** -- Added `secret` field to retain TLS traffic secret for export
+2. **migration_state.rs** (new) -- Serialization format for migration state
+3. **connection/mod.rs** -- Added export_migration_state() method
+4. **cid.rs** -- Added CID enumeration accessors
+5. **lib.rs** -- Made crypto module public
 
-QUIC requires TLS, so we need certificates:
+Plus the migration-test crate with 2 binaries and 5 transfer backends.
 
-```bash
-python generate_certs.py
-```
+## Research Context
 
-This creates `cert.pem` and `key.pem` for testing.
-
-### 3. Interactive Learning
-
-Start with the interactive demo to understand concepts:
-
-```bash
-python migration_demo.py
-```
-
-This provides:
-- Explanations of QUIC migration concepts
-- Step-by-step scenarios
-- Benefits and use cases
-
-### 4. Run Live Simulation
-
-**Terminal 1 - Start the server:**
-```bash
-python quic_server.py
-```
-
-You should see:
-```
-🚀 Starting QUIC server on 127.0.0.1:4433
-📋 Server supports connection migration
-```
-
-**Terminal 2 - Run the client:**
-```bash
-python quic_client.py
-```
-
-Watch both terminals to see:
-- Connection establishment
-- Data exchange
-- Simulated migration events
-- Migration tracking
-
-## Understanding the Code
-
-### Server (quic_server.py)
-
-Key components:
-
-1. **MigrationTracker** (line 37): Tracks and logs migration events
-2. **QuicServerProtocol** (line 61): Handles QUIC events and detects migrations
-3. **Migration Detection** (line 85): Compares client addresses to detect changes
-
-The server automatically:
-- Detects when client address/port changes
-- Validates new paths
-- Continues serving without interruption
-- Tracks migration count
-
-### Client (quic_client.py)
-
-Key components:
-
-1. **QuicClientProtocol** (line 34): Handles client-side QUIC events
-2. **simulate_migration()** (line 66): Simulates different migration types
-3. **send_message()** (line 51): Sends data and waits for response
-
-The client can simulate:
-- **NAT_REBINDING**: Source port changes
-- **NETWORK_SWITCH**: Interface changes (WiFi → Cellular)
-- **IP_CHANGE**: Full IP address change
-
-### Demo Tool (migration_demo.py)
-
-An educational tool that explains:
-- QUIC migration concepts
-- Real-world scenarios
-- Step-by-step migration processes
-- Benefits and use cases
-
-## Migration Scenarios Explained
-
-### 1. NAT Rebinding
-
-**What happens:**
-- Client behind NAT, source port changes
-- Server receives packets from same IP but different port
-
-**QUIC handles it:**
-- Connection ID remains same
-- Server validates new path
-- Connection continues seamlessly
-
-### 2. Network Interface Switch (WiFi → Cellular)
-
-**What happens:**
-- Mobile device switches from WiFi to cellular
-- Completely new IP address
-
-**QUIC handles it:**
-- Connection ID identifies the connection
-- Path validation with CHALLENGE/RESPONSE
-- Zero application-level interruption
-
-### 3. IP Address Change (ISP Reassignment)
-
-**What happens:**
-- DHCP lease renewal gives new IP
-- Or connection reset by ISP
-
-**QUIC handles it:**
-- Connection state preserved
-- Automatic path validation
-- Transparent to application
-
-### 4. Server-Preferred Address
-
-**What happens:**
-- Server advertises better route
-- Client can migrate to preferred address
-
-**QUIC handles it:**
-- Server sends PREFERRED_ADDRESS
-- Client validates and migrates
-- Better routing or load balancing
-
-## Key QUIC Migration Features
-
-### Connection IDs
-- Unlike TCP's 4-tuple, QUIC uses Connection IDs
-- Allows network path to change
-- Can be rotated for privacy
-
-### Path Validation
-- PATH_CHALLENGE frame to new address
-- PATH_RESPONSE proves ownership
-- Prevents address spoofing
-
-### Zero-RTT Migration
-- After initial validation, subsequent migrations are fast
-- No handshake overhead
-- Minimal latency impact
-
-### Bidirectional
-- Client can migrate (most common)
-- Server can suggest preferred address
-- Both validate new paths
-
-## Benefits
-
-1. **Seamless Mobility**: Switch networks without disconnection
-2. **Better User Experience**: No interruptions in video, downloads, or games
-3. **Reduced Latency**: No connection re-establishment overhead
-4. **Privacy**: Rotate Connection IDs to prevent tracking
-5. **Resilience**: Survive NAT rebindings and network changes
-
-## Common Use Cases
-
-- **Mobile Apps**: Maintain connections when switching WiFi/cellular
-- **Video Conferencing**: Continue calls during network transitions
-- **Downloads**: Large downloads survive network changes
-- **Gaming**: Uninterrupted gameplay on mobile
-- **IoT Devices**: Resilient connections for embedded systems
-
-## Troubleshooting
-
-### Port Already in Use
-If you see "Address already in use":
-```bash
-# Find process using port 4433
-lsof -i :4433
-
-# Kill it or change port in server/client code
-```
-
-### Certificate Errors
-If you see certificate errors:
-```bash
-# Regenerate certificates
-python generate_certs.py
-```
-
-### Module Not Found
-If you see import errors:
-```bash
-# Ensure aioquic is installed
-pip install --upgrade aioquic
-```
-
-### No Migration Events Visible
-
-The current simulation uses localhost loopback, which limits true network path changes. To see real migrations:
-
-1. **Use multiple network interfaces**:
-   - Bind client to WiFi interface
-   - Switch to ethernet interface
-   - Observe migration in logs
-
-2. **Use network namespaces** (Linux):
-   ```bash
-   # Create namespace with different routing
-   sudo ip netns add test
-   ```
-
-3. **Use Docker with custom networks**:
-   - More realistic network simulation
-   - Control network conditions
-
-## Advanced Topics
-
-### Simulating Real Network Changes
-
-To properly test migration, you need actual network path changes:
-
-```python
-# Bind to specific interface
-import socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(('192.168.1.100', 0))  # Bind to WiFi IP
-# Then switch to cellular IP
-```
-
-### Adding Packet Loss
-
-Use `tc` (traffic control) on Linux:
-
-```bash
-# Add 10% packet loss
-sudo tc qdisc add dev eth0 root netem loss 10%
-
-# Add latency
-sudo tc qdisc add dev eth0 root netem delay 100ms
-```
-
-### Multi-Path QUIC
-
-While not in base spec, you can explore multi-path extensions:
-- Use multiple paths simultaneously
-- Aggregate bandwidth
-- Failover redundancy
-
-## Further Reading
-
-- [QUIC RFC 9000](https://www.rfc-editor.org/rfc/rfc9000.html) - Official QUIC spec
-- [Connection Migration (RFC 9000 Section 9)](https://www.rfc-editor.org/rfc/rfc9000.html#name-connection-migration)
-- [aioquic Documentation](https://github.com/aiortc/aioquic)
-- [Cloudflare QUIC Blog](https://blog.cloudflare.com/the-road-to-quic/)
-
-## Next Steps
-
-1. **Run the interactive demo**: `python migration_demo.py`
-2. **Study the scenarios**: Understand each migration type
-3. **Run live simulation**: See migrations in action
-4. **Modify the code**: Add your own scenarios
-5. **Experiment**: Try different network conditions
+- QUIC RFC 9000, Section 9.6 (Server's Preferred Address)
+- QUIC-Exfil attack: server-side migration exploited for data exfiltration
+- Firewalls cannot detect migration (encrypted inside QUIC)
+- ML classifiers achieve only 0-47% F1-score against this attack
 
 ## License
 
-This is an educational project for learning QUIC connection migration.
+Research project. Neqo modifications are based on Mozilla's Neqo (Apache 2.0 / MIT).

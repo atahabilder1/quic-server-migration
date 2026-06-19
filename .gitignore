@@ -1,153 +1,8 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual Environment
-venv/
-env/
-ENV/
-env.bak/
-venv.bak/
-
-# Jupyter Notebook
-.ipynb_checkpoints/
-*.ipynb_checkpoints/
-.jupyter/
-jupyter_notebook_config.py
-
-# IPython
-profile_default/
-ipython_config.py
-
-# SSL Certificates (keep generated certs local)
-*.pem
-*.key
-*.crt
-*.cer
-*.p12
-*.pfx
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Logs
-*.log
-logs/
-*.out
-
-# Test coverage
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# Environments
-.env
-.venv
-
-# Project specific
-*.pyc
-.Python
-
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Thumbnails
-._*
-
-# Files that might appear in the root of a volume
-.DocumentRevisions-V100
-.fseventsd
-.Spotlight-V100
-.TemporaryItems
-.Trashes
-.VolumeIcon.icns
-.com.apple.timemachine.donotpresent
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-
-# Windows
-Thumbs.db
-Thumbs.db:encryptable
-ehthumbs.db
-ehthumbs_vista.db
-*.stackdump
-[Dd]esktop.ini
-$RECYCLE.BIN/
-*.cab
-*.msi
-*.msix
-*.msm
-*.msp
-*.lnk
-
-# Linux
-*~
-.fuse_hidden*
-.directory
-.Trash-*
-.nfs*
-
-# Temporary files
-*.tmp
-*.temp
-*.bak
-*.swp
-*.swo
-
-# Packet captures (can be large)
-*.pcap
-*.pcapng
-*.cap
-
-# Compiled files
+# ============================================
+# Build artifacts (Rust, Python, C)
+# ============================================
+**/target/
+**/.hg/
 *.o
 *.a
 *.so
@@ -155,15 +10,131 @@ $RECYCLE.BIN/
 *.dll
 *.exe
 
-# Data files (can be large)
-*.csv
+# ============================================
+# Python
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.Python
+*.egg-info/
+*.egg
+
+# ============================================
+# Rust
+# ============================================
+*.qlog
+*.sqlog
+
+# ============================================
+# Certificates (never push secrets)
+# ============================================
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# ============================================
+# IDE / OS
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.directory
+Thumbs.db
+
+# ============================================
+# LaTeX temp files
+# ============================================
+*.aux
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+mdpdf.log
+
+# ============================================
+# Jupyter
+# ============================================
+.ipynb_checkpoints/
+
+# ============================================
+# Logs
+# ============================================
+*.log
+logs/
+
+# ============================================
+# Reference PDFs (copyrighted, personal reading)
+# ============================================
+/paper.pdf
+/neqo_comprehensive_guide.pdf
+
+# ============================================
+# Old tutorial/reference docs (superseded)
+# ============================================
+/COMPLETE_REFERENCE.md
+/COMPREHENSIVE_GUIDE.md
+/FILE_GUIDE.md
+/INDEX.md
+/QUICKSTART.md
+/START_HERE.md
+/STATE_SYNCHRONIZATION.md
+/UNDERSTANDING_SIMULATIONS.md
+/RESEARCH_OPPORTUNITIES.md
+/PROJECT_SUMMARY.md
+/neqo_comprehensive_guide.tex
+
+# ============================================
+# Superseded docs (merged into COMPREHENSIVE_GUIDE.pdf)
+# ============================================
+implementations/neqo_server_migration/MIGRATION_DOCUMENTATION.md
+implementations/neqo_server_migration/MIGRATION_DOCUMENTATION.pdf
+implementations/neqo_server_migration/STATE_TRANSFER_ANALYSIS.md
+implementations/neqo_server_migration/STATE_TRANSFER_ANALYSIS.pdf
+implementations/neqo_server_migration/WHEN_VS_HOW.md
+implementations/neqo_server_migration/WHEN_VS_HOW.pdf
+
+# ============================================
+# Other people's code (link to their repos instead)
+# ============================================
+implementations/neqo_mozilla/
+implementations/quiche_test/
+implementations/quic_go_test/
+implementations/aioquic_test/
+
+# ============================================
+# Docker (not used)
+# ============================================
+/Dockerfile
+/docker-compose.yml
+
+# ============================================
+# Temp / data files
+# ============================================
+*.tmp
+*.temp
+*.bak
+*.pcap
+*.pcapng
+*.cap
 *.dat
 *.sqlite
 *.db
+*.out
 
-# Don't ignore
+# ============================================
+# Keep these (override patterns above)
+# ============================================
 !.gitignore
 !requirements.txt
 !README.md
-!QUICKSTART.md
-!COMPREHENSIVE_GUIDE.md
+!PAPER_SUMMARY.md
+!benchmarks/results/*.csv

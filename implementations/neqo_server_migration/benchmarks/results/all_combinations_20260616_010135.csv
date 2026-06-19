@@ -1,0 +1,17 @@
+mechanism,timing,run,send_latency_us,receive_latency_us,state_size,migration_success,path_challenges,path_responses,result
+tcp,immediate,1,731.932µs,4.614294827s,358,0,0,0,FAIL
+tcp,immediate,2,611.707µs,4.553409723s,358,0,0,0,FAIL
+tcp,lazy,1,464.254µs,4.614761358s,358,1,1,1,PASS
+tcp,lazy,2,745.817µs,4.293887904s,358,1,1,1,PASS
+http,immediate,1,92.226196ms,4.647375839s,358,0,0,0,FAIL
+http,immediate,2,20.625796ms,4.547021709s,358,0,0,0,FAIL
+http,lazy,1,1.086455ms,4.542218704s,358,1,1,1,PASS
+http,lazy,2,26.909567ms,4.645223065s,358,1,1,1,PASS
+redis_kv,immediate,1,981.504µs,4.568513431s,358,0,0,0,FAIL
+redis_kv,immediate,2,816.014µs,4.56164067s,358,0,0,0,FAIL
+redis_kv,lazy,1,721.932µs,4.562690166s,358,1,1,1,PASS
+redis_kv,lazy,2,829.815µs,4.566385536s,358,1,1,1,PASS
+redis_ps,immediate,1,1.00583ms,4.529323346s,358,0,0,0,FAIL
+redis_ps,immediate,2,1.196808ms,4.530435283s,358,0,0,0,FAIL
+redis_ps,lazy,1,854.93µs,4.512001222s,358,1,1,1,PASS
+redis_ps,lazy,2,913.367µs,4.520671217s,358,1,1,1,PASS

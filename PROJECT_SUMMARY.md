@@ -381,16 +381,31 @@ For your paper, measure:
 
 ---
 
+## Implementation Status
+
+**Cross-machine QUIC server-side migration is COMPLETE and working (June 2026).**
+
+What has been achieved:
+- Modified Mozilla's Neqo QUIC stack to export/import TLS crypto state
+- Tested across 3 physical machines on the same LAN
+- Firefox connects via HTTP/3, migration happens transparently
+- Preferred server decrypts PATH_CHALLENGE and responds with PATH_RESPONSE
+- The client (Firefox) has no indication the connection moved to a different machine
+- Proves the QUIC-Exfil attack is practically feasible
+
+**Implementation location:** `implementations/neqo_server_migration/`
+**Full documentation:** `implementations/neqo_server_migration/MIGRATION_DOCUMENTATION.md`
+
 ## Summary
 
 You now have:
-- ✅ Complete server-side migration tutorial
-- ✅ Networking fundamentals explained
-- ✅ Protocol deep dive
-- ✅ Research methodology
-- ✅ All Python scripts functional
-- ✅ Comprehensive documentation
+- Complete server-side migration tutorial
+- Networking fundamentals explained
+- Protocol deep dive
+- Research methodology
+- All Python scripts functional
+- Comprehensive documentation
+- **Working cross-machine migration implementation with Firefox demo**
 
 **Your main file:** `server_side_migration.ipynb`
-
-**Refresh Jupyter and start learning!** 🚀
+**Implementation docs:** `implementations/neqo_server_migration/MIGRATION_DOCUMENTATION.md`

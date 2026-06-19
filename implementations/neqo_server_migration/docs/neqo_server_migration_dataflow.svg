@@ -1,0 +1,688 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 6400" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <marker id="arr-r" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#e74c3c"/>
+    </marker>
+    <marker id="arr-g" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#27ae60"/>
+    </marker>
+    <marker id="arr-b" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2980b9"/>
+    </marker>
+    <marker id="arr-o" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#e67e22"/>
+    </marker>
+    <marker id="arr-p" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8e44ad"/>
+    </marker>
+    <filter id="sh" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <linearGradient id="hdr" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/><stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1400" height="6400" fill="#f5f6fa" rx="15"/>
+
+  <!-- ======== TITLE ======== -->
+  <rect x="40" y="25" width="1320" height="130" rx="15" fill="url(#hdr)" filter="url(#sh)"/>
+  <text x="700" y="70" text-anchor="middle" fill="#e94560" font-size="34" font-weight="bold">Server-Side Migration: preferred_address</text>
+  <text x="700" y="100" text-anchor="middle" fill="#bbb" font-size="18">How the server tells the client "Hey, talk to me at THIS address instead!"</text>
+  <text x="700" y="128" text-anchor="middle" fill="#e67e22" font-size="16">This is the EXACT feature the QUIC-Exfil attack exploits</text>
+
+  <!-- ======== WHAT IS preferred_address? ======== -->
+  <rect x="40" y="180" width="1320" height="280" rx="15" fill="white" stroke="#2c3e50" stroke-width="2" filter="url(#sh)"/>
+  <text x="700" y="215" text-anchor="middle" fill="#2c3e50" font-size="22" font-weight="bold">What is preferred_address? (The Big Idea)</text>
+
+  <!-- Analogy -->
+  <rect x="70" y="235" width="620" height="210" rx="12" fill="#ebf5fb" stroke="#2980b9" stroke-width="1"/>
+  <text x="80" y="265" fill="#2980b9" font-size="17" font-weight="bold">Real-world analogy:</text>
+  <text x="80" y="295" fill="#555" font-size="14">Imagine you call a company's main reception desk (PRIMARY).</text>
+  <text x="80" y="318" fill="#555" font-size="14">The receptionist says:</text>
+  <text x="80" y="345" fill="#e67e22" font-size="16" font-weight="bold">"Actually, call me directly at my desk number</text>
+  <text x="80" y="368" fill="#e67e22" font-size="16" font-weight="bold"> instead — it's faster!" (PREFERRED ADDRESS)</text>
+  <text x="80" y="398" fill="#555" font-size="14">You hang up and call the direct number.</text>
+  <text x="80" y="421" fill="#27ae60" font-size="14" font-weight="bold">Same person, better connection, no need to re-introduce yourself!</text>
+
+  <!-- Why it exists -->
+  <rect x="710" y="235" width="630" height="210" rx="12" fill="#fef9e7" stroke="#e67e22" stroke-width="1"/>
+  <text x="720" y="265" fill="#e67e22" font-size="17" font-weight="bold">Why do servers use this?</text>
+  <text x="720" y="295" fill="#555" font-size="14">1. Load Balancer --> Backend: Client first hits load balancer,</text>
+  <text x="730" y="315" fill="#555" font-size="14">   then gets redirected to actual server</text>
+  <text x="720" y="340" fill="#555" font-size="14">2. CDN Optimization: Move client to closer edge server</text>
+  <text x="720" y="365" fill="#555" font-size="14">3. Server Maintenance: Migrate clients off a server</text>
+  <text x="720" y="395" fill="#e74c3c" font-size="15" font-weight="bold">The problem: This info is ENCRYPTED!</text>
+  <text x="720" y="418" fill="#e74c3c" font-size="14">Firewalls don't know what the preferred address is.</text>
+  <text x="720" y="438" fill="#e74c3c" font-size="14">So they can't verify if a migration is legit or fake!</text>
+
+  <!-- ======== THE ACTORS ======== -->
+  <rect x="40" y="485" width="1320" height="45" rx="10" fill="#2c3e50" filter="url(#sh)"/>
+  <text x="700" y="515" text-anchor="middle" fill="white" font-size="20" font-weight="bold">THE ACTORS IN THIS STORY</text>
+
+  <!-- Client -->
+  <rect x="60" y="550" width="300" height="160" rx="15" fill="white" stroke="#3498db" stroke-width="3" filter="url(#sh)"/>
+  <text x="210" y="580" text-anchor="middle" fill="#3498db" font-size="18" font-weight="bold">CLIENT (Firefox)</text>
+  <text x="210" y="605" text-anchor="middle" fill="#555" font-size="13">Your browser / phone</text>
+  <rect x="85" y="620" width="250" height="22" rx="4" fill="#ebf5fb"/>
+  <text x="210" y="637" text-anchor="middle" fill="#2980b9" font-size="12">IP: 192.168.1.50:43210</text>
+  <rect x="85" y="648" width="250" height="22" rx="4" fill="#ebf5fb"/>
+  <text x="210" y="665" text-anchor="middle" fill="#2980b9" font-size="12">Neqo code: connection/mod.rs</text>
+  <rect x="85" y="676" width="250" height="22" rx="4" fill="#ebf5fb"/>
+  <text x="210" y="693" text-anchor="middle" fill="#2980b9" font-size="12">migrate_to_preferred_address()</text>
+
+  <!-- Primary Server -->
+  <rect x="440" y="550" width="300" height="160" rx="15" fill="white" stroke="#27ae60" stroke-width="3" filter="url(#sh)"/>
+  <text x="590" y="580" text-anchor="middle" fill="#27ae60" font-size="18" font-weight="bold">PRIMARY SERVER</text>
+  <text x="590" y="605" text-anchor="middle" fill="#555" font-size="13">Load balancer / front door</text>
+  <rect x="465" y="620" width="250" height="22" rx="4" fill="#eafaf1"/>
+  <text x="590" y="637" text-anchor="middle" fill="#27ae60" font-size="12">IP: 142.250.80.46:443</text>
+  <rect x="465" y="648" width="250" height="22" rx="4" fill="#eafaf1"/>
+  <text x="590" y="665" text-anchor="middle" fill="#27ae60" font-size="12">Neqo code: server.rs</text>
+  <rect x="465" y="676" width="250" height="22" rx="4" fill="#eafaf1"/>
+  <text x="590" y="693" text-anchor="middle" fill="#27ae60" font-size="12">Handles initial handshake</text>
+
+  <!-- Preferred Server -->
+  <rect x="820" y="550" width="300" height="160" rx="15" fill="white" stroke="#e67e22" stroke-width="3" filter="url(#sh)"/>
+  <text x="970" y="580" text-anchor="middle" fill="#e67e22" font-size="18" font-weight="bold">PREFERRED SERVER</text>
+  <text x="970" y="605" text-anchor="middle" fill="#555" font-size="13">The "better" address</text>
+  <rect x="845" y="620" width="250" height="22" rx="4" fill="#fef9e7"/>
+  <text x="970" y="637" text-anchor="middle" fill="#e67e22" font-size="12">IP: 10.0.0.99:443</text>
+  <rect x="845" y="648" width="250" height="22" rx="4" fill="#fef9e7"/>
+  <text x="970" y="665" text-anchor="middle" fill="#e67e22" font-size="12">Same machine or different</text>
+  <rect x="845" y="676" width="250" height="22" rx="4" fill="#fef9e7"/>
+  <text x="970" y="693" text-anchor="middle" fill="#e67e22" font-size="12">Client migrates HERE</text>
+
+  <!-- Firewall -->
+  <rect x="1160" y="550" width="180" height="160" rx="15" fill="white" stroke="#e74c3c" stroke-width="3" filter="url(#sh)"/>
+  <text x="1250" y="580" text-anchor="middle" fill="#e74c3c" font-size="18" font-weight="bold">FIREWALL</text>
+  <text x="1250" y="605" text-anchor="middle" fill="#555" font-size="13">Watching traffic</text>
+  <rect x="1175" y="620" width="150" height="22" rx="4" fill="#fdedec"/>
+  <text x="1250" y="637" text-anchor="middle" fill="#e74c3c" font-size="12">Can see: IP, port</text>
+  <rect x="1175" y="648" width="150" height="22" rx="4" fill="#fdedec"/>
+  <text x="1250" y="665" text-anchor="middle" fill="#e74c3c" font-size="12">Can't see: data</text>
+  <rect x="1175" y="676" width="150" height="22" rx="4" fill="#fdedec"/>
+  <text x="1250" y="693" text-anchor="middle" fill="#e74c3c" font-size="12">BLIND to migration</text>
+
+  <!-- ======== PHASE 1: HANDSHAKE ======== -->
+  <rect x="40" y="740" width="1320" height="45" rx="10" fill="#27ae60" filter="url(#sh)"/>
+  <text x="700" y="770" text-anchor="middle" fill="white" font-size="20" font-weight="bold">PHASE 1: Handshake - Server secretly tells client the preferred address</text>
+
+  <rect x="60" y="805" width="1280" height="500" rx="15" fill="white" stroke="#27ae60" stroke-width="2" filter="url(#sh)"/>
+
+  <!-- Step 1A: Client Hello -->
+  <rect x="90" y="820" width="250" height="55" rx="8" fill="#3498db"/>
+  <text x="215" y="843" text-anchor="middle" fill="white" font-size="14" font-weight="bold">CLIENT</text>
+  <text x="215" y="862" text-anchor="middle" fill="#d6eaf8" font-size="12">Sends ClientHello</text>
+  <line x1="340" y1="848" x2="540" y2="848" stroke="#3498db" stroke-width="3" marker-end="url(#arr-b)"/>
+  <text x="440" y="838" text-anchor="middle" fill="#3498db" font-size="12" font-weight="bold">Initial Packet</text>
+
+  <rect x="540" y="820" width="250" height="55" rx="8" fill="#27ae60"/>
+  <text x="665" y="843" text-anchor="middle" fill="white" font-size="14" font-weight="bold">PRIMARY SERVER</text>
+  <text x="665" y="862" text-anchor="middle" fill="#d5f5e3" font-size="12">Receives ClientHello</text>
+
+  <!-- Firewall note -->
+  <rect x="850" y="820" width="470" height="55" rx="8" fill="#fdedec" stroke="#e74c3c"/>
+  <text x="860" y="843" fill="#e74c3c" font-size="13" font-weight="bold">FIREWALL CAN SEE: Initial packet, TLS ClientHello, SNI</text>
+  <text x="860" y="862" fill="#e74c3c" font-size="12">This is the LAST thing the firewall can meaningfully read!</text>
+
+  <!-- Step 1B: Server Hello with preferred_address INSIDE -->
+  <rect x="540" y="900" width="250" height="55" rx="8" fill="#27ae60"/>
+  <text x="665" y="923" text-anchor="middle" fill="white" font-size="14" font-weight="bold">PRIMARY SERVER</text>
+  <text x="665" y="942" text-anchor="middle" fill="#d5f5e3" font-size="12">Sends ServerHello + EncryptedExtensions</text>
+  <line x1="540" y1="928" x2="340" y2="928" stroke="#27ae60" stroke-width="3" marker-end="url(#arr-g)"/>
+  <text x="440" y="920" text-anchor="middle" fill="#27ae60" font-size="12" font-weight="bold">Handshake Packet</text>
+
+  <!-- THE KEY PART - preferred_address is INSIDE the encrypted handshake -->
+  <rect x="90" y="975" width="1230" height="180" rx="12" fill="#1a1a2e" filter="url(#sh)"/>
+  <text x="700" y="1005" text-anchor="middle" fill="#e94560" font-size="18" font-weight="bold">THE SECRET: preferred_address is HIDDEN inside the encrypted handshake!</text>
+
+  <!-- The transport parameter structure -->
+  <rect x="120" y="1025" width="580" height="120" rx="8" fill="#16213e" stroke="#e67e22" stroke-width="2"/>
+  <text x="130" y="1050" fill="#e67e22" font-size="14" font-weight="bold">Transport Parameter: preferred_address (0x0d)</text>
+  <text x="130" y="1072" fill="#ecf0f1" font-size="12" font-family="monospace">IPv4 Address:  10.0.0.99       (4 bytes)</text>
+  <text x="130" y="1092" fill="#ecf0f1" font-size="12" font-family="monospace">IPv4 Port:     443             (2 bytes)</text>
+  <text x="130" y="1112" fill="#ecf0f1" font-size="12" font-family="monospace">IPv6 Address:  fe80::1         (16 bytes)</text>
+  <text x="130" y="1132" fill="#ecf0f1" font-size="12" font-family="monospace">IPv6 Port:     443             (2 bytes)</text>
+
+  <rect x="720" y="1025" width="580" height="120" rx="8" fill="#16213e" stroke="#e67e22" stroke-width="2"/>
+  <text x="730" y="1050" fill="#e67e22" font-size="14" font-weight="bold">Also included:</text>
+  <text x="730" y="1072" fill="#ecf0f1" font-size="12" font-family="monospace">Connection ID:      0x0102030405  (5 bytes)</text>
+  <text x="730" y="1092" fill="#ecf0f1" font-size="12" font-family="monospace">Stateless Reset:    0xaa...aa     (16 bytes)</text>
+  <text x="730" y="1112" fill="#ecf0f1" font-size="12" font-family="monospace">                                          </text>
+  <text x="730" y="1132" fill="#e74c3c" font-size="13" font-weight="bold">ALL OF THIS IS ENCRYPTED! Firewall sees NOTHING!</text>
+
+  <!-- Neqo code -->
+  <rect x="90" y="1170" width="1230" height="120" rx="12" fill="#0f3460" filter="url(#sh)"/>
+  <text x="110" y="1195" fill="#1abc9c" font-size="14" font-weight="bold">Neqo code that SENDS preferred_address (server side):</text>
+  <text x="110" y="1220" fill="#ecf0f1" font-size="13" font-family="monospace">// connection/params.rs:597-610  (create_transport_parameter)</text>
+  <text x="110" y="1243" fill="#e67e22" font-size="13" font-family="monospace">if let PreferredAddressConfig::Address(preferred) = &amp;self.preferred_address</text>
+  <text x="110" y="1263" fill="#e67e22" font-size="13" font-family="monospace">    &amp;&amp; role == Role::Server {</text>
+  <text x="110" y="1283" fill="#27ae60" font-size="13" font-family="monospace">    tps.local_mut().set(PreferredAddressTp, TransportParameter::PreferredAddress{v4, v6, cid, srt})</text>
+
+  <!-- ======== PHASE 2: CLIENT PROCESSES preferred_address ======== -->
+  <rect x="40" y="1320" width="1320" height="45" rx="10" fill="#2980b9" filter="url(#sh)"/>
+  <text x="700" y="1350" text-anchor="middle" fill="white" font-size="20" font-weight="bold">PHASE 2: Client receives HANDSHAKE_DONE and finds the preferred address</text>
+
+  <rect x="60" y="1385" width="1280" height="430" rx="15" fill="white" stroke="#2980b9" stroke-width="2" filter="url(#sh)"/>
+
+  <!-- The trigger -->
+  <rect x="90" y="1400" width="1230" height="70" rx="10" fill="#ebf5fb" stroke="#2980b9"/>
+  <text x="100" y="1425" fill="#2980b9" font-size="16" font-weight="bold">When does this happen?</text>
+  <text x="100" y="1450" fill="#555" font-size="14">The client receives a HANDSHAKE_DONE frame from the server. This means TLS handshake is complete.</text>
+  <text x="100" y="1465" fill="#2980b9" font-size="13">At this exact moment, Neqo calls: self.migrate_to_preferred_address(now)</text>
+
+  <!-- Code flow -->
+  <rect x="90" y="1485" width="1230" height="315" rx="12" fill="#1a1a2e" filter="url(#sh)"/>
+  <text x="110" y="1515" fill="#f39c12" font-size="16" font-weight="bold">connection/mod.rs : migrate_to_preferred_address() -- line 2103</text>
+
+  <!-- Step by step -->
+  <rect x="120" y="1535" width="45" height="25" rx="12" fill="#3498db"/>
+  <text x="142" y="1553" text-anchor="middle" fill="white" font-size="13" font-weight="bold">1</text>
+  <text x="180" y="1553" fill="#ecf0f1" font-size="13" font-family="monospace">Check: Is preferred_address disabled in config?</text>
+  <text x="180" y="1573" fill="#95a5a6" font-size="12" font-family="monospace">if matches!(self.conn_params.get_preferred_address(), PreferredAddressConfig::Disabled)</text>
+
+  <rect x="120" y="1590" width="45" height="25" rx="12" fill="#27ae60"/>
+  <text x="142" y="1608" text-anchor="middle" fill="white" font-size="13" font-weight="bold">2</text>
+  <text x="180" y="1608" fill="#ecf0f1" font-size="13" font-family="monospace">Extract preferred_address from server's transport parameters</text>
+  <text x="180" y="1628" fill="#95a5a6" font-size="12" font-family="monospace">self.tps.borrow_mut().remote().get_preferred_address()  // returns (PreferredAddress, CID)</text>
+
+  <rect x="120" y="1645" width="45" height="25" rx="12" fill="#e67e22"/>
+  <text x="142" y="1663" text-anchor="middle" fill="white" font-size="13" font-weight="bold">3</text>
+  <text x="180" y="1663" fill="#ecf0f1" font-size="13" font-family="monospace">Save the new Connection ID the server gave us for this address</text>
+  <text x="180" y="1683" fill="#95a5a6" font-size="12" font-family="monospace">self.cids.add_remote(cid)  // store CID for preferred address path</text>
+
+  <rect x="120" y="1700" width="45" height="25" rx="12" fill="#8e44ad"/>
+  <text x="142" y="1718" text-anchor="middle" fill="white" font-size="13" font-weight="bold">4</text>
+  <text x="180" y="1718" fill="#ecf0f1" font-size="13" font-family="monospace">Pick the right address family (IPv4 or IPv6) to match current connection</text>
+  <text x="180" y="1738" fill="#95a5a6" font-size="12" font-family="monospace">IpAddr::V4(_) =&gt; addr.ipv4()  |  IpAddr::V6(_) =&gt; addr.ipv6()</text>
+
+  <rect x="120" y="1755" width="45" height="25" rx="12" fill="#e74c3c"/>
+  <text x="142" y="1773" text-anchor="middle" fill="white" font-size="13" font-weight="bold">5</text>
+  <text x="180" y="1773" fill="#e94560" font-size="14" font-family="monospace" font-weight="bold">self.migrate(None, Some(remote), false, now)</text>
+  <text x="180" y="1793" fill="#f39c12" font-size="13">This triggers the EXACT same migrate() flow -- creates new path, sends PATH_CHALLENGE!</text>
+
+  <!-- ======== PHASE 3: THE ACTUAL MIGRATION ======== -->
+  <rect x="40" y="1840" width="1320" height="45" rx="10" fill="#e67e22" filter="url(#sh)"/>
+  <text x="700" y="1870" text-anchor="middle" fill="white" font-size="20" font-weight="bold">PHASE 3: Client probes the preferred address (PATH_CHALLENGE)</text>
+
+  <!-- Big flow diagram -->
+  <rect x="60" y="1905" width="1280" height="470" rx="15" fill="white" stroke="#e67e22" stroke-width="2" filter="url(#sh)"/>
+
+  <!-- Client box -->
+  <rect x="90" y="1925" width="200" height="50" rx="8" fill="#3498db"/>
+  <text x="190" y="1955" text-anchor="middle" fill="white" font-size="15" font-weight="bold">CLIENT (Firefox)</text>
+
+  <!-- Primary server box -->
+  <rect x="560" y="1925" width="200" height="50" rx="8" fill="#95a5a6"/>
+  <text x="660" y="1945" text-anchor="middle" fill="white" font-size="13" font-weight="bold">PRIMARY SERVER</text>
+  <text x="660" y="1965" text-anchor="middle" fill="#ecf0f1" font-size="11">142.250.80.46:443</text>
+
+  <!-- Preferred server box -->
+  <rect x="1050" y="1925" width="200" height="50" rx="8" fill="#e67e22"/>
+  <text x="1150" y="1945" text-anchor="middle" fill="white" font-size="13" font-weight="bold">PREFERRED SERVER</text>
+  <text x="1150" y="1965" text-anchor="middle" fill="#fef9e7" font-size="11">10.0.0.99:443</text>
+
+  <!-- Step A: Client sends PATH_CHALLENGE to PREFERRED (not primary!) -->
+  <line x1="290" y1="2010" x2="1050" y2="2010" stroke="#e67e22" stroke-width="3" marker-end="url(#arr-o)"/>
+  <rect x="430" y="1990" width="450" height="45" rx="8" fill="#e67e22" filter="url(#sh)"/>
+  <text x="655" y="2010" text-anchor="middle" fill="white" font-size="13" font-weight="bold">PATH_CHALLENGE to 10.0.0.99:443 (PREFERRED)</text>
+  <text x="655" y="2028" text-anchor="middle" fill="#fef9e7" font-size="11">[8 random bytes] + padding to 1200 bytes | CID from handshake</text>
+
+  <text x="100" y="2015" fill="#3498db" font-size="12" font-weight="bold">A</text>
+  <text x="100" y="2050" fill="#555" font-size="12">Client sends probe</text>
+  <text x="100" y="2065" fill="#555" font-size="12">to the NEW address</text>
+  <text x="100" y="2080" fill="#e67e22" font-size="12" font-weight="bold">(NOT to primary!)</text>
+
+  <!-- Step B: Preferred server responds -->
+  <line x1="1050" y1="2110" x2="290" y2="2110" stroke="#8e44ad" stroke-width="3" marker-end="url(#arr-p)"/>
+  <rect x="430" y="2090" width="450" height="45" rx="8" fill="#8e44ad" filter="url(#sh)"/>
+  <text x="655" y="2110" text-anchor="middle" fill="white" font-size="13" font-weight="bold">PATH_RESPONSE from 10.0.0.99:443</text>
+  <text x="655" y="2128" text-anchor="middle" fill="#d7bde2" font-size="11">[same 8 bytes back] -- "Yes, I'm real, I got your message!"</text>
+
+  <text x="100" y="2115" fill="#8e44ad" font-size="12" font-weight="bold">B</text>
+  <text x="100" y="2148" fill="#555" font-size="12">Preferred server</text>
+  <text x="100" y="2163" fill="#555" font-size="12">proves it's real</text>
+
+  <!-- Step C: Client validates and switches -->
+  <rect x="90" y="2190" width="560" height="55" rx="8" fill="#27ae60"/>
+  <text x="370" y="2213" text-anchor="middle" fill="white" font-size="14" font-weight="bold">C: Client validates! Path is GOOD!</text>
+  <text x="370" y="2233" text-anchor="middle" fill="#d5f5e3" font-size="12">path.rs: set_valid(now) --> select_primary(preferred_path)</text>
+
+  <!-- Step D: All traffic now goes to preferred -->
+  <line x1="290" y1="2290" x2="1050" y2="2290" stroke="#27ae60" stroke-width="4" marker-end="url(#arr-g)" stroke-dasharray="10,5"/>
+  <text x="655" y="2278" text-anchor="middle" fill="#27ae60" font-size="14" font-weight="bold">ALL future traffic now goes to PREFERRED SERVER</text>
+  <text x="655" y="2300" text-anchor="middle" fill="#888" font-size="12">Video, data, everything — same Connection ID, new destination IP</text>
+
+  <text x="100" y="2295" fill="#27ae60" font-size="12" font-weight="bold">D</text>
+  <text x="100" y="2325" fill="#555" font-size="12">Connection migrated!</text>
+  <text x="100" y="2340" fill="#555" font-size="12">Primary server is</text>
+  <text x="100" y="2355" fill="#95a5a6" font-size="12">abandoned.</text>
+
+  <!-- Primary server is now grayed out -->
+  <rect x="560" y="2260" width="200" height="35" rx="5" fill="#ecf0f1"/>
+  <text x="660" y="2283" text-anchor="middle" fill="#95a5a6" font-size="12">No longer receiving traffic</text>
+
+  <!-- Neqo code for this -->
+  <rect x="700" y="2190" width="610" height="170" rx="10" fill="#1a1a2e"/>
+  <text x="720" y="2215" fill="#1abc9c" font-size="13" font-weight="bold">Neqo code flow (connection/mod.rs:3427):</text>
+  <text x="720" y="2240" fill="#ecf0f1" font-size="12" font-family="monospace">Frame::HandshakeDone =&gt;</text>
+  <text x="720" y="2260" fill="#ecf0f1" font-size="12" font-family="monospace">  self.set_confirmed(now)?;</text>
+  <text x="720" y="2280" fill="#ecf0f1" font-size="12" font-family="monospace">  self.discard_keys(Handshake, now);</text>
+  <text x="720" y="2300" fill="#e94560" font-size="13" font-family="monospace" font-weight="bold">  self.migrate_to_preferred_address(now)?;</text>
+  <text x="720" y="2325" fill="#95a5a6" font-size="12">// This is the trigger! Right after handshake completes!</text>
+  <text x="720" y="2345" fill="#95a5a6" font-size="12">// Calls self.migrate(None, Some(preferred_addr), false, now)</text>
+
+  <!-- ======== PHASE 4: WHAT FIREWALL SEES ======== -->
+  <rect x="40" y="2400" width="1320" height="45" rx="10" fill="#e74c3c" filter="url(#sh)"/>
+  <text x="700" y="2430" text-anchor="middle" fill="white" font-size="20" font-weight="bold">PHASE 4: What the FIREWALL sees (and why it's BLIND)</text>
+
+  <rect x="60" y="2465" width="1280" height="440" rx="15" fill="white" stroke="#e74c3c" stroke-width="2" filter="url(#sh)"/>
+
+  <!-- Packet timeline from firewall's perspective -->
+  <text x="700" y="2500" text-anchor="middle" fill="#2c3e50" font-size="17" font-weight="bold">Firewall's view of all packets during server-side migration:</text>
+
+  <!-- Packet 1 -->
+  <rect x="90" y="2520" width="1210" height="35" rx="5" fill="#eafaf1" stroke="#27ae60"/>
+  <text x="100" y="2543" fill="#27ae60" font-size="13" font-weight="bold">Pkt 1:</text>
+  <text x="160" y="2543" fill="#555" font-size="12">192.168.1.50:43210 --> 142.250.80.46:443   | 1200 bytes | Initial (ClientHello visible)</text>
+  <text x="1150" y="2543" fill="#27ae60" font-size="12" font-weight="bold">CAN READ</text>
+
+  <!-- Packet 2 -->
+  <rect x="90" y="2560" width="1210" height="35" rx="5" fill="#eafaf1" stroke="#27ae60"/>
+  <text x="100" y="2583" fill="#27ae60" font-size="13" font-weight="bold">Pkt 2:</text>
+  <text x="160" y="2583" fill="#555" font-size="12">142.250.80.46:443 --> 192.168.1.50:43210   | 1200 bytes | Initial (ServerHello visible)</text>
+  <text x="1150" y="2583" fill="#27ae60" font-size="12" font-weight="bold">CAN READ</text>
+
+  <!-- Packet 3 -->
+  <rect x="90" y="2600" width="1210" height="35" rx="5" fill="#fdedec" stroke="#e74c3c"/>
+  <text x="100" y="2623" fill="#e74c3c" font-size="13" font-weight="bold">Pkt 3:</text>
+  <text x="160" y="2623" fill="#555" font-size="12">142.250.80.46:443 --> 192.168.1.50:43210   | 900 bytes  | Handshake (preferred_address INSIDE!)</text>
+  <text x="1100" y="2623" fill="#e74c3c" font-size="12" font-weight="bold">ENCRYPTED!</text>
+
+  <!-- Packet 4 - normal data -->
+  <rect x="90" y="2640" width="1210" height="35" rx="5" fill="#fdedec" stroke="#e74c3c"/>
+  <text x="100" y="2663" fill="#555" font-size="13" font-weight="bold">Pkt 4:</text>
+  <text x="160" y="2663" fill="#555" font-size="12">192.168.1.50:43210 --> 142.250.80.46:443   | 100 bytes  | Short Header (data exchange)</text>
+  <text x="1100" y="2663" fill="#e74c3c" font-size="12" font-weight="bold">ENCRYPTED!</text>
+
+  <!-- Packet 5 - THE MIGRATION! -->
+  <rect x="90" y="2685" width="1210" height="45" rx="5" fill="#e74c3c"/>
+  <text x="100" y="2708" fill="white" font-size="13" font-weight="bold">Pkt 5:</text>
+  <text x="160" y="2708" fill="white" font-size="13" font-weight="bold">192.168.1.50:43210 --> 10.0.0.99:443       | 1200 bytes | Short Header (PATH_CHALLENGE)</text>
+  <text x="160" y="2723" fill="#fadbd8" font-size="11">DESTINATION CHANGED! Client now talks to a different IP! But firewall doesn't know WHY!</text>
+
+  <!-- Packet 6 -->
+  <rect x="90" y="2735" width="1210" height="35" rx="5" fill="#fdedec" stroke="#e74c3c"/>
+  <text x="100" y="2758" fill="#555" font-size="13" font-weight="bold">Pkt 6:</text>
+  <text x="160" y="2758" fill="#555" font-size="12">10.0.0.99:443 --> 192.168.1.50:43210       | 100 bytes  | Short Header (PATH_RESPONSE)</text>
+  <text x="1100" y="2758" fill="#e74c3c" font-size="12" font-weight="bold">ENCRYPTED!</text>
+
+  <!-- Packet 7+ -->
+  <rect x="90" y="2775" width="1210" height="35" rx="5" fill="#fdedec" stroke="#e74c3c"/>
+  <text x="100" y="2798" fill="#555" font-size="13" font-weight="bold">Pkt 7+:</text>
+  <text x="160" y="2798" fill="#555" font-size="12">192.168.1.50:43210 --> 10.0.0.99:443       | varies     | All traffic to preferred address now</text>
+  <text x="1100" y="2798" fill="#e74c3c" font-size="12" font-weight="bold">ENCRYPTED!</text>
+
+  <!-- What firewall thinks -->
+  <rect x="90" y="2825" width="1210" height="65" rx="10" fill="#fef9e7" stroke="#e67e22" stroke-width="2"/>
+  <text x="700" y="2850" text-anchor="middle" fill="#e67e22" font-size="16" font-weight="bold">Firewall thinks: "Client started talking to a new IP. Probably a QUIC migration. Looks normal."</text>
+  <text x="700" y="2875" text-anchor="middle" fill="#e74c3c" font-size="15" font-weight="bold">Firewall has NO WAY to know if 10.0.0.99 is a legitimate preferred address or an ATTACKER!</text>
+
+  <!-- ======== PHASE 5: THE ATTACK ======== -->
+  <rect x="40" y="2930" width="1320" height="45" rx="10" fill="#c0392b" filter="url(#sh)"/>
+  <text x="700" y="2960" text-anchor="middle" fill="white" font-size="20" font-weight="bold">PHASE 5: THE QUIC-EXFIL ATTACK - How malware exploits this</text>
+
+  <rect x="60" y="2995" width="1280" height="840" rx="15" fill="white" stroke="#c0392b" stroke-width="3" filter="url(#sh)"/>
+
+  <!-- Attack explanation -->
+  <rect x="90" y="3010" width="1210" height="70" rx="10" fill="#1a1a2e"/>
+  <text x="700" y="3035" text-anchor="middle" fill="#e94560" font-size="18" font-weight="bold">The attacker does NOT need Neqo or any QUIC library!</text>
+  <text x="700" y="3060" text-anchor="middle" fill="#bbb" font-size="14">They build RAW UDP packets that LOOK like a server-side migration. The firewall can't tell the difference.</text>
+
+  <!-- Attack Phase 1: Sniffing -->
+  <rect x="90" y="3095" width="380" height="210" rx="12" fill="#fdedec" stroke="#e74c3c" stroke-width="2"/>
+  <text x="280" y="3120" text-anchor="middle" fill="#e74c3c" font-size="16" font-weight="bold">Attack Step 1: SNIFF</text>
+  <text x="100" y="3148" fill="#555" font-size="13">Malware watches your QUIC traffic:</text>
+  <text x="100" y="3170" fill="#555" font-size="12">- Records packet sizes (62, 80, 1200 bytes...)</text>
+  <text x="100" y="3190" fill="#555" font-size="12">- Records timing (7ms, 58ms between packets)</text>
+  <text x="100" y="3210" fill="#555" font-size="12">- Captures Connection IDs being used</text>
+  <text x="100" y="3230" fill="#555" font-size="12">- Waits for a CID to be RETIRED</text>
+  <text x="100" y="3255" fill="#e74c3c" font-size="12" font-weight="bold">- Builds a statistical profile of "normal"</text>
+  <text x="100" y="3278" fill="#888" font-size="11">Uses: pcap library + custom QUIC parser (Rust)</text>
+
+  <!-- Attack Phase 2: Craft -->
+  <rect x="490" y="3095" width="380" height="210" rx="12" fill="#fdedec" stroke="#e74c3c" stroke-width="2"/>
+  <text x="680" y="3120" text-anchor="middle" fill="#e74c3c" font-size="16" font-weight="bold">Attack Step 2: CRAFT</text>
+  <text x="500" y="3148" fill="#555" font-size="13">Malware builds a FAKE migration packet:</text>
+  <text x="500" y="3170" fill="#555" font-size="12">- Source: your PC's IP:port</text>
+  <text x="500" y="3190" fill="#e74c3c" font-size="12" font-weight="bold">- Destination: EVIL SERVER IP:443</text>
+  <text x="500" y="3210" fill="#555" font-size="12">- Connection ID: retired CID from step 1</text>
+  <text x="500" y="3230" fill="#555" font-size="12">- Size: 1200 bytes (matches real migration)</text>
+  <text x="500" y="3255" fill="#555" font-size="12">- Payload: YOUR STOLEN DATA</text>
+  <text x="500" y="3278" fill="#e74c3c" font-size="12" font-weight="bold">- Encrypted with AES-256 (matches entropy)</text>
+
+  <!-- Attack Phase 3: Exfiltrate -->
+  <rect x="890" y="3095" width="380" height="210" rx="12" fill="#fdedec" stroke="#e74c3c" stroke-width="2"/>
+  <text x="1080" y="3120" text-anchor="middle" fill="#e74c3c" font-size="16" font-weight="bold">Attack Step 3: EXFILTRATE</text>
+  <text x="900" y="3148" fill="#555" font-size="13">Malware keeps sending stolen data:</text>
+  <text x="900" y="3170" fill="#555" font-size="12">- Mimics packet sizes from step 1</text>
+  <text x="900" y="3190" fill="#555" font-size="12">- Mimics timing from step 1</text>
+  <text x="900" y="3210" fill="#555" font-size="12">- Evil server sends fake responses</text>
+  <text x="900" y="3230" fill="#555" font-size="12">- Looks like healthy QUIC connection</text>
+  <text x="900" y="3255" fill="#e74c3c" font-size="12" font-weight="bold">- passwords.txt, ssh keys, cookies...</text>
+  <text x="900" y="3278" fill="#e74c3c" font-size="12" font-weight="bold">- ALL flowing out undetected!</text>
+
+  <!-- Side by side comparison -->
+  <text x="700" y="3340" text-anchor="middle" fill="#2c3e50" font-size="18" font-weight="bold">Can YOU tell which is real and which is the attack?</text>
+
+  <!-- Real packet -->
+  <rect x="90" y="3360" width="570" height="210" rx="12" fill="#eafaf1" stroke="#27ae60" stroke-width="3"/>
+  <text x="375" y="3385" text-anchor="middle" fill="#27ae60" font-size="16" font-weight="bold">REAL Server Migration</text>
+  <rect x="110" y="3400" width="530" height="155" rx="8" fill="#2c3e50"/>
+  <text x="130" y="3425" fill="#ecf0f1" font-size="13" font-family="monospace">src: 192.168.1.50:43210</text>
+  <text x="130" y="3448" fill="#ecf0f1" font-size="13" font-family="monospace">dst: 10.0.0.99:443    (Google Cloud IP)</text>
+  <text x="130" y="3471" fill="#ecf0f1" font-size="13" font-family="monospace">CID: a1b2c3d4e5f6</text>
+  <text x="130" y="3494" fill="#ecf0f1" font-size="13" font-family="monospace">size: 1200 bytes</text>
+  <text x="130" y="3517" fill="#ecf0f1" font-size="13" font-family="monospace">payload: 0x8a3f7b2e91c4d6... (encrypted)</text>
+  <text x="130" y="3543" fill="#27ae60" font-size="13" font-weight="bold">Contains: PATH_CHALLENGE (legitimate)</text>
+
+  <!-- Fake packet -->
+  <rect x="700" y="3360" width="570" height="210" rx="12" fill="#fdedec" stroke="#e74c3c" stroke-width="3"/>
+  <text x="985" y="3385" text-anchor="middle" fill="#e74c3c" font-size="16" font-weight="bold">FAKE Attack Packet</text>
+  <rect x="720" y="3400" width="530" height="155" rx="8" fill="#2c3e50"/>
+  <text x="740" y="3425" fill="#ecf0f1" font-size="13" font-family="monospace">src: 192.168.1.50:43210</text>
+  <text x="740" y="3448" fill="#ecf0f1" font-size="13" font-family="monospace">dst: 34.102.136.208:443 (ALSO Google Cloud!)</text>
+  <text x="740" y="3471" fill="#ecf0f1" font-size="13" font-family="monospace">CID: a1b2c3d4e5f6</text>
+  <text x="740" y="3494" fill="#ecf0f1" font-size="13" font-family="monospace">size: 1200 bytes</text>
+  <text x="740" y="3517" fill="#ecf0f1" font-size="13" font-family="monospace">payload: 0x7f2a9e1b4c8d3a... (encrypted)</text>
+  <text x="740" y="3543" fill="#e74c3c" font-size="13" font-weight="bold">Contains: YOUR STOLEN PASSWORDS!</text>
+
+  <!-- Arrow between them -->
+  <rect x="350" y="3585" width="660" height="50" rx="10" fill="#e74c3c" filter="url(#sh)"/>
+  <text x="680" y="3612" text-anchor="middle" fill="white" font-size="16" font-weight="bold">IDENTICAL from the outside. Both on Google Cloud. Both 1200 bytes. Both encrypted.</text>
+  <text x="680" y="3630" text-anchor="middle" fill="#fadbd8" font-size="13">The firewall ALLOWS both. No way to distinguish. Attack succeeds.</text>
+
+  <!-- Detection results -->
+  <rect x="90" y="3650" width="1210" height="170" rx="10" fill="#1a1a2e"/>
+  <text x="700" y="3680" text-anchor="middle" fill="#e94560" font-size="17" font-weight="bold">Detection Results (from the QUIC-Exfil paper):</text>
+
+  <text x="120" y="3710" fill="#ecf0f1" font-size="14">ML Classifiers tried to detect this attack:</text>
+  <rect x="120" y="3725" width="250" height="25" rx="4" fill="#e74c3c"/>
+  <text x="130" y="3743" fill="white" font-size="12">Random Forest:   F1 = 0.35  FAIL</text>
+  <rect x="380" y="3725" width="250" height="25" rx="4" fill="#e74c3c"/>
+  <text x="390" y="3743" fill="white" font-size="12">Neural Network:  F1 = 0.10  FAIL</text>
+  <rect x="640" y="3725" width="250" height="25" rx="4" fill="#e74c3c"/>
+  <text x="650" y="3743" fill="white" font-size="12">SVM:             F1 = 0.05  FAIL</text>
+  <rect x="900" y="3725" width="250" height="25" rx="4" fill="#e74c3c"/>
+  <text x="910" y="3743" fill="white" font-size="12">Autoencoder:     F1 = 0.01  FAIL</text>
+
+  <text x="120" y="3780" fill="#ecf0f1" font-size="14">Firewall vendors (5 tested):</text>
+  <rect x="120" y="3795" width="1160" height="25" rx="4" fill="#e74c3c"/>
+  <text x="700" y="3813" text-anchor="middle" fill="white" font-size="13" font-weight="bold">ZERO out of 5 vendors can detect QUIC connection migrations. 4 out of 5 recommend blocking QUIC entirely.</text>
+
+  <!-- ======== COMPLETE NEQO CODE MAP ======== -->
+  <rect x="40" y="3870" width="1320" height="45" rx="10" fill="#16213e" filter="url(#sh)"/>
+  <text x="700" y="3900" text-anchor="middle" fill="white" font-size="20" font-weight="bold">COMPLETE NEQO CODE MAP: Server-Side Migration (preferred_address)</text>
+
+  <rect x="60" y="3935" width="1280" height="700" rx="15" fill="white" stroke="#16213e" stroke-width="2" filter="url(#sh)"/>
+
+  <!-- SERVER SIDE -->
+  <text x="370" y="3965" text-anchor="middle" fill="#27ae60" font-size="18" font-weight="bold">SERVER SIDE (sends preferred_address)</text>
+
+  <rect x="90" y="3985" width="580" height="45" rx="8" fill="#27ae60"/>
+  <text x="380" y="4013" text-anchor="middle" fill="white" font-size="13" font-weight="bold">1. neqo-bin/src/lib.rs -- CLI parses --preferred-address-v4 / v6 flags</text>
+
+  <line x1="380" y1="4030" x2="380" y2="4050" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="90" y="4050" width="580" height="45" rx="8" fill="#27ae60"/>
+  <text x="380" y="4078" text-anchor="middle" fill="white" font-size="13" font-weight="bold">2. connection/params.rs -- ConnectionParameters::preferred_address(pa)</text>
+
+  <line x1="380" y1="4095" x2="380" y2="4115" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="90" y="4115" width="580" height="55" rx="8" fill="#27ae60"/>
+  <text x="380" y="4138" text-anchor="middle" fill="white" font-size="13" font-weight="bold">3. connection/params.rs:597 -- create_transport_parameter()</text>
+  <text x="380" y="4158" text-anchor="middle" fill="#d5f5e3" font-size="11">Encodes PreferredAddress into transport parameters (only if Role::Server)</text>
+
+  <line x1="380" y1="4170" x2="380" y2="4190" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="90" y="4190" width="580" height="55" rx="8" fill="#27ae60"/>
+  <text x="380" y="4213" text-anchor="middle" fill="white" font-size="13" font-weight="bold">4. tparams.rs:176 -- TransportParameter::PreferredAddress::encode()</text>
+  <text x="380" y="4233" text-anchor="middle" fill="#d5f5e3" font-size="11">Serializes IPv4/IPv6/CID/SRT into wire format inside encrypted handshake</text>
+
+  <line x1="380" y1="4245" x2="380" y2="4265" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="90" y="4265" width="580" height="45" rx="8" fill="#2c3e50"/>
+  <text x="380" y="4293" text-anchor="middle" fill="#bbb" font-size="13">5. crypto.rs -- Encrypts everything. Sent inside EncryptedExtensions.</text>
+
+  <!-- CLIENT SIDE -->
+  <text x="1020" y="3965" text-anchor="middle" fill="#3498db" font-size="18" font-weight="bold">CLIENT SIDE (migrates to preferred)</text>
+
+  <rect x="730" y="3985" width="580" height="45" rx="8" fill="#3498db"/>
+  <text x="1020" y="4013" text-anchor="middle" fill="white" font-size="13" font-weight="bold">1. crypto.rs -- Decrypts EncryptedExtensions from server</text>
+
+  <line x1="1020" y1="4030" x2="1020" y2="4050" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="730" y="4050" width="580" height="45" rx="8" fill="#3498db"/>
+  <text x="1020" y="4078" text-anchor="middle" fill="white" font-size="13" font-weight="bold">2. tparams.rs:323 -- Decodes preferred_address transport parameter</text>
+
+  <line x1="1020" y1="4095" x2="1020" y2="4115" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="730" y="4115" width="580" height="55" rx="8" fill="#3498db"/>
+  <text x="1020" y="4138" text-anchor="middle" fill="white" font-size="13" font-weight="bold">3. connection/mod.rs:3427 -- HANDSHAKE_DONE received</text>
+  <text x="1020" y="4158" text-anchor="middle" fill="#d6eaf8" font-size="11">Triggers: self.migrate_to_preferred_address(now)</text>
+
+  <line x1="1020" y1="4170" x2="1020" y2="4190" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="730" y="4190" width="580" height="55" rx="8" fill="#e67e22"/>
+  <text x="1020" y="4213" text-anchor="middle" fill="white" font-size="13" font-weight="bold">4. connection/mod.rs:2103 -- migrate_to_preferred_address()</text>
+  <text x="1020" y="4233" text-anchor="middle" fill="#fef9e7" font-size="11">Extracts addr, picks IPv4/v6, calls self.migrate(None, Some(remote), false, now)</text>
+
+  <line x1="1020" y1="4245" x2="1020" y2="4265" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="730" y="4265" width="580" height="45" rx="8" fill="#e67e22"/>
+  <text x="1020" y="4293" text-anchor="middle" fill="white" font-size="13" font-weight="bold">5. connection/mod.rs -- migrate() creates new Path, starts probing</text>
+
+  <!-- Both sides converge -->
+  <line x1="380" y1="4310" x2="700" y2="4360" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="1020" y1="4310" x2="700" y2="4360" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Shared path -->
+  <rect x="300" y="4360" width="800" height="50" rx="8" fill="#8e44ad"/>
+  <text x="700" y="4383" text-anchor="middle" fill="white" font-size="14" font-weight="bold">6. path.rs -- Paths::migrate() --> Path::probe() --> ProbeState::ProbeNeeded</text>
+  <text x="700" y="4403" text-anchor="middle" fill="#d7bde2" font-size="11">Creates migration_target, sends PATH_CHALLENGE to preferred address</text>
+
+  <line x1="700" y1="4410" x2="700" y2="4435" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="300" y="4435" width="800" height="45" rx="8" fill="#8e44ad"/>
+  <text x="700" y="4463" text-anchor="middle" fill="white" font-size="14" font-weight="bold">7. path.rs -- Path::write_frames() encodes PATH_CHALLENGE (frame.rs: FrameType 0x1a)</text>
+
+  <line x1="700" y1="4480" x2="700" y2="4505" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="300" y="4505" width="800" height="45" rx="8" fill="#1abc9c"/>
+  <text x="700" y="4528" text-anchor="middle" fill="white" font-size="14" font-weight="bold">8. Server responds with PATH_RESPONSE --> path.rs: Paths::path_response()</text>
+  <text x="700" y="4543" text-anchor="middle" fill="#d1f2eb" font-size="11">Matches bytes, set_valid(), select_primary() --> MIGRATION COMPLETE!</text>
+
+  <!-- Test files -->
+  <rect x="90" y="4565" width="1210" height="55" rx="8" fill="#16213e"/>
+  <text x="110" y="4588" fill="#f39c12" font-size="13" font-weight="bold">Test coverage (connection/tests/migration.rs):</text>
+  <text x="110" y="4608" fill="#ecf0f1" font-size="12" font-family="monospace">preferred_address_new_port() | preferred_address_new_address() | preferred_address_v4() | preferred_address_loopback() | ...</text>
+
+  <!-- ======== KEY INSIGHT ======== -->
+  <rect x="40" y="4670" width="1320" height="45" rx="10" fill="#c0392b" filter="url(#sh)"/>
+  <text x="700" y="4700" text-anchor="middle" fill="white" font-size="20" font-weight="bold">THE KEY INSIGHT: Why this attack is so dangerous</text>
+
+  <rect x="60" y="4735" width="1280" height="350" rx="15" fill="#1a1a2e" filter="url(#sh)"/>
+
+  <text x="700" y="4770" text-anchor="middle" fill="#e94560" font-size="20" font-weight="bold">The preferred_address is sent ENCRYPTED during the handshake.</text>
+  <text x="700" y="4800" text-anchor="middle" fill="#bbb" font-size="16">No middlebox, firewall, or network observer can see what address the server told the client.</text>
+
+  <!-- The chain -->
+  <rect x="100" y="4830" width="250" height="60" rx="8" fill="#e74c3c"/>
+  <text x="225" y="4855" text-anchor="middle" fill="white" font-size="13" font-weight="bold">Server sends</text>
+  <text x="225" y="4878" text-anchor="middle" fill="white" font-size="12">preferred_address</text>
+
+  <line x1="350" y1="4860" x2="400" y2="4860" stroke="#e74c3c" stroke-width="3" marker-end="url(#arr-r)"/>
+
+  <rect x="400" y="4830" width="250" height="60" rx="8" fill="#e74c3c"/>
+  <text x="525" y="4855" text-anchor="middle" fill="white" font-size="13" font-weight="bold">Encrypted inside</text>
+  <text x="525" y="4878" text-anchor="middle" fill="white" font-size="12">TLS handshake</text>
+
+  <line x1="650" y1="4860" x2="700" y2="4860" stroke="#e74c3c" stroke-width="3" marker-end="url(#arr-r)"/>
+
+  <rect x="700" y="4830" width="250" height="60" rx="8" fill="#e74c3c"/>
+  <text x="825" y="4855" text-anchor="middle" fill="white" font-size="13" font-weight="bold">Firewall can't see</text>
+  <text x="825" y="4878" text-anchor="middle" fill="white" font-size="12">the address</text>
+
+  <line x1="950" y1="4860" x2="1000" y2="4860" stroke="#e74c3c" stroke-width="3" marker-end="url(#arr-r)"/>
+
+  <rect x="1000" y="4830" width="280" height="60" rx="8" fill="#e74c3c"/>
+  <text x="1140" y="4855" text-anchor="middle" fill="white" font-size="13" font-weight="bold">Can't verify if migration</text>
+  <text x="1140" y="4878" text-anchor="middle" fill="white" font-size="12">destination is legitimate</text>
+
+  <!-- Therefore -->
+  <text x="700" y="4930" text-anchor="middle" fill="#e67e22" font-size="18" font-weight="bold">Therefore:</text>
+
+  <rect x="100" y="4950" width="550" height="55" rx="10" fill="#27ae60"/>
+  <text x="375" y="4975" text-anchor="middle" fill="white" font-size="14" font-weight="bold">REAL: Client migrates to server's preferred address</text>
+  <text x="375" y="4995" text-anchor="middle" fill="#d5f5e3" font-size="12">Firewall sees: client talks to new IP. Allows it.</text>
+
+  <text x="690" y="4983" text-anchor="middle" fill="#bbb" font-size="30">=</text>
+
+  <rect x="730" y="4950" width="550" height="55" rx="10" fill="#e74c3c"/>
+  <text x="1005" y="4975" text-anchor="middle" fill="white" font-size="14" font-weight="bold">FAKE: Malware sends stolen data to evil server</text>
+  <text x="1005" y="4995" text-anchor="middle" fill="#fadbd8" font-size="12">Firewall sees: client talks to new IP. Allows it.</text>
+
+  <text x="700" y="5050" text-anchor="middle" fill="#e94560" font-size="22" font-weight="bold">INDISTINGUISHABLE.</text>
+
+  <!-- ======== NEQO IS UNIQUE ======== -->
+  <rect x="40" y="5120" width="1320" height="45" rx="10" fill="#16213e" filter="url(#sh)"/>
+  <text x="700" y="5150" text-anchor="middle" fill="white" font-size="20" font-weight="bold">WHY NEQO MATTERS: It's the only open-source impl that fully supports this</text>
+
+  <rect x="60" y="5185" width="1280" height="200" rx="15" fill="white" stroke="#16213e" stroke-width="2" filter="url(#sh)"/>
+
+  <rect x="90" y="5205" width="280" height="110" rx="10" fill="#27ae60"/>
+  <text x="230" y="5235" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Neqo (Mozilla)</text>
+  <text x="230" y="5260" text-anchor="middle" fill="#d5f5e3" font-size="13">Server CAN send</text>
+  <text x="230" y="5280" text-anchor="middle" fill="#d5f5e3" font-size="13">preferred_address</text>
+  <text x="230" y="5305" text-anchor="middle" fill="white" font-size="13" font-weight="bold">FULL SUPPORT</text>
+
+  <rect x="400" y="5205" width="280" height="110" rx="10" fill="#e74c3c"/>
+  <text x="540" y="5235" text-anchor="middle" fill="white" font-size="16" font-weight="bold">quiche (Cloudflare)</text>
+  <text x="540" y="5260" text-anchor="middle" fill="#fadbd8" font-size="13">Server CANNOT send</text>
+  <text x="540" y="5280" text-anchor="middle" fill="#fadbd8" font-size="13">preferred_address</text>
+  <text x="540" y="5305" text-anchor="middle" fill="white" font-size="13" font-weight="bold">NOT SUPPORTED</text>
+
+  <rect x="710" y="5205" width="280" height="110" rx="10" fill="#e74c3c"/>
+  <text x="850" y="5235" text-anchor="middle" fill="white" font-size="16" font-weight="bold">aioquic (Python)</text>
+  <text x="850" y="5260" text-anchor="middle" fill="#fadbd8" font-size="13">Has structs but</text>
+  <text x="850" y="5280" text-anchor="middle" fill="#fadbd8" font-size="13">never sends it</text>
+  <text x="850" y="5305" text-anchor="middle" fill="white" font-size="13" font-weight="bold">PARSE ONLY</text>
+
+  <rect x="1020" y="5205" width="280" height="110" rx="10" fill="#e74c3c"/>
+  <text x="1160" y="5235" text-anchor="middle" fill="white" font-size="16" font-weight="bold">quic-go (Go)</text>
+  <text x="1160" y="5260" text-anchor="middle" fill="#fadbd8" font-size="13">No preferred_address</text>
+  <text x="1160" y="5280" text-anchor="middle" fill="#fadbd8" font-size="13">at all</text>
+  <text x="1160" y="5305" text-anchor="middle" fill="white" font-size="13" font-weight="bold">NOTHING</text>
+
+  <!-- ======== SUMMARY TIMELINE ======== -->
+  <rect x="40" y="5420" width="1320" height="45" rx="10" fill="#16213e" filter="url(#sh)"/>
+  <text x="700" y="5450" text-anchor="middle" fill="white" font-size="20" font-weight="bold">COMPLETE TIMELINE: Server-Side Migration via preferred_address</text>
+
+  <rect x="60" y="5485" width="1280" height="340" rx="15" fill="white" stroke="#16213e" stroke-width="2" filter="url(#sh)"/>
+
+  <!-- Timeline line -->
+  <line x1="130" y1="5560" x2="1270" y2="5560" stroke="#2c3e50" stroke-width="4"/>
+
+  <!-- T0: ClientHello -->
+  <circle cx="170" cy="5560" r="14" fill="#3498db"/>
+  <text x="170" y="5535" text-anchor="middle" fill="#2c3e50" font-size="12" font-weight="bold">T=0ms</text>
+  <text x="170" y="5595" text-anchor="middle" fill="#3498db" font-size="11" font-weight="bold">ClientHello</text>
+  <text x="170" y="5610" text-anchor="middle" fill="#888" font-size="10">Client connects</text>
+
+  <!-- T1: ServerHello -->
+  <circle cx="350" cy="5560" r="14" fill="#27ae60"/>
+  <text x="350" y="5535" text-anchor="middle" fill="#2c3e50" font-size="12" font-weight="bold">T=50ms</text>
+  <text x="350" y="5595" text-anchor="middle" fill="#27ae60" font-size="11" font-weight="bold">ServerHello</text>
+  <text x="350" y="5610" text-anchor="middle" fill="#888" font-size="10">preferred_addr</text>
+  <text x="350" y="5625" text-anchor="middle" fill="#e67e22" font-size="10" font-weight="bold">INSIDE (encrypted)</text>
+
+  <!-- T2: Handshake Done -->
+  <circle cx="540" cy="5560" r="14" fill="#8e44ad"/>
+  <text x="540" y="5535" text-anchor="middle" fill="#2c3e50" font-size="12" font-weight="bold">T=100ms</text>
+  <text x="540" y="5595" text-anchor="middle" fill="#8e44ad" font-size="11" font-weight="bold">HANDSHAKE_DONE</text>
+  <text x="540" y="5610" text-anchor="middle" fill="#888" font-size="10">Triggers migration</text>
+
+  <!-- T3: PATH_CHALLENGE -->
+  <circle cx="720" cy="5560" r="14" fill="#e67e22"/>
+  <text x="720" y="5535" text-anchor="middle" fill="#2c3e50" font-size="12" font-weight="bold">T=105ms</text>
+  <text x="720" y="5595" text-anchor="middle" fill="#e67e22" font-size="11" font-weight="bold">PATH_CHALLENGE</text>
+  <text x="720" y="5610" text-anchor="middle" fill="#888" font-size="10">To preferred addr</text>
+
+  <!-- T4: PATH_RESPONSE -->
+  <circle cx="910" cy="5560" r="14" fill="#8e44ad"/>
+  <text x="910" y="5535" text-anchor="middle" fill="#2c3e50" font-size="12" font-weight="bold">T=155ms</text>
+  <text x="910" y="5595" text-anchor="middle" fill="#8e44ad" font-size="11" font-weight="bold">PATH_RESPONSE</text>
+  <text x="910" y="5610" text-anchor="middle" fill="#888" font-size="10">Preferred confirms</text>
+
+  <!-- T5: Switch -->
+  <circle cx="1080" cy="5560" r="14" fill="#e74c3c"/>
+  <text x="1080" y="5535" text-anchor="middle" fill="#2c3e50" font-size="12" font-weight="bold">T=160ms</text>
+  <text x="1080" y="5595" text-anchor="middle" fill="#e74c3c" font-size="11" font-weight="bold">select_primary()</text>
+  <text x="1080" y="5610" text-anchor="middle" fill="#888" font-size="10">Path switched!</text>
+
+  <!-- T6: Done -->
+  <circle cx="1230" cy="5560" r="14" fill="#1abc9c"/>
+  <text x="1230" y="5535" text-anchor="middle" fill="#2c3e50" font-size="12" font-weight="bold">T=165ms</text>
+  <text x="1230" y="5595" text-anchor="middle" fill="#1abc9c" font-size="11" font-weight="bold">DONE!</text>
+  <text x="1230" y="5610" text-anchor="middle" fill="#888" font-size="10">All traffic to</text>
+  <text x="1230" y="5625" text-anchor="middle" fill="#888" font-size="10">preferred now</text>
+
+  <!-- Labels below -->
+  <rect x="120" y="5660" width="360" height="30" rx="5" fill="#ebf5fb"/>
+  <text x="300" y="5680" text-anchor="middle" fill="#2980b9" font-size="13" font-weight="bold">Firewall CAN see handshake (partially)</text>
+
+  <rect x="530" y="5660" width="200" height="30" rx="5" fill="#fef9e7"/>
+  <text x="630" y="5680" text-anchor="middle" fill="#e67e22" font-size="13" font-weight="bold">preferred_addr hidden</text>
+
+  <rect x="780" y="5660" width="510" height="30" rx="5" fill="#fdedec"/>
+  <text x="1035" y="5680" text-anchor="middle" fill="#e74c3c" font-size="13" font-weight="bold">Firewall CANNOT see anything from here on</text>
+
+  <!-- Total -->
+  <rect x="250" y="5720" width="900" height="45" rx="10" fill="#16213e" filter="url(#sh)"/>
+  <text x="700" y="5748" text-anchor="middle" fill="#1abc9c" font-size="17" font-weight="bold">Total: ~165ms from handshake to migrated. Completely invisible to middleboxes.</text>
+
+  <!-- ======== FOOTER ======== -->
+  <rect x="40" y="5800" width="1320" height="45" rx="10" fill="#1a1a2e"/>
+  <text x="700" y="5828" text-anchor="middle" fill="#bbb" font-size="15">Based on: QUIC-Exfil paper (ASIA CCS '25) + Neqo v0.27.0 source code (mozilla/neqo)</text>
+
+  <!-- Quick reference -->
+  <rect x="60" y="5870" width="1280" height="500" rx="15" fill="white" stroke="#16213e" stroke-width="2" filter="url(#sh)"/>
+  <text x="700" y="5905" text-anchor="middle" fill="#2c3e50" font-size="20" font-weight="bold">QUICK REFERENCE: Key Files in Neqo for Server-Side Migration</text>
+
+  <rect x="90" y="5925" width="1190" height="430" rx="10" fill="#1a1a2e"/>
+
+  <text x="110" y="5955" fill="#e67e22" font-size="15" font-weight="bold">SERVER sends preferred_address:</text>
+  <text x="110" y="5980" fill="#1abc9c" font-size="13" font-family="monospace">neqo-bin/src/lib.rs:150-237       CLI: --preferred-address-v4 / --preferred-address-v6</text>
+  <text x="110" y="6003" fill="#1abc9c" font-size="13" font-family="monospace">connection/params.rs:92-100        PreferredAddressConfig enum (Disabled/Default/Address)</text>
+  <text x="110" y="6026" fill="#1abc9c" font-size="13" font-family="monospace">connection/params.rs:325-328       ConnectionParameters::preferred_address(pa) setter</text>
+  <text x="110" y="6049" fill="#1abc9c" font-size="13" font-family="monospace">connection/params.rs:597-610       create_transport_parameter() -- actually includes it</text>
+  <text x="110" y="6072" fill="#1abc9c" font-size="13" font-family="monospace">tparams.rs:85-88                   PreferredAddress struct {v4, v6}</text>
+  <text x="110" y="6095" fill="#1abc9c" font-size="13" font-family="monospace">tparams.rs:148-203                 TransportParameter::PreferredAddress encoding</text>
+
+  <text x="110" y="6130" fill="#3498db" font-size="15" font-weight="bold">CLIENT receives and migrates:</text>
+  <text x="110" y="6155" fill="#1abc9c" font-size="13" font-family="monospace">tparams.rs:205-247                 decode_preferred_address() -- parses from wire</text>
+  <text x="110" y="6178" fill="#1abc9c" font-size="13" font-family="monospace">tparams.rs:604-614                 get_preferred_address() -- extracts usable form</text>
+  <text x="110" y="6201" fill="#1abc9c" font-size="13" font-family="monospace">connection/mod.rs:3427              HANDSHAKE_DONE triggers migrate_to_preferred_address()</text>
+  <text x="110" y="6224" fill="#e94560" font-size="13" font-family="monospace" font-weight="bold">connection/mod.rs:2103-2150         migrate_to_preferred_address() -- THE KEY FUNCTION</text>
+  <text x="110" y="6247" fill="#1abc9c" font-size="13" font-family="monospace">connection/mod.rs:2070-2100         migrate() -- creates path, assigns CID, starts probe</text>
+
+  <text x="110" y="6282" fill="#8e44ad" font-size="15" font-weight="bold">Path validation (shared):</text>
+  <text x="110" y="6307" fill="#1abc9c" font-size="13" font-family="monospace">path.rs:196-219                    Paths::migrate() -- sets migration_target, starts probe</text>
+  <text x="110" y="6330" fill="#1abc9c" font-size="13" font-family="monospace">path.rs:328-349                    Paths::path_response() -- validates, calls select_primary()</text>
+  <text x="110" y="6353" fill="#1abc9c" font-size="13" font-family="monospace">connection/tests/migration.rs:725   preferred_address() test -- end-to-end test!</text>
+
+</svg>

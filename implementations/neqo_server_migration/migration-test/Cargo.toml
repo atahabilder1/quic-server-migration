@@ -1,0 +1,25 @@
+[package]
+name = "migration-test"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90.0"
+
+[[bin]]
+name = "primary-server"
+path = "src/primary_server.rs"
+
+[[bin]]
+name = "preferred-server"
+path = "src/preferred_server.rs"
+
+[dependencies]
+neqo-transport = { path = "../neqo-transport" }
+neqo-http3 = { path = "../neqo-http3" }
+neqo-common = { path = "../neqo-common" }
+neqo-udp = { path = "../neqo-udp" }
+nss = { workspace = true }
+env_logger = "0.10"
+log = "0.4"
+
+[dev-dependencies]
+test-fixture = { path = "../test-fixture" }

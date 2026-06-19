@@ -1,0 +1,525 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    urlcolor=blue!70!black,
+    citecolor=blue!70!black
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    keywordstyle=\color{blue!70!black}\bfseries,
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{red!70!black},
+    numbers=none,
+    xleftmargin=0.5cm,
+    xrightmargin=0.5cm
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Protocol Analysis: QUIC Cross-Machine Migration}
+\fancyhead[R]{\small \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}{\Large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{0.5em}{}
+
+\title{
+    \vspace{-1cm}
+    \textbf{Protocol-Level Analysis of\\Cross-Machine QUIC Server-Side Migration}\\[0.5cm]
+    \large State Optimization, Key Rotation, Connection Continuity, and Detection
+}
+\author{QUIC Server Migration Research}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document provides a detailed protocol-level analysis of four critical aspects of cross-machine QUIC server-side migration that extend beyond the ``when'' and ``how'' of state transfer. We examine: (1)~what state must be transferred and how it can be optimized, (2)~how TLS~1.3 key rotation interacts with migration, (3)~whether full bidirectional connection continuity is achievable after migration, and (4)~whether network defenders can detect the migration. Each section analyzes the relevant RFC~9000 requirements, identifies open challenges, and proposes solutions.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%======================================================================
+\section{State Optimization: What to Transfer}
+%======================================================================
+
+\subsection{Current State (445 bytes)}
+
+Our current implementation exports the following state from the primary server after the TLS~1.3 handshake completes:
+
+\begin{table}[h]
+\centering
+\caption{Current Migration State Breakdown}
+\begin{tabular}{llr}
+\toprule
+\textbf{Component} & \textbf{Purpose} & \textbf{Size (bytes)} \\
+\midrule
+Magic header ``MIGR'' & Format identifier & 4 \\
+QUIC version & Version 1 or Version 2 & 4 \\
+Write traffic secret & Server-to-client encryption & $\sim$34 \\
+Read traffic secret & Client-to-server decryption & $\sim$34 \\
+Next write secret & For future key rotation & $\sim$34 \\
+Next read secret & For future key rotation & $\sim$34 \\
+Cipher suite (x2) & Algorithm identifiers & 4 \\
+Direction flags (x2) & Read/write indicators & 2 \\
+Epoch counters (x2) & Key generation numbers & 8 \\
+Packet number state (x2) & PN tracking (start, end, min) & 48 \\
+8 local Connection IDs & Client addresses us with these & $\sim$90 \\
+1 remote Connection ID & We address client with this & $\sim$12 \\
+Client socket address & IP + port for responses & 7 \\
+\midrule
+\textbf{Total} & & $\sim$\textbf{445} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Minimum Viable State}
+
+Not all 445 bytes are strictly necessary. We can identify three tiers of state:
+
+\subsubsection{Tier 1: Absolute Minimum ($\sim$80 bytes)}
+
+The bare minimum to decrypt one PATH\_CHALLENGE and send one PATH\_RESPONSE:
+
+\begin{itemize}
+    \item \textbf{Read traffic secret} (32 bytes) --- needed to decrypt client packets
+    \item \textbf{Write traffic secret} (32 bytes) --- needed to encrypt responses
+    \item \textbf{Cipher suite} (2 bytes) --- which encryption algorithm
+    \item \textbf{QUIC version} (4 bytes) --- determines HKDF labels
+    \item \textbf{One local CID} (8 bytes) --- to match incoming packets
+    \item \textbf{Client address} (7 bytes) --- where to send responses
+\end{itemize}
+
+\textbf{Total: $\sim$85 bytes.} This is sufficient for path validation only. The preferred server can decrypt the PATH\_CHALLENGE and send a PATH\_RESPONSE. However, it cannot:
+\begin{itemize}
+    \item Handle key updates (no next secrets)
+    \item Track packet numbers correctly (no PN state)
+    \item Use alternate CIDs (only one CID)
+    \item Handle CID retirement
+\end{itemize}
+
+\subsubsection{Tier 2: Functional Migration ($\sim$200 bytes)}
+
+Enough for path validation plus basic post-migration communication:
+
+\begin{itemize}
+    \item Everything in Tier 1
+    \item \textbf{Next traffic secrets} (64 bytes) --- handle one key update
+    \item \textbf{Packet number state} (48 bytes) --- correct PN tracking
+    \item \textbf{Remote CID} (12 bytes) --- to address the client
+\end{itemize}
+
+\textbf{Total: $\sim$210 bytes.} Sufficient for complete migration including post-migration data exchange. Missing only redundant CIDs.
+
+\subsubsection{Tier 3: Full State ($\sim$445 bytes)}
+
+What we currently transfer. Includes all 8 local CIDs for CID rotation and retirement handling. This is the most robust option but also the largest.
+
+\subsection{Trade-off Analysis}
+
+\begin{table}[h]
+\centering
+\caption{State Size vs. Capability Trade-off}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Tier} & \textbf{Size} & \textbf{Path Valid.} & \textbf{Key Rotation} & \textbf{Data Exchange} & \textbf{CID Rotation} \\
+\midrule
+Tier 1 (Minimum) & 85 B & \checkmark & $\times$ & $\times$ & $\times$ \\
+Tier 2 (Functional) & 210 B & \checkmark & \checkmark & \checkmark & $\times$ \\
+Tier 3 (Full) & 445 B & \checkmark & \checkmark & \checkmark & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Implications for State Transfer}
+
+\begin{itemize}
+    \item \textbf{Latency:} Smaller state means faster transfer. At 85 bytes vs.\ 445 bytes, TCP Push latency would be roughly halved (fewer bytes over the wire). However, the difference is negligible on a LAN ($<$100$\mu$s difference).
+    \item \textbf{Security:} Smaller state means fewer secrets in transit. Tier~1 exposes only the current traffic secrets, not the next secrets. If the transfer is intercepted, the attacker cannot follow key rotations.
+    \item \textbf{Robustness:} Tier~3 is the safest from a protocol correctness standpoint. Missing CIDs or PN state can cause the client to detect anomalies and close the connection.
+\end{itemize}
+
+\subsection{Recommendation}
+
+\textbf{Use Tier~2 (Functional, $\sim$210 bytes)} for production. It provides full migration capability with key rotation support while reducing the state size by 53\%. Tier~1 is only suitable for the specific case of proving path validation works. Tier~3 is necessary only if the connection needs to survive CID retirement events.
+
+%======================================================================
+\newpage
+\section{Key Rotation After Migration}
+%======================================================================
+
+\subsection{Background: TLS 1.3 Key Updates}
+
+TLS~1.3 (RFC~8446, Section~4.6.3) allows either endpoint to update the traffic keys during an active connection. This is done by sending a \texttt{KEY\_UPDATE} message, which triggers both sides to derive new traffic secrets from the current ones:
+
+\begin{lstlisting}
+next_secret = HKDF-Expand-Label(current_secret, "quic ku", "", Hash.length)
+\end{lstlisting}
+
+QUIC (RFC~9000, Section~6) extends this with a key phase bit in the packet header. When the key phase flips, the receiver knows to use the next generation of keys.
+
+\subsection{The Problem}
+
+After cross-machine migration, the preferred server has:
+\begin{itemize}
+    \item The \textbf{current} read and write traffic secrets (from the primary)
+    \item The \textbf{next} read and write traffic secrets (also from the primary)
+\end{itemize}
+
+This means the preferred server can handle \textbf{exactly one key update}. After that, it needs to derive the next-next secret, which it can do because HKDF derivation is deterministic.
+
+\subsection{Scenarios}
+
+\subsubsection{Scenario 1: No Key Update After Migration}
+
+\begin{lstlisting}
+Primary Server       State Transfer       Preferred Server
+     |                     |                     |
+  Keys: Gen 0              |                     |
+  next: Gen 1              |                     |
+     |--- transfer ------->|                     |
+     |   (Gen 0 + Gen 1)   |--- import -------->|
+     |                     |                  Keys: Gen 0
+     |                     |                  next: Gen 1
+     |                     |                     |
+  Client uses Gen 0 keys throughout. No issues.
+\end{lstlisting}
+
+This is the common case. Migration typically happens within milliseconds of the handshake, and key updates happen after significant data exchange. No issue.
+
+\subsubsection{Scenario 2: Client Initiates Key Update}
+
+\begin{lstlisting}
+After migration, client sends KEY_UPDATE:
+  Client flips key phase bit
+  Client starts using Gen 1 keys
+
+Preferred server sees key phase change:
+  Switches to Gen 1 read keys (has them from import)
+  Derives Gen 2 next secret: HKDF(Gen 1, "quic ku")
+  Switches to Gen 1 write keys
+  Sends acknowledgment with Gen 1
+
+Result: Successful key update. Connection continues.
+\end{lstlisting}
+
+Our implementation handles this because we transfer the \texttt{next\_secret} and the HKDF derivation chain is deterministic. The preferred server can continue deriving new keys indefinitely.
+
+\subsubsection{Scenario 3: Key Update During State Transfer}
+
+\begin{lstlisting}
+Primary Server                         Preferred Server
+     |                                      |
+  Keys: Gen 0                               |
+  Client sends KEY_UPDATE                   |
+  Keys: Gen 1                               |
+     |--- transfer Gen 0 keys -------->     |
+     |   (STALE! Client is on Gen 1)        |
+     |                                 Keys: Gen 0 (wrong!)
+     |                                      |
+  Client sends PATH_CHALLENGE with Gen 1 -->|
+     |                                 Decrypt fails!
+\end{lstlisting}
+
+This is the \textbf{race condition}. If the client initiates a key update between the handshake and the state transfer, the preferred server receives stale keys.
+
+\subsection{Solutions}
+
+\subsubsection{Solution A: Export After Stabilization}
+
+Wait for a brief period after the handshake (e.g., 100ms) to ensure no key updates are in flight before exporting state. Simple but adds latency.
+
+\subsubsection{Solution B: Export Both Generations}
+
+Export both the current and next generation keys. The preferred server tries both when decrypting. If Gen~0 fails, try Gen~1. This is what we effectively do by exporting \texttt{next\_secret}.
+
+\subsubsection{Solution C: Continuous Synchronization}
+
+Keep the preferred server's keys updated in real-time using the ``Continuous'' timing strategy. The primary server re-exports state after every key update. This requires a persistent connection or polling mechanism (best with Redis~KV).
+
+\subsection{Current Implementation Status}
+
+Our implementation transfers both current and next secrets, which handles Scenarios~1 and~2. Scenario~3 (race condition) is unlikely in practice because key updates happen much later than migration. However, for a robust production system, Solution~C (continuous sync) would be ideal.
+
+%======================================================================
+\newpage
+\section{Bidirectional Data After Migration}
+%======================================================================
+
+\subsection{What RFC 9000 Requires}
+
+After path validation (PATH\_CHALLENGE/PATH\_RESPONSE), RFC~9000 Section~9.3 states that the endpoint ``can send and receive non-probing frames on the new path.'' This means the preferred server should be able to:
+
+\begin{enumerate}
+    \item Receive and decrypt STREAM frames (HTTP request data)
+    \item Send STREAM frames (HTTP response data)
+    \item Handle ACK frames in both directions
+    \item Process flow control (MAX\_DATA, MAX\_STREAM\_DATA)
+    \item Handle connection close (CONNECTION\_CLOSE)
+\end{enumerate}
+
+\subsection{What Our Implementation Currently Handles}
+
+\begin{table}[h]
+\centering
+\caption{Post-Migration Frame Support}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Frame Type} & \textbf{Receive (Decrypt)} & \textbf{Send (Encrypt)} \\
+\midrule
+PATH\_CHALLENGE (0x1a) & \checkmark & --- \\
+PATH\_RESPONSE (0x1b) & --- & \checkmark \\
+PING (0x01) & \checkmark & --- \\
+ACK (0x02, 0x03) & \checkmark (parse) & \checkmark (send) \\
+PADDING (0x00) & \checkmark & \checkmark \\
+STREAM (0x08--0x0f) & \checkmark (parse + log) & $\times$ \\
+NEW\_CONNECTION\_ID (0x18) & \checkmark (parse) & $\times$ \\
+ACK\_FREQUENCY (0xaf) & \checkmark (parse) & $\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Gap Analysis}
+
+Our preferred server can \textbf{decrypt and parse} all common frame types, proving that the imported keys work for the full connection. However, it does not:
+
+\begin{enumerate}
+    \item \textbf{Generate HTTP/3 responses} --- The preferred server is a custom binary that handles QUIC packets manually. It does not run the full HTTP/3 stack. To serve actual web content after migration, it would need to integrate Neqo's HTTP/3 layer.
+
+    \item \textbf{Manage stream state} --- QUIC streams have flow control (credits, offsets, FIN flags). Our preferred server does not track stream state, so it cannot properly handle multi-packet HTTP requests or send multi-packet responses.
+
+    \item \textbf{Issue new Connection IDs} --- After migration, the client may retire old CIDs and expect new ones via NEW\_CONNECTION\_ID frames. Our server does not generate new CIDs.
+
+    \item \textbf{Handle congestion control} --- The preferred server does not implement congestion control. It sends packets without pacing or window management.
+\end{enumerate}
+
+\subsection{Path to Full Connection Continuity}
+
+There are two approaches to achieving full bidirectional data exchange after migration:
+
+\subsubsection{Approach A: Full Neqo Connection Import}
+
+Import the complete connection state into a Neqo \texttt{Connection} object on the preferred server. This is partially implemented via \texttt{Connection::new\_from\_migration()} in our code. The challenge is reconstructing all of Neqo's internal state machines (streams, flow control, recovery) from the exported data.
+
+\textbf{Pros:} Full protocol compliance. HTTP/3 works automatically.\\
+\textbf{Cons:} Complex. Requires exporting much more state (stream buffers, congestion state, timer state).
+
+\subsubsection{Approach B: Proxy After Validation}
+
+After path validation succeeds, the preferred server acts as a QUIC proxy. It decrypts client packets, forwards the plaintext to a local HTTP server, and encrypts the response back.
+
+\textbf{Pros:} Simpler than full state import. Only needs crypto keys, not connection state.\\
+\textbf{Cons:} Additional latency. Not a true migration (two-hop architecture).
+
+\subsection{What We Proved}
+
+Our current implementation proves the most critical point: \textbf{the imported keys work for full decryption and encryption}. We can decrypt STREAM frames (actual HTTP data) and log their content. The ACK mechanism works bidirectionally. This is sufficient to demonstrate that the migration is real and the QUIC-Exfil attack succeeds.
+
+Full connection continuity (serving new HTTP pages from the preferred server) is an engineering extension, not a protocol limitation.
+
+%======================================================================
+\newpage
+\section{Detection and Defense}
+%======================================================================
+
+\subsection{The Attacker's Advantage}
+
+The QUIC-Exfil attack exploits fundamental properties of the QUIC protocol:
+
+\begin{enumerate}
+    \item \textbf{Encrypted handshake:} The \texttt{preferred\_address} transport parameter is inside the TLS-encrypted handshake. A network observer cannot see it.
+
+    \item \textbf{Encrypted path validation:} PATH\_CHALLENGE and PATH\_RESPONSE are encrypted QUIC frames. A firewall cannot distinguish them from normal data.
+
+    \item \textbf{Connection ID-based routing:} After migration, the client uses a new Connection ID to address the preferred server. The old CID used with the primary is retired. There is no visible link between the two connections.
+
+    \item \textbf{Normal-looking traffic:} Post-migration packets are standard encrypted QUIC packets. They have the same structure, same encryption, same packet sizes as any other QUIC traffic.
+\end{enumerate}
+
+\subsection{What a Firewall Can Observe}
+
+Despite the encryption, a network observer can see:
+
+\begin{table}[h]
+\centering
+\caption{Observable vs. Hidden Information}
+\begin{tabular}{ll}
+\toprule
+\textbf{Observable (Plaintext)} & \textbf{Hidden (Encrypted)} \\
+\midrule
+Source/destination IP addresses & preferred\_address parameter \\
+Source/destination ports & PATH\_CHALLENGE data \\
+Packet sizes & PATH\_RESPONSE data \\
+Packet timing & Frame types and content \\
+Connection ID (first byte visible) & Stream data \\
+QUIC version (in long headers) & TLS certificates \\
+Packet count & HTTP headers and body \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Potential Detection Methods}
+
+\subsubsection{Method 1: Timing Analysis}
+
+\textbf{Observation:} After the initial handshake with the primary server, the client starts sending packets to a \textit{new} IP address (the preferred server) within a short time window (typically 10--50ms).
+
+\textbf{Detection rule:} ``If a client completes a QUIC handshake with Server~A and then starts a new UDP flow to Server~B within 100ms, flag as potential migration.''
+
+\textbf{Limitations:}
+\begin{itemize}
+    \item High false positive rate --- many applications connect to multiple servers
+    \item The time window is configurable by the attacker
+    \item Does not work if the preferred address is on the same subnet
+\end{itemize}
+
+\subsubsection{Method 2: Packet Size Analysis}
+
+\textbf{Observation:} PATH\_CHALLENGE packets are padded to exactly 1200 bytes (RFC~9000, Section~8.2.1 requirement). This is distinctive.
+
+\textbf{Detection rule:} ``Flag UDP packets of exactly 1200 bytes sent to a new destination shortly after a QUIC handshake.''
+
+\textbf{Limitations:}
+\begin{itemize}
+    \item 1200-byte packets occur in normal QUIC traffic (Initial packets are also padded)
+    \item The attacker could use larger padding to avoid this exact size
+    \item Still encrypted --- cannot confirm it's PATH\_CHALLENGE vs.\ normal data
+\end{itemize}
+
+\subsubsection{Method 3: Connection ID Correlation}
+
+\textbf{Observation:} The Destination Connection ID in packets to the preferred server must match one of the CIDs negotiated during the handshake with the primary server. If the firewall could track CID assignments, it could correlate the two flows.
+
+\textbf{Detection rule:} ``Track all QUIC CIDs seen in each connection. If a CID appears in traffic to a different server, flag as migration.''
+
+\textbf{Limitations:}
+\begin{itemize}
+    \item CIDs in short-header packets are at a fixed offset but the firewall doesn't know the CID length
+    \item CIDs are random bytes --- cannot distinguish from payload
+    \item New CIDs may be issued inside encrypted packets (NEW\_CONNECTION\_ID frame)
+    \item The primary server chooses CIDs specifically for the preferred address
+\end{itemize}
+
+\subsubsection{Method 4: Machine Learning}
+
+\textbf{Observation:} Migration traffic may have distinctive statistical patterns (packet inter-arrival times, size distributions, flow duration).
+
+\textbf{Results from literature:} ML classifiers tested against QUIC-Exfil achieve \textbf{0--47\% F1-score}. This is essentially random chance for the lower end.
+
+\textbf{Why ML fails:}
+\begin{itemize}
+    \item The attacker can mimic normal QUIC traffic patterns
+    \item Migration adds only 2--3 extra packets (PATH\_CHALLENGE/RESPONSE)
+    \item Post-migration traffic is indistinguishable from normal traffic
+    \item The attacker controls the timing and can add noise
+\end{itemize}
+
+\subsubsection{Method 5: QUIC-Aware Deep Packet Inspection}
+
+\textbf{Observation:} If the firewall could terminate and re-encrypt QUIC connections (like a TLS-terminating proxy), it could inspect the \texttt{preferred\_address} parameter and block it.
+
+\textbf{Detection rule:} ``Act as a QUIC proxy. Inspect transport parameters. Block or rewrite \texttt{preferred\_address}.''
+
+\textbf{Limitations:}
+\begin{itemize}
+    \item Requires the firewall to have a valid TLS certificate for every destination
+    \item Breaks end-to-end encryption
+    \item Performance overhead of terminating and re-encrypting all QUIC traffic
+    \item Not practical for most network deployments
+    \item Clients may use certificate pinning to detect the proxy
+\end{itemize}
+
+\subsection{Defense Recommendations}
+
+\begin{table}[h]
+\centering
+\caption{Defense Methods: Effectiveness vs. Practicality}
+\begin{tabular}{lccl}
+\toprule
+\textbf{Method} & \textbf{Effectiveness} & \textbf{Practicality} & \textbf{Notes} \\
+\midrule
+Timing analysis & Low & High & Too many false positives \\
+Packet size analysis & Low & High & Easily circumvented \\
+CID correlation & Medium & Low & Requires CID tracking \\
+Machine learning & Low & Medium & 0--47\% F1-score \\
+QUIC proxy (DPI) & High & Low & Breaks E2E encryption \\
+Block QUIC entirely & High & Medium & Blocks all HTTP/3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The Fundamental Challenge}
+
+The QUIC-Exfil attack is difficult to defend against because QUIC was \textit{designed} to make connections resistant to observation and interference. The very features that make QUIC secure (encrypted handshake, CID-based identity, encrypted frames) are what make migration invisible to firewalls.
+
+The most honest assessment is that \textbf{network-level detection of QUIC server-side migration is fundamentally limited}. Effective defense requires either:
+\begin{enumerate}
+    \item \textbf{Endpoint control:} The client's QUIC implementation could be modified to require user consent before migrating to a preferred address. This would prevent silent migration.
+    \item \textbf{Policy-based blocking:} Organizations could maintain allowlists of legitimate server migrations and block QUIC traffic to unlisted preferred addresses.
+    \item \textbf{QUIC protocol changes:} The IETF could consider modifications to RFC~9000 that make migration more observable, such as requiring the preferred address to be in the Initial packet (plaintext) rather than the encrypted handshake. However, this would reduce privacy.
+\end{enumerate}
+
+%======================================================================
+\newpage
+\section{Summary and Future Directions}
+%======================================================================
+
+\subsection{Key Findings}
+
+\begin{enumerate}
+    \item \textbf{State Optimization:} The migration state can be reduced from 445 to $\sim$210 bytes (Tier~2) without losing any functional capability. Tier~1 (85 bytes) is sufficient for path validation only.
+
+    \item \textbf{Key Rotation:} Our implementation handles key updates correctly by transferring the next traffic secret. The race condition (key update during transfer) is theoretically possible but unlikely in practice. Continuous synchronization would eliminate this risk.
+
+    \item \textbf{Connection Continuity:} We can decrypt and parse all post-migration frames (STREAM, ACK, NEW\_CONNECTION\_ID). Full HTTP/3 response generation requires integrating Neqo's connection state machine, which is an engineering task rather than a protocol limitation.
+
+    \item \textbf{Detection:} Network-level detection of QUIC migration is fundamentally limited. ML classifiers achieve 0--47\% F1-score. The most effective defense (QUIC proxy) breaks end-to-end encryption. This confirms that the QUIC-Exfil attack is a real security concern.
+\end{enumerate}
+
+\subsection{Future Work}
+
+\begin{enumerate}
+    \item \textbf{Implement Tier~2 state export} --- reduce transfer size by 53\% and measure latency improvement
+    \item \textbf{Implement continuous key synchronization} --- eliminate the key rotation race condition
+    \item \textbf{Full Neqo connection import} --- achieve complete HTTP/3 continuity after migration using \texttt{Connection::new\_from\_migration()}
+    \item \textbf{Build detection prototype} --- implement timing + packet size analysis and measure false positive/negative rates
+    \item \textbf{Test with QUIC v2} --- verify migration works with RFC~9369 (QUIC Version~2)
+    \item \textbf{Multi-hop migration} --- can a connection migrate multiple times (preferred $\rightarrow$ second preferred)?
+\end{enumerate}
+
+%======================================================================
+\newpage
+\section*{References}
+
+\begin{enumerate}[label={[\arabic*]}]
+    \item J.~Iyengar and M.~Thomson, ``QUIC: A UDP-Based Multiplexed and Secure Transport,'' RFC~9000, IETF, May 2021. \url{https://www.rfc-editor.org/rfc/rfc9000}
+    \item E.~Rescorla, ``The Transport Layer Security (TLS) Protocol Version 1.3,'' RFC~8446, IETF, August 2018. \url{https://www.rfc-editor.org/rfc/rfc8446}
+    \item H.~Krawczyk and P.~Eronen, ``HMAC-based Extract-and-Expand Key Derivation Function (HKDF),'' RFC~5869, IETF, May 2010. \url{https://www.rfc-editor.org/rfc/rfc5869}
+    \item M.~Duke, ``QUIC Version 2,'' RFC~9369, IETF, May 2023. \url{https://www.rfc-editor.org/rfc/rfc9369}
+    \item T.~Gr\"uebl et al., ``QUIC-Exfil: Covert Data Exfiltration by Mimicking QUIC Server-Side Connection Migrations.'' \url{https://github.com/thomasgruebl/quic-exfil}
+    \item Mozilla, ``Neqo: An Implementation of QUIC in Rust.'' \url{https://github.com/mozilla/neqo}
+\end{enumerate}
+
+\end{document}

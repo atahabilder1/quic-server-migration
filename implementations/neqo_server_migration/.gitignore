@@ -1,0 +1,79 @@
+# ============================================
+# Rust build artifacts
+# ============================================
+/target/
+**/target/
+**/.hg/
+
+# ============================================
+# Rust / Cargo
+# ============================================
+*.qlog
+*.sqlog
+
+# ============================================
+# Certificates (never push secrets)
+# ============================================
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# ============================================
+# IDE / OS
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.directory
+Thumbs.db
+.ansible/
+.envrc
+
+# ============================================
+# LaTeX / PDF build temp
+# ============================================
+*.aux
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+mdpdf.log
+
+# ============================================
+# Logs
+# ============================================
+*.log
+
+# ============================================
+# Test artifacts
+# ============================================
+/lcov.info
+/mutants.out*/
+
+# ============================================
+# Superseded docs (merged into COMPREHENSIVE_GUIDE)
+# ============================================
+MIGRATION_DOCUMENTATION.md
+MIGRATION_DOCUMENTATION.pdf
+STATE_TRANSFER_ANALYSIS.md
+STATE_TRANSFER_ANALYSIS.pdf
+WHEN_VS_HOW.md
+WHEN_VS_HOW.pdf
+
+# ============================================
+# NSS cert DB backups
+# ============================================
+test-fixture/db.bak/
+
+# ============================================
+# Keep these
+# ============================================
+!.gitignore
+!README.md
+!benchmarks/results/*.csv

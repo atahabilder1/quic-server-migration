@@ -68,9 +68,9 @@ class MigrationTracker:
 class QuicServerProtocol(QuicConnectionProtocol):
     """QUIC server protocol with migration tracking"""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, migration_tracker=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.migration_tracker = kwargs.get('migration_tracker', MigrationTracker())
+        self.migration_tracker = migration_tracker or MigrationTracker()
         self.connection_id = None
         self.last_client_addr = None
         self.stream_data = {}
