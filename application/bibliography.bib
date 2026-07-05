@@ -1,0 +1,273 @@
+% =============================================================================
+% Bibliography: QUIC Server-Side Migration Applications - Related Work
+% =============================================================================
+% Organized by relevance to our work
+% =============================================================================
+
+% ---------------------------------------------------------------------------
+% MOST DIRECTLY RELATED: Server-Side QUIC Migration
+% ---------------------------------------------------------------------------
+
+@inproceedings{wei2024qdsr,
+  title     = {{QDSR}: Accelerating Layer-7 Load Balancing by Direct Server Return with {QUIC}},
+  author    = {Wei, Ziqi and Wang, Zhiqiang and Li, Qing and Yang, Yuan and Luo, Cheng and Wang, Fuyu and Jiang, Yong and Yang, Sijie and Yuan, Zhenhui},
+  booktitle = {Proceedings of the 2024 USENIX Annual Technical Conference (ATC '24)},
+  year      = {2024},
+  month     = jul,
+  publisher = {USENIX Association},
+  url       = {https://www.usenix.org/conference/atc24/presentation/wei},
+  note      = {Uses QUIC connection migration for Direct Server Return at L7. Stream-level splitting. 12.2x throughput vs traditional LB. Built on LSQUIC.}
+}
+
+@article{puliafito2022serverside,
+  title     = {Server-side {QUIC} connection migration to support microservice deployment at the edge},
+  author    = {Puliafito, Carlo and Conforti, Lorenzo and Virdis, Antonio and Mingozzi, Enzo},
+  journal   = {Pervasive and Mobile Computing},
+  volume    = {80},
+  pages     = {101580},
+  year      = {2022},
+  publisher = {Elsevier},
+  doi       = {10.1016/j.pmcj.2022.101580},
+  url       = {https://www.sciencedirect.com/science/article/abs/pii/S157411922200030X},
+  note      = {Three migration strategies: Reactive-Explicit, Proactive-Explicit, Pool-of-Addresses. Evaluated in Mininet simulation using aioquic. Most closely related conceptual work.}
+}
+
+@inproceedings{puliafito2021extending,
+  title     = {Extending the {QUIC} Protocol to Support Live Container Migration at the Edge},
+  author    = {Puliafito, Carlo and Conforti, Lorenzo and Virdis, Antonio and Mingozzi, Enzo},
+  booktitle = {Proceedings of the 22nd IEEE International Symposium on a World of Wireless, Mobile and Multimedia Networks (WoWMoM '21)},
+  year      = {2021},
+  publisher = {IEEE},
+  doi       = {10.1109/WoWMoM51794.2021.00028},
+  url       = {https://ieeexplore.ieee.org/document/9469425/},
+  note      = {Earlier conference version of Puliafito PMC'22. First paper to formally define server-side QUIC connection migration as a research problem.}
+}
+
+@article{mec5g2025,
+  title     = {Empirical Evaluation of {QUIC}-Based Software-Defined Service Migration in Multi-access Edge Computing Over {5G} Networks},
+  journal   = {Journal of Network and Systems Management},
+  year      = {2025},
+  publisher = {Springer},
+  doi       = {10.1007/s10922-025-09909-0},
+  url       = {https://link.springer.com/article/10.1007/s10922-025-09909-0},
+  note      = {Extends edge migration to 5G MEC with SDN orchestration. Real 5G testbed evaluation.}
+}
+
+@article{mpquic2025,
+  title     = {Server Migration with Multipath-{QUIC}},
+  journal   = {Open Access Journal of Data Science and Artificial Intelligence (OAJDA)},
+  year      = {2025},
+  publisher = {MedWin Publishers},
+  url       = {https://medwinpublishers.com/OAJDA/server-migration-with-multipath-quic.pdf},
+  note      = {Uses Multipath-QUIC for zero-interruption server migration. Complementary to preferred\_address approach. Theoretical analysis.}
+}
+
+@inproceedings{grubl2025quicexfil,
+  title     = {{QUIC-Exfil}: Exploiting {QUIC}'s Server Preferred Address Feature to Perform Data Exfiltration Attacks},
+  author    = {Gr{\"u}bl, Thomas and Niu, Weijie and von der Assen, Jan and Stiller, Burkhard},
+  booktitle = {Proceedings of the 20th ACM Asia Conference on Computer and Communications Security (ASIA CCS '25)},
+  year      = {2025},
+  month     = aug,
+  publisher = {ACM},
+  doi       = {10.1145/3708821.3733872},
+  url       = {https://arxiv.org/pdf/2505.05292},
+  note      = {Shows preferred\_address can be exploited for data exfiltration. ML classifiers fail (0-47\% F1). Security dual-use of our mechanism.}
+}
+
+% ---------------------------------------------------------------------------
+% QUIC LOAD BALANCING AND MIDDLEBOXES
+% ---------------------------------------------------------------------------
+
+@techreport{duke2026quiclb,
+  title       = {{QUIC-LB}: Generating Routable {QUIC} Connection {IDs}},
+  author      = {Duke, Martin and Banks, Nick},
+  institution = {IETF},
+  type        = {Internet-Draft},
+  number      = {draft-ietf-quic-load-balancers-21},
+  year        = {2026},
+  url         = {https://datatracker.ietf.org/doc/draft-ietf-quic-load-balancers/},
+  note        = {IETF standard for encoding Server ID in QUIC Connection IDs. LB decodes CID to route to correct backend. Does NOT support moving connections between servers.}
+}
+
+@article{qasm2025,
+  title   = {{QASM}: A Novel Framework for {QUIC}-Aware Stateful Middleboxes},
+  year    = {2025},
+  journal = {arXiv preprint},
+  url     = {https://arxiv.org/pdf/2602.03354},
+  note    = {Framework for middleboxes (LBs, firewalls) that track QUIC connection state across CID changes. Critical for deploying migration-based LB in production.}
+}
+
+@article{emqx2024quiclb,
+  title   = {A {QUIC} Load Balancing Implementation Using {XDP} and {IPVS}},
+  year    = {2024},
+  journal = {EMQ Blog},
+  url     = {https://www.emqx.com/en/blog/a-quic-load-balancing-implementation-using-xdp-and-ipvs},
+  note    = {Practical QUIC-LB implementation using Linux XDP/eBPF and IPVS. Production-oriented.}
+}
+
+@inproceedings{eisenbud2016maglev,
+  title     = {Maglev: A Fast and Reliable Software Network Load Balancer},
+  author    = {Eisenbud, Daniel E. and Yi, Cheng and Contavalli, Carlo and Smith, Cody and Kononov, Roman and Mann-Hielscher, Eric and Ciber, Ardas and Liang, Bin and Wu, Jiahui and others},
+  booktitle = {Proceedings of the 13th USENIX Symposium on Networked Systems Design and Implementation (NSDI '16)},
+  year      = {2016},
+  publisher = {USENIX Association},
+  url       = {https://www.usenix.org/conference/nsdi16/technical-sessions/presentation/eisenbud},
+  note      = {Google's production L4 LB. Consistent hashing with Maglev hash. Baseline for comparison with QUIC migration LB.}
+}
+
+@inproceedings{olteanu2018beamer,
+  title     = {Stateless Datacenter Load-balancing with Beamer},
+  author    = {Olteanu, Vladimir and Agache, Alexandru and Voinescu, Andrei and Raiciu, Costin},
+  booktitle = {Proceedings of the 15th USENIX Symposium on Networked Systems Design and Implementation (NSDI '18)},
+  year      = {2018},
+  publisher = {USENIX Association},
+  url       = {https://www.usenix.org/conference/nsdi18/presentation/olteanu},
+  note      = {Stateless L4 LB using daisy-chaining. 33M pps (2x Maglev). Immune to SYN flood state exhaustion.}
+}
+
+@misc{katran2018,
+  title  = {Open-sourcing {Katran}, a scalable network load balancer},
+  author = {{Facebook Engineering}},
+  year   = {2018},
+  url    = {https://engineering.fb.com/2018/05/22/open-source/open-sourcing-katran-a-scalable-network-load-balancer/},
+  note   = {Meta's production L4 LB using XDP/eBPF. Handles QUIC CIDs for routing. Open-source.}
+}
+
+% ---------------------------------------------------------------------------
+% QUIC CONNECTION MIGRATION ANALYSIS
+% ---------------------------------------------------------------------------
+
+@article{zirngibl2025wild,
+  title   = {An Analysis of {QUIC} Connection Migration in the Wild},
+  author  = {Zirngibl, Johannes and others},
+  journal = {ACM SIGCOMM Computer Communication Review},
+  year    = {2025},
+  doi     = {10.1145/3727063.3727066},
+  url     = {https://dl.acm.org/doi/10.1145/3727063.3727066},
+  note    = {Empirical study: preferred\_address largely unused in production. 8/11 QUIC libraries support server-side migration. Justifies our research exploring applications.}
+}
+
+@article{tan2025proactive,
+  title   = {Enhancing {QUIC} Performance in Heterogeneous Networks: A Proactive Connection Migration Approach},
+  author  = {Tan, others},
+  journal = {International Journal of Network Management},
+  year    = {2025},
+  doi     = {10.1002/nem.70022},
+  url     = {https://onlinelibrary.wiley.com/doi/10.1002/nem.70022},
+  note    = {Client-side proactive migration. Predicts when to migrate before path degrades. Applicable to our health-checked migration concept.}
+}
+
+@article{quickstep2023,
+  title   = {{QUICstep}: Evaluating Connection Migration Based {QUIC} Censorship Circumvention},
+  year    = {2023},
+  journal = {arXiv preprint},
+  url     = {https://arxiv.org/pdf/2304.01073},
+  note    = {Uses client-side QUIC migration for censorship circumvention. Same mechanism as our work but different application (client-side vs server-side).}
+}
+
+@article{trafficsplitting2022,
+  title   = {Leveraging Strategic Connection Migration-Powered Traffic Splitting for Privacy},
+  year    = {2022},
+  journal = {arXiv preprint},
+  url     = {https://arxiv.org/pdf/2205.03326},
+  note    = {Uses QUIC connection migration for privacy-preserving traffic splitting.}
+}
+
+% ---------------------------------------------------------------------------
+% DNS, ANYCAST, AND CDN ROUTING
+% ---------------------------------------------------------------------------
+
+@article{anycast2018,
+  title   = {Internet Anycast: Performance, Problems, and Potential},
+  year    = {2018},
+  url     = {https://www.researchgate.net/publication/326909512},
+  note    = {Comprehensive analysis of anycast performance and challenges. BGP route flapping breaks stateful connections.}
+}
+
+@article{anycastcdn2017,
+  title     = {Distributed Load Management Algorithms in Anycast-Based {CDNs}},
+  journal   = {Computer Networks},
+  year      = {2017},
+  publisher = {Elsevier},
+  doi       = {10.1016/j.comnet.2017.02.013},
+  url       = {https://www.sciencedirect.com/science/article/abs/pii/S1389128617300282},
+  note      = {Load management for anycast CDNs. Our DNS+Anycast hybrid addresses the connection stability problem these systems face.}
+}
+
+@misc{anycastpatent2023,
+  title  = {{QUIC} and Anycast Proxy Resiliency},
+  year   = {2023},
+  note   = {US Patent 12,149,596 and 11,924,299. Proxy-based approach for anycast QUIC resiliency. Our preferred\_address approach is more elegant (no proxy needed).},
+  url    = {https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/12149596}
+}
+
+@inproceedings{yap2017espresso,
+  title     = {Taking the Edge off with Espresso: Scale, Reliability and Programmability for Global Internet Peering},
+  author    = {Yap, Kok-Kiong and Motiwala, Murtaza and Rahe, Jeremy and Padgett, Steve and Holliman, Matthew and Baldus, Gary and Hines, Marcus and Kim, Taeeun and Narayanan, Ashok and others},
+  booktitle = {Proceedings of the ACM SIGCOMM 2017 Conference},
+  year      = {2017},
+  publisher = {ACM},
+  note      = {Google's software-defined anycast with fine-grained traffic engineering. Addresses BGP flapping.}
+}
+
+% ---------------------------------------------------------------------------
+% IPFS AND LIBP2P
+% ---------------------------------------------------------------------------
+
+@misc{ipfs2020quic,
+  title  = {{IPFS} 0.6.0: {QUIC}, Noise, Peering and more!},
+  author = {{IPFS Blog}},
+  year   = {2020},
+  url    = {https://blog.ipfs.tech/2020-06-26-go-ipfs-0-6-0/},
+  note   = {IPFS enabled QUIC transport by default. Uses go-libp2p-quic-transport (quic-go).}
+}
+
+@misc{libp2pquic,
+  title  = {libp2p Specifications: {QUIC} Transport},
+  author = {{libp2p}},
+  url    = {https://github.com/libp2p/specs/tree/master/quic},
+  note   = {libp2p QUIC transport spec. Uses /quic-v1 multiaddress for RFC 9000. PeerID tied to TLS certificate.}
+}
+
+@article{benet2014ipfs,
+  title   = {{IPFS} -- Content Addressed, Versioned, {P2P} File System},
+  author  = {Benet, Juan},
+  journal = {arXiv preprint arXiv:1407.3561},
+  year    = {2014},
+  note    = {Original IPFS paper. Content-addressed storage with CIDs. Multiple peers can serve same content.}
+}
+
+% ---------------------------------------------------------------------------
+% QUIC PROTOCOL STANDARDS
+% ---------------------------------------------------------------------------
+
+@techreport{rfc9000,
+  title       = {{QUIC}: A {UDP}-Based Multiplexed and Secure Transport},
+  author      = {Iyengar, Jana and Thomson, Martin},
+  institution = {IETF},
+  type        = {RFC},
+  number      = {9000},
+  year        = {2021},
+  url         = {https://www.rfc-editor.org/rfc/rfc9000.html},
+  note        = {QUIC transport protocol. Section 9.6: Server's Preferred Address. Section 9: Connection Migration.}
+}
+
+@techreport{rfc9114,
+  title       = {{HTTP/3}},
+  author      = {Bishop, Mike},
+  institution = {IETF},
+  type        = {RFC},
+  number      = {9114},
+  year        = {2022},
+  url         = {https://www.rfc-editor.org/rfc/rfc9114.html},
+  note        = {HTTP/3 over QUIC. Our migration demo serves HTTP/3 pages via Firefox.}
+}
+
+@techreport{rfc4786,
+  title       = {Operation of Anycast Services},
+  institution = {IETF},
+  type        = {RFC},
+  number      = {4786},
+  year        = {2006},
+  note        = {Defines anycast operation. Foundation for our DNS+Anycast hybrid application.}
+}
