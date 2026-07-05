@@ -50,10 +50,25 @@ fn start_heartbeat(quic_addr: SocketAddr) {
 
     match mode.as_str() {
         "tcp" => {
-            // The preferred server's state port (9999) already acts as a TCP health probe target.
-            // The health-check-primary does a TCP connect to that port.
-            // No additional heartbeat needed for TCP mode — the state listener IS the heartbeat.
-            println!("  [Heartbeat] TCP mode: state listener port serves as health probe target");
+            // Dedicated health check TCP listener (separate from state transfer port!)
+            let health_port: u16 = env::var("HEALTH_PORT")
+                .unwrap_or_else(|_| "9998".to_string())
+                .parse()
+                .unwrap_or(9998);
+            println!("  [Heartbeat] TCP mode: health listener on port {health_port}");
+
+            std::thread::spawn(move || {
+                let listener = TcpListener::bind(format!("0.0.0.0:{health_port}"))
+                    .unwrap_or_else(|e| panic!("Failed to bind health port {health_port}: {e}"));
+                loop {
+                    // Accept health probe connections and immediately close them.
+                    // The primary just does a TCP connect to check if we're alive.
+                    match listener.accept() {
+                        Ok((stream, _)) => { drop(stream); }
+                        Err(_) => { std::thread::sleep(Duration::from_millis(100)); }
+                    }
+                }
+            });
         }
         "redis" => {
             let url = env::var("REDIS_URL")

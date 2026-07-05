@@ -96,7 +96,7 @@ const HTML_PAGE: &str = r#"<!DOCTYPE html>
 
 /// Health check mode
 enum HealthCheckMode {
-    Tcp { state_port: u16 },
+    Tcp { health_port: u16 },
     Redis { url: String },
     None,
 }
@@ -105,11 +105,12 @@ impl HealthCheckMode {
     fn from_env(preferred_addr: SocketAddr) -> Self {
         match env::var("HEALTH_CHECK").unwrap_or_else(|_| "tcp".to_string()).as_str() {
             "tcp" => {
-                let state_port: u16 = env::var("STATE_TCP_PORT")
-                    .unwrap_or_else(|_| "9999".to_string())
+                // Use a SEPARATE port for health checks (not the state transfer port!)
+                let health_port: u16 = env::var("HEALTH_PORT")
+                    .unwrap_or_else(|_| "9998".to_string())
                     .parse()
-                    .unwrap_or(9999);
-                Self::Tcp { state_port }
+                    .unwrap_or(9998);
+                Self::Tcp { health_port }
             }
             "redis" => {
                 let url = env::var("REDIS_URL")
@@ -119,11 +120,11 @@ impl HealthCheckMode {
             "none" => Self::None,
             other => {
                 eprintln!("Unknown HEALTH_CHECK mode: {other}. Using tcp.");
-                let state_port: u16 = env::var("STATE_TCP_PORT")
-                    .unwrap_or_else(|_| "9999".to_string())
+                let health_port: u16 = env::var("HEALTH_PORT")
+                    .unwrap_or_else(|_| "9998".to_string())
                     .parse()
-                    .unwrap_or(9999);
-                Self::Tcp { state_port }
+                    .unwrap_or(9998);
+                Self::Tcp { health_port }
             }
         }
     }
@@ -138,8 +139,8 @@ impl HealthCheckMode {
 
     fn check(&self, preferred_ip: std::net::IpAddr) -> bool {
         match self {
-            Self::Tcp { state_port } => {
-                let addr = SocketAddr::new(preferred_ip, *state_port);
+            Self::Tcp { health_port } => {
+                let addr = SocketAddr::new(preferred_ip, *health_port);
                 TcpStream::connect_timeout(&addr, TCP_PROBE_TIMEOUT).is_ok()
             }
             Self::Redis { url } => {
@@ -235,10 +236,10 @@ fn main() {
         let flag = healthy_flag.clone();
         let preferred_ip = preferred_addr.ip();
         let mode_name = health_mode.name().to_string();
-        let state_port: u16 = env::var("STATE_TCP_PORT")
-            .unwrap_or_else(|_| "9999".to_string())
+        let health_port: u16 = env::var("HEALTH_PORT")
+            .unwrap_or_else(|_| "9998".to_string())
             .parse()
-            .unwrap_or(9999);
+            .unwrap_or(9998);
         let redis_url = env::var("REDIS_URL")
             .unwrap_or_else(|_| "redis://141.217.168.200:6379".to_string());
 
@@ -248,7 +249,7 @@ fn main() {
                 std::thread::sleep(HEALTH_CHECK_INTERVAL);
                 let healthy = match mode_name.as_str() {
                     "tcp" => {
-                        let addr = SocketAddr::new(preferred_ip, state_port);
+                        let addr = SocketAddr::new(preferred_ip, health_port);
                         TcpStream::connect_timeout(&addr, TCP_PROBE_TIMEOUT).is_ok()
                     }
                     "redis" => check_redis_health(&redis_url),
