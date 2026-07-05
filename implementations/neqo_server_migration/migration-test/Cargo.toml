@@ -12,6 +12,22 @@ path = "src/primary_server.rs"
 name = "preferred-server"
 path = "src/preferred_server.rs"
 
+[[bin]]
+name = "webseed-primary"
+path = "src/webseed_primary.rs"
+
+[[bin]]
+name = "health-check-primary"
+path = "src/health_check_primary.rs"
+
+[[bin]]
+name = "health-check-preferred"
+path = "src/health_check_preferred.rs"
+
+[[bin]]
+name = "lb-frontend"
+path = "src/lb_frontend.rs"
+
 [dependencies]
 neqo-transport = { path = "../neqo-transport" }
 neqo-http3 = { path = "../neqo-http3" }
